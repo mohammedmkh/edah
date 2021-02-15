@@ -1,0 +1,69 @@
+.ml-2 {
+    margin-left: 10px;
+}
+
+.dropdown-menu .flag-icon {
+    float: right;
+}
+
+.navbar-nav .nav-item .nav-link {
+    float: right;
+    margin-right: 20px;
+}
+.navbar-nav .nav-item {
+    position: relative;
+}
+
+.navbar-nav .nav-item .nav-link i {
+    position: absolute;
+    right: 15px;
+    display: inline-block;
+    padding-left: 15px;
+    margin-left: 20px;
+}
+.card .card-body {
+    position: relative;
+}
+
+.card .card-body div.col-auto {
+    position: absolute;
+}
+.navbar-top .text-white {
+    position: absolute;
+    right: 41px;
+    top: 27px;
+}
+.navbar-top .navbar-nav {
+    position: absolute;
+    top:11px ;
+}
+
+.card-header {
+    position: relative;
+    margin-bottom: 25px;
+}
+.card-header div.col-8 {
+    position: absolute;
+    right: 0;
+}
+.card-header div.col-4 {
+    position: absolute;
+}
+.card .card-body div.list {
+    position: absolute;
+    right: 0 ;
+}
+.align-items-center {
+    position: relative;
+}
+.navbar-nav .nav-item .nav-link.active {
+    position: relative;
+    right: -20px ;
+}
+.navbar-nav .nav-item .nav-link.active .nav-link-text {
+    margin-right: 18px;
+}
+.navbar-nav .nav-item .collapse ul {
+    position: relative;
+    right:35px;
+}
