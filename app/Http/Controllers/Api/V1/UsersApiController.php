@@ -440,10 +440,14 @@ class UsersApiController extends Controller
     {
 
 
-        $data = Category::get();
+        $collection = Category::get();
+
+
+
+        $collection->all();
 
         $message = __('api.success');
-        return jsonResponse(true, $message, $data, 200);
+        return jsonResponse(true, $message,  $collection , 200);
     }
 
     public function docsOfStore(Request $request)
