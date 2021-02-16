@@ -20,19 +20,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a51dfa3-49c4-454b-9843-11ae9e80597d" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Edah.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Edah.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/TechStoreUser.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/TechStoreUser.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/helpers.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/helpers.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
@@ -193,7 +190,8 @@
       <option name="presentableId" value="Default" />
       <updated>1613372391369</updated>
       <workItem from="1613372393054" duration="12000" />
-      <workItem from="1613463996779" duration="916000" />
+      <workItem from="1613463996779" duration="1524000" />
+      <workItem from="1613474669578" duration="668000" />
     </task>
     <servers />
   </component>
@@ -210,6 +208,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />

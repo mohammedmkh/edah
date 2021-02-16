@@ -42,6 +42,38 @@ function getDataFromRequest($type = 'user_tech' , $request = []){
 
         return $d ;
     }
+    if($type == 'user_tech_store'){
+        $d['bank_name'] = $request->bank_name;
+        $d['bank_account'] = $request->bank_account;
+        $d['owner_account'] = $request->owner_account;
+        $d['phone'] = $request->phone;
+        $d['tech_store_email'] = $request->email;
+        $d['min_order_value'] = $request->order_min;
+        $d['tech_store_email'] = $request->email;
+        $d['priority'] = $request->priority;
+        $d['driver_radius']=$request->driver_radius;
+        $d['app_benifit_percentage'] = $request->app_benifit_percentage;
+        if($request->hour_work != '')
+            $d['hour_work'] = $request->hour_work;
+
+        if( $request->vehicle_type != ''){
+            $d['type_vehicle'] = $request->vehicle_type;
+        }
+
+        $d['type'] = 1 ;   //  1 mean is technician
+        $d['services'] = json_encode($request->categories) ;
+
+        if($request->work_time_from != ''){
+            $d['work_time_from'] = $request->work_time_from ;
+        }
+        if($request->work_time_to != ''){
+            $d['work_time_to'] = $request->work_time_to ;
+        }
+
+
+
+        return $d ;
+    }
 
 
 }

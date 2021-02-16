@@ -602,6 +602,7 @@ class UsersApiController extends Controller
                     'user_id' => $user->id
 
                 ]);
+
                 if (!empty($data['categories'])) {
 
                     foreach ($data['categories'] as $value) {
