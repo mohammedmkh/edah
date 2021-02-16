@@ -38,6 +38,11 @@ class Category extends Model
         return $this->hasOne('App\Category', 'id', 'parent');
     }
 
+    public function categoryLang()
+    {
+
+        return $this->hasMany(CategoryLangs::class,'category_id','id');
+    }
 
 
 

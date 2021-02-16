@@ -37,6 +37,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::get('getCategories', 'UsersApiController@getCategories');
 
+    Route::get('getSubCategories/{id}', 'UsersApiController@getSubCategories');
+
+    Route::post('searchCategory', 'UsersApiController@searchCategory');
+
     Route::post('registerTechnician', 'UsersApiController@registerTechnician');
 
     Route::post('registerStore', 'UsersApiController@registerStore');

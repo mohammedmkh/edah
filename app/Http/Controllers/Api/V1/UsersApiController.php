@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Documents;
 use App\Http\Controllers\Controller;
+use App\Language;
 use App\TechStoreUser;
 use App\TechStoreServices;
 
 use App\User;
 use App\Category;
+use App\CategoryLangs;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use \Validator;
@@ -16,6 +18,8 @@ use Illuminate\Http\Request;
 use DB;
 use Route;
 use App\TechStoreDocuments;
+use App;
+use Illuminate\Database\Eloquent\Builder;
 
 class UsersApiController extends Controller
 {
@@ -446,6 +450,42 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $data, 200);
     }
 
+    public function getSubCategories(Request $request)
+    {
+        $data = CategoryLangs::where('category_id', $request->id)->get();
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
+
+    public function searchCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'key' => 'required',
+        ]);
+
+        $key = $request->key;
+
+        $language = App::getLocale();
+        $language = Language::where('name', $language)->first();
+        $language = $language->id ?? 1;
+
+        Category::wherehas('categoryLang', function (Builder $query) use ($language, $key) {
+            $query->where('lang_id', $language);
+            $query->where('name', 'like', '%' . $key . '%');
+        })->get();
+
+
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+
+        $data = Category::where('category_id', '%like%', $request->key)->get();
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
+
     public function docsOfStore(Request $request)
     {
 
@@ -555,11 +595,11 @@ class UsersApiController extends Controller
 
     public function registerStore(Request $request)
     {
-       
+
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
             'name' => 'required',
-             'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'identity' => 'required',
             'work_time_from' => 'required',
@@ -583,7 +623,7 @@ class UsersApiController extends Controller
 
             if ($user->is_complete_register == 1) {
                 $message = __('api.user_register_before');
-                 return jsonResponse(false, $message, null, 120);
+                return jsonResponse(false, $message, null, 120);
             }
             \DB::beginTransaction();
             try {

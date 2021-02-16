@@ -21,7 +21,9 @@
   <component name="ChangeListManager">
     <list default="true" id="7a51dfa3-49c4-454b-9843-11ae9e80597d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Category.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Category.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,7 +192,10 @@
       <updated>1613372391369</updated>
       <workItem from="1613372393054" duration="12000" />
       <workItem from="1613463996779" duration="1524000" />
-      <workItem from="1613474669578" duration="1674000" />
+      <workItem from="1613474669578" duration="1790000" />
+      <workItem from="1613477611673" duration="1804000" />
+      <workItem from="1613480109632" duration="1794000" />
+      <workItem from="1613481970274" duration="1336000" />
     </task>
     <servers />
   </component>
@@ -209,7 +214,10 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+  <component name="WindowStateProjectService">
+    <state x="413" y="121" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1613480790729">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="413" y="121" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.728@0.0.1366.728" timestamp="1613480790729" />
   </component>
 </project>
