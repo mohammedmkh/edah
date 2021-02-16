@@ -507,12 +507,18 @@ class UsersApiController extends Controller
                 $user_tech->user_id = $user->id;
                 $user_tech->save();
 
-                $techStoreDocuments = TechStoreDocuments::create([
-                    'document_id' => $data['docs'][0]['id'],
-                    'document_link' => $data['docs'][0]['path'],
-                    'user_id' => $user->id
+                if (!empty($data['docs'])) {
 
-                ]);
+                    foreach ($data['docs'] as $value) {
+                        $techStoreDocuments = TechStoreDocuments::create([
+                            'document_id' => $value['id'],
+                            'document_link' => $value['path'],
+                            'user_id' => $user->id
+
+                        ]);
+
+                    }
+                }
                 if (!empty($data['categories'])) {
 
                     foreach ($data['categories'] as $value) {
@@ -549,11 +555,11 @@ class UsersApiController extends Controller
 
     public function registerStore(Request $request)
     {
-
+       
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
             'name' => 'required',
-            'email' => 'required|email|unique:users',
+             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'identity' => 'required',
             'work_time_from' => 'required',
@@ -577,7 +583,7 @@ class UsersApiController extends Controller
 
             if ($user->is_complete_register == 1) {
                 $message = __('api.user_register_before');
-                return jsonResponse(false, $message, null, 120);
+                 return jsonResponse(false, $message, null, 120);
             }
             \DB::beginTransaction();
             try {
@@ -596,12 +602,18 @@ class UsersApiController extends Controller
                 $user_tech->user_id = $user->id;
                 $user_tech->save();
 
-                $techStoreDocuments = TechStoreDocuments::create([
-                    'document_id' => $data['docs'][0]['id'],
-                    'document_link' => $data['docs'][0]['path'],
-                    'user_id' => $user->id
+                if (!empty($data['docs'])) {
 
-                ]);
+                    foreach ($data['docs'] as $value) {
+                        $techStoreDocuments = TechStoreDocuments::create([
+                            'document_id' => $value['id'],
+                            'document_link' => $value['path'],
+                            'user_id' => $user->id
+
+                        ]);
+
+                    }
+                }
 
                 if (!empty($data['categories'])) {
 
