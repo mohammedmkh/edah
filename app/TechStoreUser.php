@@ -9,7 +9,7 @@ class TechStoreUser extends Model
     //
 
     protected $fillable = [
-        'phone' ,'type' , 'min_order_value' , 'tech_store_email' ,'priority' , 'vat_no' ,'have_vehicle' ,'type_vehicle'
+        'order_min', 'phone' ,'type' , 'min_order_value' , 'driver_radius','tech_store_email' ,'work_time_from','work_time_to','priority' , 'vat_no' ,'have_vehicle' ,'type_vehicle','bank_account',"owner_account","bank_name"
     ];
 
     protected $table = 'technicians_stores';
