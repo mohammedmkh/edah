@@ -444,11 +444,64 @@ class UsersApiController extends Controller
     {
 
 
-        $data = Category::get();
+        $collection = Category::get();
 
+
+        $collection->all();
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $collection, 200);
+    }
+
+    public function searchCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'key' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $key = $request->key;
+
+
+        $language = App::getLocale();
+        $language = Language::where('name' , $language)->first();
+        $language = $language->id ?? 1 ;
+
+        $data=CategoryLangs::leftJoin('category', function($join) {
+            $join->on('category.id', '=', 'category_langs.category_id');
+        })
+            ->where('category_langs.name', 'like', '%' . $key . '%')
+            ->where('category_langs.lang_id', $language)
+            ->select('category.*','category_langs.name','category_langs.description')->get();
+     /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
+
+            $query->where('name', 'like', '%' . $key . '%');
+            $query->where('category_langs.lang_id', $language);
+
+        })->get();*/
         $message = __('api.success');
         return jsonResponse(true, $message, $data, 200);
     }
+
+    public function searchSubCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'key' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $key = $request->key;
+
+        $data=Category::wherehas('categoryLang',function ($query) use($key){
+
+            $query->where('name', 'like', '%' . $key . '%');
+        })->get();
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
+
 
     public function getSubCategories(Request $request)
     {
@@ -458,33 +511,6 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $data, 200);
     }
 
-    public function searchCategory(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'key' => 'required',
-        ]);
-
-        $key = $request->key;
-
-        $language = App::getLocale();
-        $language = Language::where('name', $language)->first();
-        $language = $language->id ?? 1;
-
-        Category::wherehas('categoryLang', function (Builder $query) use ($language, $key) {
-            $query->where('lang_id', $language);
-            $query->where('name', 'like', '%' . $key . '%');
-        })->get();
-
-
-        if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
-        }
-
-        $data = Category::where('category_id', '%like%', $request->key)->get();
-
-        $message = __('api.success');
-        return jsonResponse(true, $message, $data, 200);
-    }
 
     public function docsOfStore(Request $request)
     {
