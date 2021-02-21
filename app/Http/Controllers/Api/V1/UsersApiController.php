@@ -473,6 +473,8 @@ class UsersApiController extends Controller
         })
             ->where('category_langs.name', 'like', '%' . $key . '%')
             ->where('category_langs.lang_id', $language)
+            ->where('category.parent', 1)
+
             ->select('category.*','category_langs.name','category_langs.description')->get();
      /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
 
@@ -494,13 +496,28 @@ class UsersApiController extends Controller
         }
         $key = $request->key;
 
-        $data=Category::wherehas('categoryLang',function ($query) use($key){
 
-            $query->where('name', 'like', '%' . $key . '%');
-        })->get();
+        $language = App::getLocale();
+        $language = Language::where('name' , $language)->first();
+        $language = $language->id ?? 1 ;
+
+        $data=CategoryLangs::leftJoin('category', function($join) {
+            $join->on('category.id', '=', 'category_langs.category_id');
+        })
+            ->where('category_langs.name', 'like', '%' . $key . '%')
+            ->where('category_langs.lang_id', $language)
+            ->where('category.parent', 0)
+            ->select('category.*','category_langs.name','category_langs.description')->get();
+        /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
+
+               $query->where('name', 'like', '%' . $key . '%');
+               $query->where('category_langs.lang_id', $language);
+
+           })->get();*/
         $message = __('api.success');
         return jsonResponse(true, $message, $data, 200);
     }
+
 
 
     public function getSubCategories(Request $request)

@@ -41,6 +41,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('searchCategory', 'UsersApiController@searchCategory');
 
+    Route::post('searchSubCategory', 'UsersApiController@searchSubCategory');
+
     Route::post('registerTechnician', 'UsersApiController@registerTechnician');
 
     Route::post('registerStore', 'UsersApiController@registerStore');
