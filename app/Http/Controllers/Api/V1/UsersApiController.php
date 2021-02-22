@@ -7,8 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Language;
 use App\TechStoreUser;
 use App\TechStoreServices;
-
+use App\UserAddress;
 use App\User;
+use App\Order;
 use App\Category;
 use App\CategoryLangs;
 use Carbon\Carbon;
@@ -261,6 +262,36 @@ class UsersApiController extends Controller
 
     }
 
+    public function initOrder(Request $request)
+    {
+        $data=$request->all();
+
+        $validator = Validator::make($request->all(), [
+            'customer_id' => 'required',
+            'category_id' => 'required',
+            'status' => 'required',
+            'is_immediately' => 'required',
+            'time' => 'required',
+            'price' => 'required',
+        ]);
+
+
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $data['user_id']=20; //Auth::guard('api')->id();
+
+
+        $create= Order::create($data);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $create, 200);
+
+
+
+
+    }
+
     public function loginClient(Request $request)
     {
 
@@ -430,6 +461,26 @@ class UsersApiController extends Controller
 
     }
 
+    public function setTechnicianLocation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required',
+            'lang' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $lat = $request->lat;
+        $lang = $request->lang;
+        $user_id = Auth::guard('api')->id();
+
+        $data = UserAddress::create(['user_id' => $user_id, 'lat' => $lat, 'lang' => $lang]);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+
+    }
+
     public function docsOfTech(Request $request)
     {
 
@@ -465,23 +516,22 @@ class UsersApiController extends Controller
 
 
         $language = App::getLocale();
-        $language = Language::where('name' , $language)->first();
-        $language = $language->id ?? 1 ;
+        $language = Language::where('name', $language)->first();
+        $language = $language->id ?? 1;
 
-        $data=CategoryLangs::leftJoin('category', function($join) {
+        $data = CategoryLangs::leftJoin('category', function ($join) {
             $join->on('category.id', '=', 'category_langs.category_id');
         })
             ->where('category_langs.name', 'like', '%' . $key . '%')
             ->where('category_langs.lang_id', $language)
             ->where('category.parent', 1)
+            ->select('category.*', 'category_langs.name', 'category_langs.description')->get();
+        /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
 
-            ->select('category.*','category_langs.name','category_langs.description')->get();
-     /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
+               $query->where('name', 'like', '%' . $key . '%');
+               $query->where('category_langs.lang_id', $language);
 
-            $query->where('name', 'like', '%' . $key . '%');
-            $query->where('category_langs.lang_id', $language);
-
-        })->get();*/
+           })->get();*/
         $message = __('api.success');
         return jsonResponse(true, $message, $data, 200);
     }
@@ -498,16 +548,16 @@ class UsersApiController extends Controller
 
 
         $language = App::getLocale();
-        $language = Language::where('name' , $language)->first();
-        $language = $language->id ?? 1 ;
+        $language = Language::where('name', $language)->first();
+        $language = $language->id ?? 1;
 
-        $data=CategoryLangs::leftJoin('category', function($join) {
+        $data = CategoryLangs::leftJoin('category', function ($join) {
             $join->on('category.id', '=', 'category_langs.category_id');
         })
             ->where('category_langs.name', 'like', '%' . $key . '%')
             ->where('category_langs.lang_id', $language)
             ->where('category.parent', 0)
-            ->select('category.*','category_langs.name','category_langs.description')->get();
+            ->select('category.*', 'category_langs.name', 'category_langs.description')->get();
         /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
 
                $query->where('name', 'like', '%' . $key . '%');
@@ -518,6 +568,39 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $data, 200);
     }
 
+    public function searchNearestTechnicalLocation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required',
+            'lang' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $LATITUDE = $request->lat;
+        $LONGITUDE = $request->lang;
+        $DISTANCE_KILOMETERS = 40;
+        $data = DB::select("SELECT * FROM (
+    SELECT *,
+        (
+            (
+                (
+                    acos(
+                        sin(( {$LATITUDE} * pi() / 180))
+                        *
+                        sin(( `lat` * pi() / 180)) + cos(( {$LATITUDE} * pi() /180 ))
+                        *
+                        cos(( `lat` * pi() / 180)) * cos((( {$LONGITUDE} - `lang`) * pi()/180)))
+                ) * 180/pi()
+            ) * 60 * 1.1515 * 1.609344
+        )
+    as distance FROM `user_address`
+) user_address
+WHERE distance <= {$DISTANCE_KILOMETERS}");
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
 
 
     public function getSubCategories(Request $request)

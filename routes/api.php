@@ -41,7 +41,11 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('searchCategory', 'UsersApiController@searchCategory');
 
+    Route::post('searchNearestTechnicalLocation', 'UsersApiController@searchNearestTechnicalLocation');
+
     Route::post('searchSubCategory', 'UsersApiController@searchSubCategory');
+
+    Route::post('initOrder', 'UsersApiController@initOrder');
 
     Route::post('registerTechnician', 'UsersApiController@registerTechnician');
 
@@ -69,6 +73,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
     Route::post('addordernew', 'OrdersApiController@addOrder');
 
     Route::post('vehiclerate', 'VehicleApiController@vehicleRate');
+
+    Route::post('setTechnicianLocation', 'UsersApiController@setTechnicianLocation');
 
 
     /////// this api for captins
