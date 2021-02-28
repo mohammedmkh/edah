@@ -878,18 +878,31 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         $user = Auth::guard('api')->user();
+
         $lat = $user->lat;
         $lang = $user->lang;
 
-        $technicalInfo = User::where('role',3)
+
+
+        $avilable          =       DB::table("users");
+        $avilable          =       $avilable->select("*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
+                                * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
+                                + sin(radians(" .$lat. ")) * sin(radians(lat))) AS distance"));
+     //   $avilable          =       $avilable->having('distance', '<', 20);
+        $avilable          =       $avilable->orderBy('distance', 'asc');
+        $avilable          =       $avilable->where('role', 3);
+        $avilable          =       $avilable->where('lat','!=', null);
+        $avilable          =       $avilable->get();
+
+     /*   $technicalInfo = User::where('role',3)
             ->withCount(['technicianEvaluation as evaluation_avg' => function ($query) {
                 $query->select(DB::raw('avg(evaluation)'));
-            }])->get();
+            }])->get();*/
 
             //->getByDistance($lat,$lang);
 
         $message = __('api.success');
-        return jsonResponse(true, $message, $technicalInfo, 200);
+        return jsonResponse(true, $message, $avilable, 200);
 
 
     }
