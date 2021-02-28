@@ -8,7 +8,7 @@ class Order extends Model
 {
 
     protected $fillable = [
-      'user_id','customer_id','category_id', 'status','is_immediately','time','price','deleted_at', 'created_at', 'updated_at'];
+      'user_id','technical_id','category_id', 'status','is_immediately','time','price','deleted_at', 'created_at', 'updated_at'];
 
     protected $hidden = ['created_at' , 'updated_at' , 'deleted_at'];
 

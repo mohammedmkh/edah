@@ -47,11 +47,15 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('initOrder', 'UsersApiController@initOrder');
 
+    Route::post('setOrderStatusHistory', 'UsersApiController@setOrderStatusHistory');
+
     Route::post('registerTechnician', 'UsersApiController@registerTechnician');
 
     Route::post('registerStore', 'UsersApiController@registerStore');
 
     Route::post('uploadFile', 'UsersApiController@uploadFile');
+
+    Route::get('getTechnicanAvilable', 'UsersApiController@getTechnicanAvilable');
 
 
     Route::post('login', 'UsersApiController@loginSupplier');

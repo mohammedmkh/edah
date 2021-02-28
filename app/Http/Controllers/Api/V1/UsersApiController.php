@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Documents;
 use App\Http\Controllers\Controller;
 use App\Language;
+use App\TechnicianEvaluation;
 use App\TechStoreUser;
+use App\OrderStatus;
+use App\OrderStatusHistory;
+
 use App\TechStoreServices;
 use App\UserAddress;
 use App\User;
@@ -264,10 +268,10 @@ class UsersApiController extends Controller
 
     public function initOrder(Request $request)
     {
-        $data=$request->all();
+        $data = $request->all();
 
         $validator = Validator::make($request->all(), [
-            'customer_id' => 'required',
+            'technical_id' => 'required',
             'category_id' => 'required',
             'status' => 'required',
             'is_immediately' => 'required',
@@ -279,15 +283,13 @@ class UsersApiController extends Controller
         if ($validator->fails()) {
             return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
         }
-        $data['user_id']=20; //Auth::guard('api')->id();
+        $data['user_id'] = Auth::guard('api')->id();
 
 
-        $create= Order::create($data);
+        $create = Order::create($data);
 
         $message = __('api.success');
         return jsonResponse(true, $message, $create, 200);
-
-
 
 
     }
@@ -817,7 +819,6 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
     public function uploadFile(Request $request)
     {
-        dd($request->file);
         if ($request->file) {
 
             $file = uploadFile($request->file, 0, public_path('/docs/upload'));
@@ -841,5 +842,57 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         return $random;
 
     }
+
+    public function setOrderStatusHistory(Request $request)
+    {
+
+        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|numeric',
+            'order_status_id' => 'required|numeric',
+        ]);
+
+
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+
+        $cheak_status = OrderStatus::find($data['order_status_id']);
+
+        if (!$cheak_status) {
+            $message_error = __('api.order status id not found');
+            return jsonResponse(false, $message_error, null, 100);
+        }
+
+        $OrderStatus = OrderStatusHistory::create($data);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $OrderStatus, 200);
+
+
+    }
+
+
+    public function getTechnicanAvilable(Request $request)
+    {
+
+
+        $user = Auth::guard('api')->user();
+        $lat = $user->lat;
+        $lang = $user->lang;
+
+        $technicalInfo = User::where('role',3)
+            ->withCount(['technicianEvaluation as evaluation_avg' => function ($query) {
+                $query->select(DB::raw('avg(evaluation)'));
+            }])->get();
+
+            //->getByDistance($lat,$lang);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $technicalInfo, 200);
+
+
+    }
+
 
 }
