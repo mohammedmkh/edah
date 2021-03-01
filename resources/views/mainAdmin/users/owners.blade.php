@@ -33,7 +33,6 @@
                                             <th scope="col">{{ __('Phone') }}</th>
                                            
                                             <th scope="col">{{ __('Status') }}</th>
-                                            <th scope="col">{{ __('Role') }}</th>
                                             <th scope="col">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
@@ -51,10 +50,9 @@
                                                 <td>
                                                     <span class="badge badge-dot mr-4">
                                                         <i class="{{$user->status==0?'bg-success': 'bg-danger'}}"></i>
-                                                        <span class="status">{{$user->status==0?'Active': 'Block'}}</span>
+                                                        <span class="status">{{$user->status==0?'فعال': 'Block'}}</span>
                                                     </span>
                                                 </td>
-                                                <td><span class="badge border-1">Owners</span></td>
                                                 <td>
                                                      <div class="dropdown">
                                                         <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -76,8 +74,7 @@
                             @else 
                                 <div class="empty-state text-center pb-3">
                                     <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
-                                    <h2 class="pt-3 mb-0" style="font-size:25px;">Nothing!!</h2>
-                                    <p style="font-weight:600;">Your Collection list is empty....</p>
+                                    <p style="font-weight:600;">لا يوجد بيانات</p>
                                 </div>
                             @endif                                  
                             </div>

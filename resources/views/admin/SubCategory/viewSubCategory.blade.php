@@ -44,7 +44,7 @@
                                                 <td>
                                                     <span class="badge badge-dot mr-4">
                                                         <i class="{{$category->status==0?'bg-success': 'bg-danger'}}"></i>
-                                                        <span class="status">{{$category->status==0?'Avaliable': 'Not Avaliable'}}</span>
+                                                        <span class="status">{{$category->status==0?'فعال': 'غير فعال '}}</span>
                                                     </span>
                                                 </td>
                                                 <td>

@@ -57,34 +57,8 @@
                                                 </span>
                                             @endif
                                         </div>
-                                        <div class="form-group{{ $errors->has('dateOfBirth') ? ' has-danger' : '' }}">
-                                                <label class="form-control-label" for="input-dateOfBirth">{{ __('Date of Birth') }}</label>
-                                                <input type="date" name="dateOfBirth" id="input-dateOfBirth" class="form-control form-control-alternative{{ $errors->has('dateOfBirth') ? ' is-invalid' : '' }}" placeholder="{{ __('Date Of Birth') }}" value="{{ $data->dateOfBirth }}">
-                
-                                                @if ($errors->has('dateOfBirth'))
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $errors->first('dateOfBirth') }}</strong>
-                                                    </span>
-                                                @endif
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
-                                                    <label class="form-control-label" for="input-image">{{ __('Image') }}</label>
-                                                    <div class="custom-file">
-                                                        <input type="file" class="custom-file-input read-image" name="image" id="image" >
-                                                        <label class="custom-file-label" for="image">Select file</label>
-                                                    </div>
-                                                    @if ($errors->has('image'))
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $errors->first('image') }}</strong>
-                                                        </span>
-                                                    @endif
-                                            </div>
-                                            </div>
-                                            <div class="col-2">
-                                                <img class=" avatar-lg round-5 view-image" style="width: 100%;height: 90px;" src="{{url('images/upload/'.$data->image)}}">
-                                            </div>
+
+
                                         </div>
                                         
                                         {{-- <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">

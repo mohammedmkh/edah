@@ -93,8 +93,15 @@
             <?php $lang = \App\Language::where('status',1)->get(); ?>     
             <li class="nav-item dropdown">
                 <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <div class="media align-items-center">                       
-                        <img alt="Image placeholder"  src="{{url('images/flag-us.png')}}" class="flag-icon" >                                             
+                    <div class="media align-items-center">
+
+
+                        @foreach ($lang as $item)
+                            @if(session()->get('locale') == $item->name)
+                                <img alt="Image placeholder"  src="{{url('images/upload/'.$item->icon)}}" class="flag-icon" >
+                            @endif
+                        @endforeach
+
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right py-0 overflow-hidden">

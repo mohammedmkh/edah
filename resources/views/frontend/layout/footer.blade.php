@@ -12,7 +12,10 @@
 
               <h3>About Us</h3>
 
+
               <p class="mb-5">{{$data->description}}</p>
+
+
 
               <ul class="list-unstyled footer-link d-flex footer-social">
 
@@ -42,7 +45,6 @@
 
                 <li><a href="#">Terms of Use</a></li>
 
-                <li><a href="#">Disclaimers</a></li>
 
                 <li><a href="#">Contact</a></li>
 
@@ -88,7 +90,7 @@
 
               <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 
-              Copyright &copy;<script>document.write(new Date().getFullYear());</script> made with <i class="fa fa-heart text-danger" aria-hidden="true"></i> by <a href="http://saasmonks.in/" target="_blank" >Saas Monks</a>
+              Copyright &copy;<script>document.write(new Date().getFullYear());</script>
 
               <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 

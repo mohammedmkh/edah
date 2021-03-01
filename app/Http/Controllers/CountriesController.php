@@ -18,7 +18,7 @@ class CountriesController extends Controller
         //
         $data = Countries::orderBy('id', 'DESC')->paginate(20);
         return view('admin.countries.viewItem',['items'=>$data]);
-        
+
     }
 
     /**
@@ -51,9 +51,9 @@ class CountriesController extends Controller
 
         Countries::create($data);
 
-       
+
         return redirect('countries');
-       
+
     }
 
     /**
@@ -76,9 +76,9 @@ class CountriesController extends Controller
     public function edit($id)
     {
         //
-        $data = Banner::findOrFail($id);
+        $data = Countries::findOrFail($id);
         return view('admin.countries.editItem',['data'=>$data]);
-        
+
     }
 
     /**
@@ -92,30 +92,21 @@ class CountriesController extends Controller
     {
         //
         $request->validate([
-            'title' => 'bail|required|unique:countries,title,' . $id . ',id',
+            'name' => 'bail|required',
             'status' => 'bail|required',
         ]);
         $data = $request->all();
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $name = time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/images/upload');
-            $image->move($destinationPath, $name);
-            $data['image'] = $name;
-        }
-        Banner::findOrFail($id)->update($data);
-        
-        return redirect('Banner');
+
+        Countries::findOrFail($id)->update($data);
+
+
+
+        return redirect('countries');
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Banner  $banner
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
@@ -123,14 +114,14 @@ class CountriesController extends Controller
             $delete = Countries::find($id);
             $delete->delete();
             return 'true';
-           
+
         } catch (\Exception $e) {
             return response('Data is Connected with other Data', 400);
         }
     }
-    
+
     public function bannerImage(){
-        $data = Banner::orderBy('id', 'DESC')->get(); 
+        $data = Banner::orderBy('id', 'DESC')->get();
         return response()->json(['data' =>$data ,'success'=>true], 200);
     }
 }

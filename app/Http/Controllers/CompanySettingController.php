@@ -99,7 +99,7 @@ class CompanySettingController extends Controller
         if ($request->hasFile('logo')) {
             $image = $request->file('logo');
             $name = uniqid() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/images/upload');
+            $destinationPath = public_path('images/upload/');
             $image->move($destinationPath, $name);
             $data['logo'] = $name;
         }
@@ -107,7 +107,7 @@ class CompanySettingController extends Controller
         if ($request->hasFile('favicon')) {
             $favicon = $request->file('favicon');
             $faviconName = uniqid() . '.' . $favicon->getClientOriginalExtension();
-            $faviconPath = public_path('/images/upload');
+            $faviconPath = public_path('images/upload/');
             $favicon->move($faviconPath, $faviconName);
             $data['favicon'] = $faviconName;
         }
