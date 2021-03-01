@@ -20,6 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a51dfa3-49c4-454b-9843-11ae9e80597d" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Edah.iml" afterPath="$PROJECT_DIR$/.idea/Edah.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Http/Controllers/CompanySettingController.php" afterPath="$PROJECT_DIR$/app/Http/Controllers/CompanySettingController.php" />
@@ -49,6 +50,19 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/mainAdmin/users/editUser.blade.php" afterPath="$PROJECT_DIR$/resources/views/mainAdmin/users/editUser.blade.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/mainAdmin/users/owners.blade.php" afterPath="$PROJECT_DIR$/resources/views/mainAdmin/users/owners.blade.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/mainAdmin/users/users.blade.php" afterPath="$PROJECT_DIR$/resources/views/mainAdmin/users/users.blade.php" />
+=======
+<<<<<<< HEAD
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Category.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Category.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Category.php" afterPath="$PROJECT_DIR$/app/Category.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/V1/UsersApiController.php" />
+>>>>>>> 6d524f5d33e71e3f0c119e9918d8841250b9a6f2
+>>>>>>> 82f13c80db2ba96abd6f966a86d916df9de6836b
     </list>
     <ignored path="$PROJECT_DIR$/vendor/berkayk/onesignal-laravel/" />
     <ignored path="$PROJECT_DIR$/vendor/brick/math/" />
@@ -634,6 +648,7 @@
       <updated>1613372391369</updated>
       <workItem from="1613372393054" duration="12000" />
       <workItem from="1613463996779" duration="1524000" />
+<<<<<<< HEAD
       <workItem from="1613474669578" duration="1674000" />
       <workItem from="1613553142541" duration="471000" />
       <workItem from="1613628190228" duration="5265000" />
@@ -641,6 +656,12 @@
       <workItem from="1613991193542" duration="4181000" />
       <workItem from="1614069941401" duration="1308000" />
       <workItem from="1614109070605" duration="4000" />
+=======
+      <workItem from="1613474669578" duration="1790000" />
+      <workItem from="1613477611673" duration="1804000" />
+      <workItem from="1613480109632" duration="1794000" />
+      <workItem from="1613481970274" duration="1336000" />
+>>>>>>> 82f13c80db2ba96abd6f966a86d916df9de6836b
     </task>
     <servers />
   </component>
@@ -690,8 +711,11 @@
       </map>
     </option>
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+  <component name="WindowStateProjectService">
+    <state x="413" y="121" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1613480790729">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="413" y="121" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.728@0.0.1366.728" timestamp="1613480790729" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />

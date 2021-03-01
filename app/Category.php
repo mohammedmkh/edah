@@ -72,6 +72,11 @@ class Category extends Model
 
     }
 
+    public function categoryLang()
+    {
+
+        return $this->hasMany(CategoryLangs::class,'category_id','id');
+    }
 
 
 

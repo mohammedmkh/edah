@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Cache;
 
 
 function getDataFromRequest($type = 'user_tech' , $request = []){
+
+
     if($type == 'user_tech'){
         $d['phone'] = $request->phone;
         $d['tech_store_email'] = $request->email;

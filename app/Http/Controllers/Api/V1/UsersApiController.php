@@ -4,11 +4,18 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Documents;
 use App\Http\Controllers\Controller;
+use App\Language;
+use App\TechnicianEvaluation;
 use App\TechStoreUser;
-use App\TechStoreServices;
+use App\OrderStatus;
+use App\OrderStatusHistory;
 
+use App\TechStoreServices;
+use App\UserAddress;
 use App\User;
+use App\Order;
 use App\Category;
+use App\CategoryLangs;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use \Validator;
@@ -16,6 +23,8 @@ use Illuminate\Http\Request;
 use DB;
 use Route;
 use App\TechStoreDocuments;
+use App;
+use Illuminate\Database\Eloquent\Builder;
 
 class UsersApiController extends Controller
 {
@@ -257,6 +266,34 @@ class UsersApiController extends Controller
 
     }
 
+    public function initOrder(Request $request)
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'technical_id' => 'required',
+            'category_id' => 'required',
+            'status' => 'required',
+            'is_immediately' => 'required',
+            'time' => 'required',
+            'price' => 'required',
+        ]);
+
+
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $data['user_id'] = Auth::guard('api')->id();
+
+
+        $create = Order::create($data);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $create, 200);
+
+
+    }
+
     public function loginClient(Request $request)
     {
 
@@ -426,6 +463,26 @@ class UsersApiController extends Controller
 
     }
 
+    public function setTechnicianLocation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required',
+            'lang' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $lat = $request->lat;
+        $lang = $request->lang;
+        $user_id = Auth::guard('api')->id();
+
+        $data = UserAddress::create(['user_id' => $user_id, 'lat' => $lat, 'lang' => $lang]);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+
+    }
+
     public function docsOfTech(Request $request)
     {
 
@@ -443,12 +500,119 @@ class UsersApiController extends Controller
         $collection = Category::get();
 
 
-
         $collection->all();
 
         $message = __('api.success');
-        return jsonResponse(true, $message,  $collection , 200);
+        return jsonResponse(true, $message, $collection, 200);
     }
+
+    public function searchCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'key' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $key = $request->key;
+
+
+        $language = App::getLocale();
+        $language = Language::where('name', $language)->first();
+        $language = $language->id ?? 1;
+
+        $data = CategoryLangs::leftJoin('category', function ($join) {
+            $join->on('category.id', '=', 'category_langs.category_id');
+        })
+            ->where('category_langs.name', 'like', '%' . $key . '%')
+            ->where('category_langs.lang_id', $language)
+            ->where('category.parent', 1)
+            ->select('category.*', 'category_langs.name', 'category_langs.description')->get();
+        /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
+
+               $query->where('name', 'like', '%' . $key . '%');
+               $query->where('category_langs.lang_id', $language);
+
+           })->get();*/
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
+
+    public function searchSubCategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'key' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $key = $request->key;
+
+
+        $language = App::getLocale();
+        $language = Language::where('name', $language)->first();
+        $language = $language->id ?? 1;
+
+        $data = CategoryLangs::leftJoin('category', function ($join) {
+            $join->on('category.id', '=', 'category_langs.category_id');
+        })
+            ->where('category_langs.name', 'like', '%' . $key . '%')
+            ->where('category_langs.lang_id', $language)
+            ->where('category.parent', 0)
+            ->select('category.*', 'category_langs.name', 'category_langs.description')->get();
+        /*  $data=Category::wherehas('categoryLang',function ($query) use($key,$language){
+
+               $query->where('name', 'like', '%' . $key . '%');
+               $query->where('category_langs.lang_id', $language);
+
+           })->get();*/
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
+
+    public function searchNearestTechnicalLocation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required',
+            'lang' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $LATITUDE = $request->lat;
+        $LONGITUDE = $request->lang;
+        $DISTANCE_KILOMETERS = 40;
+        $data = DB::select("SELECT * FROM (
+    SELECT *,
+        (
+            (
+                (
+                    acos(
+                        sin(( {$LATITUDE} * pi() / 180))
+                        *
+                        sin(( `lat` * pi() / 180)) + cos(( {$LATITUDE} * pi() /180 ))
+                        *
+                        cos(( `lat` * pi() / 180)) * cos((( {$LONGITUDE} - `lang`) * pi()/180)))
+                ) * 180/pi()
+            ) * 60 * 1.1515 * 1.609344
+        )
+    as distance FROM `user_address`
+) user_address
+WHERE distance <= {$DISTANCE_KILOMETERS}");
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
+
+
+    public function getSubCategories(Request $request)
+    {
+        $data = CategoryLangs::where('category_id', $request->id)->get();
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
+    }
+
 
     public function docsOfStore(Request $request)
     {
@@ -559,11 +723,11 @@ class UsersApiController extends Controller
 
     public function registerStore(Request $request)
     {
-       
+
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
             'name' => 'required',
-             'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'identity' => 'required',
             'work_time_from' => 'required',
@@ -587,7 +751,7 @@ class UsersApiController extends Controller
 
             if ($user->is_complete_register == 1) {
                 $message = __('api.user_register_before');
-                 return jsonResponse(false, $message, null, 120);
+                return jsonResponse(false, $message, null, 120);
             }
             \DB::beginTransaction();
             try {
@@ -655,16 +819,21 @@ class UsersApiController extends Controller
 
     public function uploadFile(Request $request)
     {
-        dd($request->file);
         if ($request->file) {
 
-            $file = uploadFile($request->file, 0, public_path('/docs/upload'));
-            $link = 'docs/upload/' . $file;
+          $data = [] ;
+          foreach ($request->file as $file ) {
+              $file_name = uploadFile($file, 0, public_path('/docs/upload'));
+              $link = 'docs/upload/' . $file_name;
 
-            $items['file'] = url('/') . '/' . $link;
-            $items['path'] = $link;
+              $items['file'] = url('/') . '/' . $link;
+              $items['path'] = $link;
 
-            return jsonResponse(true, __('api.success'), $items, 200);
+              $data[]= (Object)$items ;
+          }
+
+
+            return jsonResponse(true, __('api.success'), $data, 200);
         }
 
         $message = __('api.file_has_error');
@@ -679,5 +848,72 @@ class UsersApiController extends Controller
         return $random;
 
     }
+
+
+
+    public function setOrderStatusHistory(Request $request)
+    {
+
+        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|numeric',
+            'order_status_id' => 'required|numeric',
+        ]);
+
+
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+
+        $cheak_status = OrderStatus::find($data['order_status_id']);
+
+        if (!$cheak_status) {
+            $message_error = __('api.order status id not found');
+            return jsonResponse(false, $message_error, null, 100);
+        }
+
+        $OrderStatus = OrderStatusHistory::create($data);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $OrderStatus, 200);
+
+
+    }
+
+
+    public function getTechnicanAvilable(Request $request)
+    {
+
+
+        $user = Auth::guard('api')->user();
+
+        $lat = $user->lat;
+        $lang = $user->lang;
+
+
+
+        $avilable          =       DB::table("users");
+        $avilable          =       $avilable->select("*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
+                                * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
+                                + sin(radians(" .$lat. ")) * sin(radians(lat))) AS distance"));
+     //   $avilable          =       $avilable->having('distance', '<', 20);
+        $avilable          =       $avilable->orderBy('distance', 'asc');
+        $avilable          =       $avilable->where('role', 3);
+        $avilable          =       $avilable->where('lat','!=', null);
+        $avilable          =       $avilable->get();
+
+     /*   $technicalInfo = User::where('role',3)
+            ->withCount(['technicianEvaluation as evaluation_avg' => function ($query) {
+                $query->select(DB::raw('avg(evaluation)'));
+            }])->get();*/
+
+            //->getByDistance($lat,$lang);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $avilable, 200);
+
+
+    }
+
 
 }

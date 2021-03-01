@@ -37,11 +37,25 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::get('getCategories', 'UsersApiController@getCategories');
 
+    Route::get('getSubCategories/{id}', 'UsersApiController@getSubCategories');
+
+    Route::post('searchCategory', 'UsersApiController@searchCategory');
+
+    Route::post('searchNearestTechnicalLocation', 'UsersApiController@searchNearestTechnicalLocation');
+
+    Route::post('searchSubCategory', 'UsersApiController@searchSubCategory');
+
+    Route::post('initOrder', 'UsersApiController@initOrder');
+
+    Route::post('setOrderStatusHistory', 'UsersApiController@setOrderStatusHistory');
+
     Route::post('registerTechnician', 'UsersApiController@registerTechnician');
 
     Route::post('registerStore', 'UsersApiController@registerStore');
 
     Route::post('uploadFile', 'UsersApiController@uploadFile');
+
+    Route::get('getTechnicanAvilable', 'UsersApiController@getTechnicanAvilable');
 
 
     Route::post('login', 'UsersApiController@loginSupplier');
@@ -63,6 +77,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
     Route::post('addordernew', 'OrdersApiController@addOrder');
 
     Route::post('vehiclerate', 'VehicleApiController@vehicleRate');
+
+    Route::post('setTechnicianLocation', 'UsersApiController@setTechnicianLocation');
 
 
     /////// this api for captins
