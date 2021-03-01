@@ -476,7 +476,7 @@ class UsersApiController extends Controller
         $lang = $request->lang;
         $user_id = Auth::guard('api')->id();
 
-        $data = UserAddress::create(['user_id' => $user_id, 'lat' => $lat, 'lang' => $lang]);
+        $data = user::where('id', $user_id)->update(['lat' => $lat, 'lang' => $lang]);
 
         $message = __('api.success');
         return jsonResponse(true, $message, $data, 200);
@@ -821,16 +821,16 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
     {
         if ($request->file) {
 
-          $data = [] ;
-          foreach ($request->file as $file ) {
-              $file_name = uploadFile($file, 0, public_path('/docs/upload'));
-              $link = 'docs/upload/' . $file_name;
+            $data = [];
+            foreach ($request->file as $file) {
+                $file_name = uploadFile($file, 0, public_path('/docs/upload'));
+                $link = 'docs/upload/' . $file_name;
 
-              $items['file'] = url('/') . '/' . $link;
-              $items['path'] = $link;
+                $items['file'] = url('/') . '/' . $link;
+                $items['path'] = $link;
 
-              $data[]= (Object)$items ;
-          }
+                $data[] = (object)$items;
+            }
 
 
             return jsonResponse(true, __('api.success'), $data, 200);
@@ -848,8 +848,6 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         return $random;
 
     }
-
-
 
     public function setOrderStatusHistory(Request $request)
     {
@@ -880,16 +878,25 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
     }
 
-
     public function getTechnicanAvilable(Request $request)
     {
 
 
-        $user = Auth::guard('api')->user();
+        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required|numeric',
+            'lang' => 'required|numeric',
+        ]);
 
-        $lat = $user->lat;
-        $lang = $user->lang;
 
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $user_id = Auth::guard('api')->id();
+        $setLocation = User::find($user_id);
+        $setLocation->update(['lat'=>$data['lat'],'lang'=>$data['lang']]);
+        $lat=$setLocation->lat;
+        $lang=$setLocation->lang;
 
         $avilableTechnical = DB::table("users");
         $order_minimum_value = DB::table("general_setting")->select('order_minimum_value')->get();
@@ -899,7 +906,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
             DB::raw("round(6371 * acos(cos(radians(" . $lat . "))
                      * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
                      + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance"),
-            DB::raw("AVG(technican_evaluations.evaluation) as evaluation")
+            DB::raw("AVG(technican_evaluations.evaluation_no) as evaluation")
         );
         $avilableTechnical->groupBy('users.id');
         $avilableTechnical = $avilableTechnical->orderBy('distance', 'asc');
@@ -908,10 +915,10 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $data = array();
         foreach ($avilableTechnical as $kay => $value) {
 
-            foreach ($value as $kay1 => $value1){
+            foreach ($value as $kay1 => $value1) {
 
                 $data[$kay1] = $value1;
-                $data['price']=$order_minimum_value[0]->order_minimum_value;
+                $data['price'] = $order_minimum_value[0]->order_minimum_value;
             }
 
 
@@ -922,6 +929,32 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
          $merged->all();*/
         $message = __('api.success');
         return jsonResponse(true, $message, $data, 200);
+
+
+    }
+
+    public function setTechnicalEvaluation(Request $request)
+    {
+
+        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|numeric',
+            'evaluation_no' => 'required|numeric',
+            'technical_id' => 'required|numeric',
+            //'evaluation_text' => 'required',
+
+        ]);
+
+
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+
+        $data['user_id'] = Auth::guard('api')->id();
+        $OrderStatus = TechnicianEvaluation::create($data);
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $OrderStatus, 200);
 
 
     }
