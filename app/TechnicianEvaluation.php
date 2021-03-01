@@ -8,7 +8,7 @@ class TechnicianEvaluation extends Model
 {
 
     protected $fillable = [
-      'technical_id','user_id','evaluation','deleted_at', 'created_at', 'updated_at'];
+      'technical_id','user_id','evaluation_no','evaluation_text','deleted_at', 'created_at', 'updated_at'];
 
 
     protected $table = 'technican_evaluations';

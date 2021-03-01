@@ -55,7 +55,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('uploadFile', 'UsersApiController@uploadFile');
 
-    Route::get('getTechnicanAvilable', 'UsersApiController@getTechnicanAvilable');
+    Route::post('getTechnicanAvilable', 'UsersApiController@getTechnicanAvilable');
+
+    Route::post('setTechnicalEvaluation', 'UsersApiController@setTechnicalEvaluation');
 
 
     Route::post('login', 'UsersApiController@loginSupplier');
