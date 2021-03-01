@@ -37,12 +37,16 @@
 
 
                                         <li><a href="#web-notification-v" class="{{ $status==0?'event-none':''}}" data-toggle="tab"><i class="fas fa-bell mr-2"></i>{{ __("Web Notification") }}</a></li>
-                                           -->
+
                                         <li><a href="#mail-v" class="{{ $status==0?'event-none':''}}" data-toggle="tab"><i class="far fa-envelope mr-2"></i>{{ __("Mail") }}</a></li>
+
+
                                         <li><a href="#sms-v" class="{{ $status==0?'event-none':''}}" data-toggle="tab"><i class="far fa-comments mr-2"></i>{{ __("SMS Gateway") }}</a></li>
                                         <li><a href="#map-v" class="{{ $status==0?'event-none':''}}" data-toggle="tab"><i class="far fa-map  mr-2"></i>{{ __("Map Setting") }}</a></li>
                                         {{-- <li><a href="#point-v" data-toggle="tab"><i class="fas fa-crown mr-2"></i>{{ __("Loyalty Point setting") }}</a></li>                                      --}}
-                                        <li><a href="#additional-v" class="{{ $status==0?'event-none':''}}" data-toggle="tab"><i class="ni ni-settings mr-2"></i>{{ __("Additional setting") }}</a></li>                                     
+                                        <li><a href="#additional-v" class="{{ $status==0?'event-none':''}}" data-toggle="tab"><i class="ni ni-settings mr-2"></i>{{ __("Additional setting") }}</a></li>
+
+                                                                              -->
                                         {{-- <li><a href="#notification-v" class="" data-toggle="tab"><i class="fas fa-bell mr-2"></i>{{ __("Notification Setting") }}</a></li> --}}
                                         {{-- <li><a href="#sound-v" data-toggle="tab"><i class="fas fa-volume-up mr-2"></i>{{ __("Sound & vibration") }}</a></li> --}}
                                         {{-- <li><a href="#setting-v" data-toggle="tab"><i class="ni ni-settings mr-2"></i>{{ __("Additional setting") }}</a></li> --}}
@@ -517,6 +521,7 @@
                                                 </div>
                                                 <form method="post" action="{{url('Language')}}" autocomplete="off" enctype="multipart/form-data" files="true">
                                                     @csrf
+                                                    <!---
                                                     <h6 class="heading-small text-muted mb-4">{{ __("Add New Language") }}</h6>
                                                     <div>
                                                         <div class="form-group row {{ $errors->has('lang_name') ? ' has-danger' : '' }}">
@@ -575,7 +580,10 @@
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>
+
+
                                                     </div>
+                                                    -->
                                                 </form>
                                             </div>
                                             

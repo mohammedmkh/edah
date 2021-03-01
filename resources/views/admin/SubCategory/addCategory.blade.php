@@ -55,8 +55,8 @@
                                             <label class="form-control-label" for="input-status">{{ __('Status') }}</label>
                                             <Select name="status" id="input-status" class="form-control form-control-alternative{{ $errors->has('status') ? ' is-invalid' : '' }}"  required>
                                                 <option value="">Select Status</option>
-                                                <option value="0" {{ old('status')=="0" ? 'Selected' : ''}}>Active</option>
-                                                <option value="1" {{ old('status')=="1" ? 'Selected' : ''}}>Deactive</option>
+                                                <option value="0" {{ old('status')=="0" ? 'Selected' : ''}}>فعال</option>
+                                                <option value="1" {{ old('status')=="1" ? 'Selected' : ''}}>غير فعال</option>
                                             </select>
 
                                             @if ($errors->has('status'))

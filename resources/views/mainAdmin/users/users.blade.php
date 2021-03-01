@@ -15,9 +15,7 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">{{ __('Users') }}</h3>
                                 </div>
-                                <div class="col-4 text-right">
-                                    <a href="{{url('Customer/create')}}" class="btn btn-sm btn-primary">{{ __('Add New user') }}</a>
-                                </div>
+
                             </div>
                         </div>
 
@@ -64,7 +62,6 @@
                                                             <i class="fas fa-ellipsis-v"></i>
                                                         </a>
                                                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                            <a class="dropdown-item" href="{{url('Customer/gallery/'.$user->id)}}">{{ __('View Gallery') }}</a>
                                                             <a class="dropdown-item" href="{{url('Customer/'.$user->id.'/edit')}}">{{ __('Edit') }}</a>
                                                             <a class="dropdown-item" href="#" onclick="deleteData('Customer','{{$user->id}}');" >{{ __('Delete') }}</a>                                                          
                                                         </div>
@@ -78,8 +75,8 @@
                             @else 
                                 <div class="empty-state text-center pb-3">
                                     <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
-                                    <h2 class="pt-3 mb-0" style="font-size:25px;">Nothing!!</h2>
-                                    <p style="font-weight:600;">Your Collection list is empty....</p>
+
+                                    <p style="font-weight:600;">لا يوجد بيانات</p>
                                 </div>
                             @endif                                 
                             </div>

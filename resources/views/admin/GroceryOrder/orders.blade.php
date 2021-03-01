@@ -87,8 +87,7 @@
                             @else 
                                 <div class="empty-state text-center pb-3" style="background: #fff;">
                                     <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
-                                    <h2 class="pt-3 mb-0" style="font-size:25px;">Nothing!!</h2>
-                                    <p style="font-weight:600;">Your Collection list is empty....</p>
+                                    <p style="font-weight:600;">لا يوجد طلبات بعد</p>
                                 </div> 
                             @endif
                         </div>

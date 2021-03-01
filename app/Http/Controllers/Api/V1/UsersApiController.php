@@ -821,13 +821,19 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
     {
         if ($request->file) {
 
-            $file = uploadFile($request->file, 0, public_path('/docs/upload'));
-            $link = 'docs/upload/' . $file;
+          $data = [] ;
+          foreach ($request->file as $file ) {
+              $file_name = uploadFile($file, 0, public_path('/docs/upload'));
+              $link = 'docs/upload/' . $file_name;
 
-            $items['file'] = url('/') . '/' . $link;
-            $items['path'] = $link;
+              $items['file'] = url('/') . '/' . $link;
+              $items['path'] = $link;
 
-            return jsonResponse(true, __('api.success'), $items, 200);
+              $data[]= (Object)$items ;
+          }
+
+
+            return jsonResponse(true, __('api.success'), $data, 200);
         }
 
         $message = __('api.file_has_error');
@@ -842,6 +848,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         return $random;
 
     }
+
+
 
     public function setOrderStatusHistory(Request $request)
     {

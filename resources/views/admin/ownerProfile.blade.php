@@ -26,21 +26,7 @@
                         </div> --}}
                     </div>
                     <div class="card-body pt-0 pt-md-4">
-                        <div class="row">
-                            <div class="col">
-                                <div class="card-profile-stats d-flex justify-content-center mt-md-5">
-                                    <div>
-                                        <span class="heading">{{$master['shops']}}</span>
-                                        <span class="description">{{ __('Shops') }}</span>
-                                    </div>
-                                   
-                                    <div>
-                                        <span class="heading">{{$master['users']}}</span>
-                                        <span class="description">{{ __('Customers') }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="text-center">
                             <h3>
                                 {{Auth::user()->name}} 
@@ -48,10 +34,7 @@
                             <div class="h5 font-weight-300">
                                 <i class="ni location_pin mr-2"></i> {{Auth::user()->email}} 
                             </div>
-                            <div class="h5 mt-4">
-                                <i class="ni business_briefcase-24 mr-2"></i>{{ __('Shop Owner - FoodLans') }}
-                            </div>
-                           
+
                            
                         </div>
                     </div>

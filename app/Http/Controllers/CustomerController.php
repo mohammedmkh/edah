@@ -552,11 +552,11 @@ class CustomerController extends Controller
    
 
     public function ownerProfileform(){
+
         $master = array();
-        $master['shops'] = GroceryShop::where('user_id',Auth::user()->id)->get()->count();
+        //$master['shops'] = GroceryShop::where('user_id',Auth::user()->id)->get()->count();
         $master['users'] = User::where('role',0)->get()->count();
         // $master['deliveryBoy'] = User::where('role',1)->get();
-
         return view('admin.ownerProfile',['master'=>$master]);
     }
 

@@ -232,11 +232,13 @@
                         </li>
                     
                     @if(View::exists('mainAdmin.notification.viewNotification'))
+                        <!--
                     <li class="nav-item">
                         <a class="nav-link" href="{{url('NotificationTemplate')}}">
                             <i class="fas fa-bell" style="color: #f53d55;"></i> {{ __('Notification Setting') }}
                         </a>
                     </li>
+                         -->
                     @endif
                     <li class="nav-item">
                         <a class="nav-link" href="{{url('OwnerSetting')}}">

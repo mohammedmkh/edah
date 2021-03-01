@@ -86,7 +86,7 @@ class OwnerSettingController extends Controller
      */
     public function update(Request $request,$id)
     {
-        //
+        //dd('mm');
         $data = $request->all();
         
         if(isset($request->web_notification)){   $data['web_notification'] = 1; }

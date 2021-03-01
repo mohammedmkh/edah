@@ -32,7 +32,7 @@
                                             <div class="col-6">
                                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                                         <label class="form-control-label" for="input-name">{{ __('Name') }}</label>
-                                                        <input type="text" name="name" id="input-name" class="form-control form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name') }}" required autofocus>
+                                                        <input type="text" name="name" id="input-name" class="form-control form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name' , $data->name) }}" required autofocus>
                                                         @if ($errors->has('name'))
                                                             <span class="invalid-feedback" role="alert">
                                                                 <strong>{{ $errors->first('name') }}</strong>

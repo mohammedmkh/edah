@@ -114,7 +114,7 @@
                                                      if($is_documents_has){
                                                     ?>
                                                  <div style="margin-top: 40px">
-                                                       <a href="{{ url('/').$is_documents_has->document_link }}" > link to download </a>
+                                                       <a href="{{ url('/').'/'.$is_documents_has->document_link }}" > link to download </a>
                                                  </div>
                                                     <?php
                                                      }else{

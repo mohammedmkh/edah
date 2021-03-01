@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Cache;
 
 
 function getDataFromRequest($type = 'user_tech' , $request = []){
+
+
     if($type == 'user_tech'){
         $d['phone'] = $request->phone;
         $d['tech_store_email'] = $request->email;
@@ -195,7 +197,7 @@ function uploadDocument($file)
 {
 
 
-    $dest = public_path('/documentfiles');
+    $dest = public_path('documentfiles/');
 
 
     $name = time() . Str::random(4). '.' . $file->getClientOriginalExtension();
@@ -211,23 +213,20 @@ function uploadFile($file, $width=300, $dest=null)
 
 
     $name = time() . Str::random(4). '.' . $file->getClientOriginalExtension();
+
+    if($dest == null) {
+        $dest = public_path('images/upload/');
+    }
     $destinationPath = $dest ;
     $file->move($destinationPath, $name);
 
-     if($dest == null){
-         $dest = public_path('/images/upload');
 
-         $image_new = Image::make(public_path('/images/upload').'/'.$name) ;
+
+         $image_new = Image::make(public_path('images/upload/').'/'.$name) ;
          $image_new->resize($width, null, function ($constraint) {
              $constraint->aspectRatio();
          });
          $image_new ->save();
-     }
-
-
-
-
-
 
 
 

@@ -60,9 +60,7 @@
                                                             <i class="fas fa-ellipsis-v"></i>
                                                         </a>
                                                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                            @if($user->driver_radius==null)                                                        
-                                                            <a class="dropdown-item open-assign-driver" data-id="{{$user->id}}" data-toggle="modal" data-target="#assignRadius">{{ __('Assign area') }}</a>
-                                                            @endif
+
                                                             <a class="dropdown-item" href="{{url('Driver/edit/'.$user->id)}}">{{ __('Edit') }}</a>
                                                             <a class="dropdown-item" href="#" onclick="deleteData('Customer','{{$user->id}}');" >{{ __('Delete') }}</a>
                                                           

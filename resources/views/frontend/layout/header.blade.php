@@ -36,7 +36,7 @@
 
           <ul class="navbar-nav ml-auto">
             <li class="nav-item cta-btn">
-              <a class="nav-link" href="contact.html">Contact Us</a>
+              <a class="nav-link" href="{{url('/')}}">Contact Us</a>
             </li>
           </ul>
           

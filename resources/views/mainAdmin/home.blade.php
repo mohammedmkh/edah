@@ -116,10 +116,7 @@
                         </div>
                     </div>
 
-                    <div class="card-body">
 
-                        <div  class="vector-map" id="locationMap" style="width: 100%; height: 400px" ></div>
-                    </div>
                 </div>
                 {{-- users --}}
                     {{-- <div class="card shadow mb-5">
