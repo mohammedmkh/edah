@@ -883,26 +883,37 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $lang = $user->lang;
 
 
+        $avilableTechnical = DB::table("users");
+        $order_minimum_value = DB::table("general_setting")->select('order_minimum_value')->get();
+        $avilableTechnical->leftjoin('technican_evaluations', 'technican_evaluations.technical_id', '=', 'users.id');
 
-        $avilable          =       DB::table("users");
-        $avilable          =       $avilable->select("*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
-                                * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
-                                + sin(radians(" .$lat. ")) * sin(radians(lat))) AS distance"));
-     //   $avilable          =       $avilable->having('distance', '<', 20);
-        $avilable          =       $avilable->orderBy('distance', 'asc');
-        $avilable          =       $avilable->where('role', 3);
-        $avilable          =       $avilable->where('lat','!=', null);
-        $avilable          =       $avilable->get();
+        $avilableTechnical = $avilableTechnical->select("users.name",
+            DB::raw("round(6371 * acos(cos(radians(" . $lat . "))
+                     * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
+                     + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance"),
+            DB::raw("AVG(technican_evaluations.evaluation) as evaluation")
+        );
+        $avilableTechnical->groupBy('users.id');
+        $avilableTechnical = $avilableTechnical->orderBy('distance', 'asc');
+        $avilableTechnical = $avilableTechnical->where('role', 3);
+        $avilableTechnical = $avilableTechnical->get();
+        $data = array();
+        foreach ($avilableTechnical as $kay => $value) {
 
-     /*   $technicalInfo = User::where('role',3)
-            ->withCount(['technicianEvaluation as evaluation_avg' => function ($query) {
-                $query->select(DB::raw('avg(evaluation)'));
-            }])->get();*/
+            foreach ($value as $kay1 => $value1){
 
-            //->getByDistance($lat,$lang);
+                $data[$kay1] = $value1;
+                $data['price']=$order_minimum_value[0]->order_minimum_value;
+            }
 
+
+        }
+
+        /* $collection = collect($avilableTechnical);
+         $merged = $collection->merge(['price'=> $order_minimum_value]);
+         $merged->all();*/
         $message = __('api.success');
-        return jsonResponse(true, $message, $avilable, 200);
+        return jsonResponse(true, $message, $data, 200);
 
 
     }
