@@ -32,7 +32,8 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password', 'remember_token', 'created_at', 'updated_at', 'deleted_at', 'shops', 'is_complete_register',
-        'registration_code', 'person_code'
+        'registration_code', 'person_code' ,'location' ,'phone_code' ,'address' ,'address_id' ,'email_verified_at'
+        , 'device_token' , 'gender' ,'FullAddress'
     ];
 
 
@@ -45,25 +46,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = ['shops', 'imagePath', 'FullAddress'];
+    protected $appends = ['imagePath'];
 
-    public function getShopsAttribute()
-    {
-        if (Auth::check()) {
-            if ($this->attributes['role'] == 1) {
-                return GroceryShop::where('user_id', $this->attributes['id'])->get();
-            } else {
-                return [];
-            }
-        } else {
-            if (Auth::guard('mainAdmin')->check()) {
-                return GroceryShop::where('user_id', $this->attributes['id'])->get();
-            } else {
-                return [];
-            }
-        }
 
-    }
 
     public function getImagePathAttribute()
     {
@@ -83,19 +68,6 @@ class User extends Authenticatable
         return $this->hasOne(TechStoreUser::class, 'user_id', 'id');
     }
 
-    public function getFullAddressAttribute()
-    {
-
-        if (isset($this->attributes['address_id'])) {
-            if ($this->attributes['address_id'] != null) {
-                return UserAddress::where('id', $this->attributes['address_id'])->first();
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
 
     public function TechnicianEvaluation()
     {

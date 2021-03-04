@@ -78,7 +78,6 @@ class UsersApiController extends Controller
 
     }
 
-
     public function signPhoneTechnician(Request $request)
     {
 
@@ -383,7 +382,7 @@ class UsersApiController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        //dd('login');
+        // dd('login');
 
         if ($validator->fails()) {
             return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
@@ -397,28 +396,11 @@ class UsersApiController extends Controller
             }
 
 
-            /*
-            Devicetoken::where('device_token',  $request->device_token )->delete();
-            $device = Devicetoken::where('user_id' ,  $user->id)->first();
-            if($device){
-                // delete other device of that user  or  other users that have this device token
-                Devicetoken::where('user_id', $user->id )->where('id' ,'<>' ,$device->id)->delete();
-            }else{
-                $device =new Devicetoken;
-            }
-            $device->device_type = $request->device_type ;
-            $device->device_token = $request->device_token ;
-            $device->user_id = $user->id ;
-            $device->save();
-
-            ///  delete access token this user
-            DB::table('oauth_access_tokens')->where('user_id' , $user->id)->delete();
-            */
 
 
             $tokenRequest = $request->create('/oauth/token', 'POST', $request->all());
             $request->request->add([
-                'grant_type' => $request->grant_type,
+                'grant_type' => 'password',
                 'client_id' => $request->client_id,
                 'client_secret' => $request->client_secret,
                 'username' => $request->phone,
@@ -430,7 +412,7 @@ class UsersApiController extends Controller
             $json = (array)json_decode($response->getContent());
 
 
-            // return $json;
+           // return $json;
 
             if (isset($json['error'])) {
                 $message = __('api.wrong_login');
@@ -456,6 +438,8 @@ class UsersApiController extends Controller
 
 
     }
+
+
 
     public function myInfo(Request $request)
     {
@@ -508,6 +492,7 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $collection, 200);
     }
 
+<<<<<<< HEAD
     public function getCustomerQuestions(Request $request)
     {
 
@@ -534,6 +519,10 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $collection, 200);
     }
 
+=======
+
+
+>>>>>>> f8e066d58bf428311533ba073563f61a579f6489
     public function searchCategory(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -598,41 +587,6 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $data, 200);
     }
 
-    public function searchNearestTechnicalLocation(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'lat' => 'required',
-            'lang' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
-        }
-        $LATITUDE = $request->lat;
-        $LONGITUDE = $request->lang;
-        $DISTANCE_KILOMETERS = 40;
-        $data = DB::select("SELECT * FROM (
-    SELECT *,
-        (
-            (
-                (
-                    acos(
-                        sin(( {$LATITUDE} * pi() / 180))
-                        *
-                        sin(( `lat` * pi() / 180)) + cos(( {$LATITUDE} * pi() /180 ))
-                        *
-                        cos(( `lat` * pi() / 180)) * cos((( {$LONGITUDE} - `lang`) * pi()/180)))
-                ) * 180/pi()
-            ) * 60 * 1.1515 * 1.609344
-        )
-    as distance FROM `user_address`
-) user_address
-WHERE distance <= {$DISTANCE_KILOMETERS}");
-
-        $message = __('api.success');
-        return jsonResponse(true, $message, $data, 200);
-    }
-
-
     public function getSubCategories(Request $request)
     {
         $data = CategoryLangs::where('category_id', $request->id)->get();
@@ -640,6 +594,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $message = __('api.success');
         return jsonResponse(true, $message, $data, 200);
     }
+
+
 
 
     public function docsOfStore(Request $request)
@@ -787,6 +743,9 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
     public function registerStore(Request $request)
     {
 
+
+       // return $this->loginSupplier($request  ) ;
+
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
             'name' => 'required',
@@ -797,8 +756,6 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
             'work_time_to' => 'required',
             'categories' => 'required',
             'order_min' => 'required',
-
-
         ]);
 
         $data = $request->all();
@@ -859,7 +816,12 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
                 \DB::commit();
                 $message = __('api.success');
-                return jsonResponse(true, $message, $user, 200);
+
+                $request['phone'] = $user->phone;
+                $request['password'] = $request->password ;
+
+                return $this->loginSupplier( $request ) ;
+
             } catch (\Exception $e) {
                 \DB::rollback();
 
@@ -869,7 +831,6 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
             }
 
 
-            // dd($request->all());
 
 
         }
@@ -910,6 +871,41 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $random = rand(pow(10, $digits - 1), pow(10, $digits) - 1);
         return $random;
 
+    }
+
+
+    public function searchNearestTechnicalLocation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required',
+            'lang' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+        }
+        $LATITUDE = $request->lat;
+        $LONGITUDE = $request->lang;
+        $DISTANCE_KILOMETERS = 40;
+        $data = DB::select("SELECT * FROM (
+    SELECT *,
+        (
+            (
+                (
+                    acos(
+                        sin(( {$LATITUDE} * pi() / 180))
+                        *
+                        sin(( `lat` * pi() / 180)) + cos(( {$LATITUDE} * pi() /180 ))
+                        *
+                        cos(( `lat` * pi() / 180)) * cos((( {$LONGITUDE} - `lang`) * pi()/180)))
+                ) * 180/pi()
+            ) * 60 * 1.1515 * 1.609344
+        )
+    as distance FROM `user_address`
+) user_address
+WHERE distance <= {$DISTANCE_KILOMETERS}");
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $data, 200);
     }
 
     public function setOrderStatusHistory(Request $request)
@@ -1137,6 +1133,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
     }
+
+
 
 
 }
