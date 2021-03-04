@@ -15,8 +15,16 @@ class Order extends Model
     protected $table = 'orders';
 
 
+    public function userOrder()
+    {
 
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    public function categoryOrder()
+    {
 
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
 
 
 }

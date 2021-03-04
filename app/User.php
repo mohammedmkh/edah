@@ -100,7 +100,7 @@ class User extends Authenticatable
     public function TechnicianEvaluation()
     {
 
-        return $this->hasMany(TechnicianEvaluation::class, 'technical_id', 'id');
+        return $this->hasMany(UserEvaluation::class, 'technical_id', 'id');
     }
 
     public function userAddress()

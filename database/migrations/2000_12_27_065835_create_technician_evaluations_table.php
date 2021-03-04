@@ -13,7 +13,7 @@ class CreateTechnicianEvaluationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('technican_evaluations', function (Blueprint $table) {
+        Schema::create('user_evaluations', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
 

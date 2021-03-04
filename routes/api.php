@@ -24,6 +24,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
 
     Route::get('getCountries', 'DataApiController@getCountries');
+
     Route::get('getCitiesByCountry/{id}', 'DataApiController@getCitiesByCountry');
 
 
@@ -45,6 +46,16 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('searchSubCategory', 'UsersApiController@searchSubCategory');
 
+    Route::get('getCustomerQuestions', 'UsersApiController@getCustomerQuestions');
+
+    Route::get('getTechnicalQuestions', 'UsersApiController@getTechnicalQuestions');
+
+    Route::post('setTechnicalAnswers', 'UsersApiController@setUserAnswers');
+
+    Route::post('setSupplierPriceOffer', 'UsersApiController@setSupplierPriceOffer');
+
+    Route::post('setCustomerAnswers', 'UsersApiController@setUserAnswers');
+
     Route::post('initOrder', 'UsersApiController@initOrder');
 
     Route::post('setOrderStatusHistory', 'UsersApiController@setOrderStatusHistory');
@@ -57,8 +68,17 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('getTechnicanAvilable', 'UsersApiController@getTechnicanAvilable');
 
+    Route::post('getSupplierAvilable', 'UsersApiController@getSupplierAvilable');
+
     Route::post('setTechnicalEvaluation', 'UsersApiController@setTechnicalEvaluation');
 
+    Route::post('setUserEvaluation', 'UsersApiController@setUserEvaluation');
+
+    Route::get('getOrderStatus', 'UsersApiController@getOrderStatus');
+
+    Route::get('getOrders', 'UsersApiController@getOrders');
+
+    Route::get('getOrders/{id}', 'UsersApiController@getOrders');
 
     Route::post('login', 'UsersApiController@loginSupplier');
 
