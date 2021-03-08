@@ -492,7 +492,6 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $collection, 200);
     }
 
-<<<<<<< HEAD
     public function getCustomerQuestions(Request $request)
     {
 
@@ -519,10 +518,8 @@ class UsersApiController extends Controller
         return jsonResponse(true, $message, $collection, 200);
     }
 
-=======
 
 
->>>>>>> f8e066d58bf428311533ba073563f61a579f6489
     public function searchCategory(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1074,7 +1071,6 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
             return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
         }
 
-        $data['type'] = 1;
         $data['user_id'] = Auth::guard('api')->id();
         $OrderStatus = UserEvaluation::create($data);
 
