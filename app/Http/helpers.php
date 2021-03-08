@@ -62,7 +62,7 @@ function getDataFromRequest($type = 'user_tech' , $request = []){
             $d['type_vehicle'] = $request->vehicle_type;
         }
 
-        $d['type'] = 1 ;   //  1 mean is technician
+        $d['type'] = 2 ;   //  1 mean is technician
         $d['services'] = json_encode($request->categories) ;
 
         if($request->work_time_from != ''){
