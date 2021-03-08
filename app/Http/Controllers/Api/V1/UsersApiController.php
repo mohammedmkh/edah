@@ -844,8 +844,8 @@ class UsersApiController extends Controller
 
             $data = [];
             foreach ($request->file as $file) {
-                $file_name = uploadFile($file, 0, public_path('/docs/upload'));
-                $link = 'docs/upload/' . $file_name;
+                $file_name = uploadDocument($file);
+                $link = 'documentfiles/' . $file_name;
 
                 $items['file'] = url('/') . '/' . $link;
                 $items['path'] = $link;

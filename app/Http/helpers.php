@@ -238,7 +238,7 @@ function jsonResponse($status, $message, $data=null, $code=null, $page= null , $
 {
 
     try {
-
+        $validator=null;
 
         $result['status'] = $status;
         $result['message'] = $message;
