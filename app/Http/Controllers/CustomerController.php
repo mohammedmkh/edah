@@ -46,10 +46,8 @@ class CustomerController extends Controller
     public function index()
     {
 
-        //
         $data = User::where('role',0)->orderBy('id', 'DESC')->get();
-
-        return view('mainAdmin.users.users',['users'=>$data]);
+        return view('admin.users.users',['users'=>$data]);
 
     }
 
@@ -145,7 +143,7 @@ class CustomerController extends Controller
         //
         $data = User::findOrFail($id);
 
-        return view('mainAdmin.users.editUser',['data'=>$data]);
+        return view('admin.users.editUser',['data'=>$data]);
     }
 
     /**
@@ -175,7 +173,7 @@ class CustomerController extends Controller
         }
 
         User::findOrFail($id)->update($data);
-        return redirect('Customer');
+        return redirect(adminPath().'Customer');
     }
 
     /**
@@ -302,11 +300,11 @@ class CustomerController extends Controller
         }
     }
 
-    public function addDeliveryBoy(){
+    public function addTechnicianPage(){
 
         $documents = App\Documents::where('type' ,1 )->get(); // technician
         $categories = App\Category::where('parent' ,0)->get();
-        return view('mainAdmin.users.addDriver' , compact('documents' , 'categories'));
+        return view('admin.users.addTechnician' , compact('documents' , 'categories'));
     }
 
 
@@ -365,7 +363,7 @@ class CustomerController extends Controller
     }
 
 
-    public function addDriver(Request $request){
+    public function addTechnician(Request $request){
 
         $request->validate([
             'name' => 'bail|required',
@@ -424,11 +422,11 @@ class CustomerController extends Controller
 
         });
 
-        return redirect('techusers');
+        return redirect(adminPath().'techusers');
 
     }
 
-    public function editDriver($id){
+    public function editTech($id){
         $data = User::findOrFail($id);
 
         $documents = App\Documents::where('type' ,1 )->get(); // technician
@@ -436,7 +434,7 @@ class CustomerController extends Controller
 
 
 
-        return view('mainAdmin.users.editDriver',['data'=>$data ,'documents'=> $documents , 'categories'=>$categories]);
+        return view('admin.users.editTech',['data'=>$data ,'documents'=> $documents , 'categories'=>$categories]);
     }
 
     public function assignRadius(Request $request){
@@ -530,15 +528,15 @@ class CustomerController extends Controller
         return view('mainAdmin.users.owners',['users'=>$users]);
     }
 
-    public function deliveryGuys(){
+    public function techUsers(){
         $users = User::where('role',3)->orderBy('id', 'DESC')->get();
-        return view('mainAdmin.users.deliveryGuys',['users'=>$users]);
+        return view('admin.users.techuser',['users'=>$users]);
     }
 
 
     public function storeUsers(){
         $users = User::where('role',4)->orderBy('id', 'DESC')->get();
-        return view('mainAdmin.users.owners',['users'=>$users]);
+        return view('admin.users.stores',['users'=>$users]);
     }
 
 
@@ -577,7 +575,7 @@ class CustomerController extends Controller
         }
 
         User::findOrFail($id)->update($data);
-        return redirect('ownerProfile');
+        return redirect(adminPath().'ownerProfile');
     }
     public function changeOwnerPassword(Request $request){
         $request->validate([

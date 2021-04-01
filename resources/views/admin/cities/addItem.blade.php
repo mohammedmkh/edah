@@ -18,12 +18,12 @@
                                         <h3 class="mb-0">{{ __('Add New City') }}</h3>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <a href="{{ url('cities') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
+                                        <a href="{{ url(adminPath().'cities') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form method="post" action="{{url('cities')}}" autocomplete="off" enctype="multipart/form-data" >
+                                <form method="post" action="{{url(adminPath().'cities')}}" autocomplete="off" enctype="multipart/form-data" >
                                     @csrf
                                     
                                     <h6 class="heading-small text-muted mb-4">{{ __('Item Detail') }}</h6>

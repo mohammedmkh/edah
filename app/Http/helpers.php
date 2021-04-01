@@ -6,7 +6,21 @@ use App\User;
 use Illuminate\Support\Facades\Cache;
 
 
+function adminPath(){
+    return 'panel/';
+}
 
+function getFirstMessageError($validator){
+    if ($validator && $validator->fails()) {
+
+        $messages = $validator->errors()->toArray();
+        foreach ($messages as $key => $row) {
+            $errors['field'] = $key;
+            return $row[0] .' '. $key;
+
+        }
+    }
+}
 
 function getDataFromRequest($type = 'user_tech' , $request = []){
 
@@ -19,7 +33,7 @@ function getDataFromRequest($type = 'user_tech' , $request = []){
         $d['priority'] = $request->priority;
         $d['app_benifit_percentage'] = $request->app_benifit_percentage;
         if($request->hour_work != '')
-          $d['hour_work'] = $request->hour_work;
+            $d['hour_work'] = $request->hour_work;
 
         if(! $request->have_vehicle){
             $d['have_vehicle'] = 0;
@@ -82,35 +96,42 @@ function getDataFromRequest($type = 'user_tech' , $request = []){
 
 
 
- function sendSMS( $phone, $message ){
-
-     /*
-
-    $curl = curl_init();
-    $phone =substr($phone, 1);
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://msegat.com/gw/",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"userName\"\r\n\r\nthnyan asiri\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"apiKey\"\r\n\r\nbffac502ccce2e110baa065de913a5a8\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"numbers\"\r\n\r\n966".$phone."\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"userSender\"\r\n\r\nQarib\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"msg\"\r\n\r\n".$message." \r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"By\"\r\n\r\nLink\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
-        CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-            "postman-token: 79d2304a-e79c-9dcb-7714-882b4fcdfcfa"
-        ),
-    ));
-
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
-
-    curl_close($curl);
+function sendSMS( $phone, $message ){
 
 
-     */
+
+    // $phone =substr($phone, 1);
+
+    $data = [
+        "Username"=> "0555096656",
+        "Password"=> "Edah2020",
+        "Tagname" => "Edahcompany",
+        "RecepientNumber" =>  $phone,
+        "ReplacementList"=> "",
+        "Message"=>$message,
+        "SendDateTime"=> 0,
+        "EnableDR"=> false
+    ];
+    $data = json_encode($data);
+    $url = "http://api.yamamah.com/SendSMS" ;
+    $ch = curl_init( $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
+    curl_setopt($ch, CURLOPT_POST,           1 );
+    curl_setopt($ch, CURLOPT_POSTFIELDS,     $data );
+    curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: application/json'));
+
+
+
+
+    $response = curl_exec($ch);
+    $err = curl_error($ch);
+
+
+
+    curl_close($ch);
+
+
+
 
 
 
@@ -127,16 +148,23 @@ function sendFCM($title, $body, $data, $tokens, $badge)
     $notif->user_id =  $data['user_id'];
     $notif->action_type =$data['action_type']  ;
     $notif->action_id  = $data['action_id'] ;
-    $notif-> title_ar = $data['title_ar'] ;
-    $notif-> body_ar = $data['body_ar']  ;
-    $notif-> title_en =$data['title_en']  ;
-    $notif-> body_en = $data['body_en'];
+    $notif-> title = $data['title'] ;
+    $notif-> body = $data['body']  ;
+    $notif-> is_read = 0 ;
     $date = Carbon\Carbon::now()->toDateTimeString();
     if($date){
         $notif-> date =   $date;
         $notif->save();
     }
     $notif->save();
+
+    if(isset($tokens) && $tokens != null){
+        $tokens =  $tokens->device_token ;
+    }else{
+        return ;
+    }
+
+
 
     $user = User::where('id' , $notif->user_id)->where('active_notif' , 1)->first() ;
     if($user){
@@ -155,8 +183,8 @@ function sendFCM($title, $body, $data, $tokens, $badge)
 
         $notificationBuilder = new \LaravelFCM\Message\PayloadNotificationBuilder($title);
         $notificationBuilder->setBody($body)
-             ->setSound('default')
-             ->setBadge($count_unread);
+            ->setSound('default')
+            ->setBadge($count_unread);
 
         $dataBuilder = new \LaravelFCM\Message\PayloadDataBuilder();
         $dataBuilder->addData(['data' => (object) $newData ]);
@@ -222,11 +250,11 @@ function uploadFile($file, $width=300, $dest=null)
 
 
 
-         $image_new = Image::make(public_path('images/upload/').'/'.$name) ;
-         $image_new->resize($width, null, function ($constraint) {
-             $constraint->aspectRatio();
-         });
-         $image_new ->save();
+    $image_new = Image::make(public_path('images/upload/').'/'.$name) ;
+    $image_new->resize($width, null, function ($constraint) {
+        $constraint->aspectRatio();
+    });
+    $image_new ->save();
 
 
 
@@ -275,9 +303,9 @@ function jsonResponse($status, $message, $data=null, $code=null, $page= null , $
 
         }
         // dd('m');
-         // return response()->json($result, 200, [], JSON_NUMERIC_CHECK);
+        // return response()->json($result, 200, [], JSON_NUMERIC_CHECK);
 
-          return response()->json($result);
+        return response()->json($result);
     } catch (Exception $ex) {
         return response()->json([
             'line' => $ex->getLine(),

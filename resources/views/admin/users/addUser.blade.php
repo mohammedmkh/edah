@@ -3,25 +3,27 @@
 @section('content')
     @include('admin.layout.topHeader', [
         'title' => __('Add User') ,
+        'headerData' => __('Users') ,
+        'url' => 'Customer' ,
         'class' => 'col-lg-7'
     ]) 
     <div class="container-fluid mt--7">
            
             <div class="row">
                     <div class="col-xl-12 order-xl-1">
-                        <div class="card bg-secondary shadow">
+                        <div class="card form-card bg-secondary shadow">
                             <div class="card-header bg-white border-0">
                                 <div class="row align-items-center">
                                     <div class="col-8">
                                         <h3 class="mb-0">{{ __('Add User') }}</h3>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <a href="{{ url('admin/Customer') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
+                                        <a href="{{ url('Customer') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form method="post" action="{{url('admin/Customer')}}" autocomplete="off">
+                                <form method="post" action="{{url('Customer')}}" autocomplete="off"  enctype="multipart/form-data">
                                     @csrf
                                     
                                     <h6 class="heading-small text-muted mb-4">{{ __('User information') }}</h6>
@@ -57,7 +59,7 @@
                                         </div>
                                         <div class="form-group{{ $errors->has('dateOfBirth') ? ' has-danger' : '' }}">
                                                 <label class="form-control-label" for="input-dateOfBirth">{{ __('Date of Birth') }}</label>
-                                                <input type="date" name="dateOfBirth" id="input-dateOfBirth" class="form-control form-control-alternative{{ $errors->has('dateOfBirth') ? ' is-invalid' : '' }}" placeholder="{{ __('Date Of Birth') }}" value="{{ old('dateOfBirth') }}" required>
+                                                <input type="date" name="dateOfBirth" id="input-dateOfBirth" class="form-control form-control-alternative{{ $errors->has('dateOfBirth') ? ' is-invalid' : '' }}" placeholder="{{ __('Date Of Birth') }}" value="{{ old('dateOfBirth') }}">
                 
                                                 @if ($errors->has('dateOfBirth'))
                                                     <span class="invalid-feedback" role="alert">
@@ -65,6 +67,20 @@
                                                     </span>
                                                 @endif
                                         </div>
+
+                                        <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
+                                                <label class="form-control-label" for="input-image">{{ __('Image') }}</label>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" name="image" id="image">
+                                                    <label class="custom-file-label" for="image">Select file</label>
+                                                </div>
+                                                @if ($errors->has('image'))
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $errors->first('image') }}</strong>
+                                                    </span>
+                                                @endif
+                                        </div>
+                                      
                                         <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="input-password">{{ __('Password') }}</label>
                                             <input type="password" name="password" id="input-password" class="form-control form-control-alternative{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('Password') }}" value="" required>

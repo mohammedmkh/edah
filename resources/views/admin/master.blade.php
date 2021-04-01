@@ -8,45 +8,8 @@
 
         <script src="{{url('admin/js/jquery.min.js')}}"></script>
        <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-        <script>
-            var OneSignal = window.OneSignal || [];
-            if(OneSignal.length>0){
-                setTimeout(() => {
-                    OneSignal.getRegistrationId(function(status) {
-                    console.log('status',status);
-                    });
-                }, 2000);
 
-                OneSignal.push(function() {
-                OneSignal.init({
-                    appId: $('#app_id_web').val(),
-                });
-                OneSignal.getUserId().then(function(userId) {
-                    console.log("OneSignal User ID:", userId);                    
-                    $.ajax({
-                        headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        type:"POST",
-                        url:window.location.origin+'/getDeviceToken',
-                        data:{  
-                        id:userId,
-                        },
-                        success: function(result){
-                        console.log('result ',result)
 
-                        },
-                        error: function(err){
-                        console.log('err ',err)
-                        }
-                    });
-                });
-            });
-
-            }
-          
-       
-        </script>
         <title>{{\App\CompanySetting::find(1)->name}}</title>
         <link href="{{ url('images/upload/'.\App\CompanySetting::find(1)->favicon)}}" rel="icon" type="image/png">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
@@ -189,10 +152,6 @@
        
         <script src="{{url('admin/js/custom.js')}}"></script>
 
-
-        @yield('javascript')
-
-
         <script>
 
             $('#editButton').click(function(){
@@ -210,7 +169,6 @@
                     }
                 });
 
-                console.log('the error is' + error);
                 if(error == 1){
                     var id =  $('.tab-pane').find(':required:invalid').closest('.tab-pane').attr('id');
 
@@ -303,5 +261,10 @@
 
             @endif
         </script>
+
+
+
+
+        @yield('javascript')
     </body>
 </html>

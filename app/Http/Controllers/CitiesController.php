@@ -59,7 +59,7 @@ class CitiesController extends Controller
        $city->save();
        // dd( $country ,    $city);
        
-        return redirect('cities');
+        return redirect(adminPath().'cities');
        
     }
 
@@ -110,7 +110,7 @@ class CitiesController extends Controller
         $country = Countries::where('id' , $request->country_id)->first();
         $city->country_code = $country->code ;
         $city->save();
-        return redirect('cities');
+        return redirect(adminPath().'cities');
 
     }
 

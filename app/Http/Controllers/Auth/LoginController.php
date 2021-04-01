@@ -39,16 +39,15 @@ class LoginController extends Controller
     }
 
     public function logout(){
-        
-        // Auth::guard()->logout();
+
+       // dd('mm');
+      // $m = Auth::guard()->user()
+       // dd();
         if(Auth::check()){
             Auth::logout();
             return redirect('/');
         }
-        elseif(Auth::guard('mainAdmin')->check()){
-            Auth::guard('mainAdmin')->logout();
-            return redirect('mainAdmin/login');
-        }
+
         
     }
 }

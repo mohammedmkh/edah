@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Order;
 use Auth;
 use App\Setting;
 use App\GroceryShop;
@@ -32,49 +33,35 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
+
     public function index()
     {
         // return view('home');
         
-        $shop_id = array();
         $master = array();
-        $master['sales']= 0;
-       // $master['shops'] = GroceryShop::where('user_id',Auth::user()->id)->get()->count();
+
         $master['users'] = User::where('role',0)->get()->count();
         $master['delivery'] = User::where('role',2)->get()->count();
-        $sales = GroceryOrder::where('owner_id',Auth::user()->id)->get();
+        $sales = Order::all();
+        $orders = Order::all();
         $currency_code = Setting::where('id',1)->first()->currency;
 
-       // $currency = Currency::where('code',$currency_code)->first()->symbol;
-
-        foreach ($sales as $value) {
-            $master['sales'] = $master['sales'] + $value->payment;
-        }
         $users = User::where('role',0)->orderBy('id', 'DESC')->get();  
         foreach ($users as $value) {
-            $value->orders = GroceryOrder::where([['customer_id',$value->id],['owner_id',Auth::user()->id]])->get()->count();
+            $value->orders = Order::where('user_id',$value->id)->get()->count();
         }
        // dd('mm');
        // $shops = GroceryShop::where('user_id',Auth::user()->id)->orderBy('id', 'DESC')->get();
 
       
-        //$items = GroceryItem::orderBy('id', 'DESC')->get();
-        // $orders = Order::with(['location','shop','customer','deliveryGuy','orderItem'])
-        // ->whereBetween('created_at', [ $date->format('Y-m-d'). " 00:00:00",  $date->format('Y-m-d') . " 23:59:59"])
-        // ->orderBy('id', 'DESC')
-        // ->get();
-        
-        // $orders = Order::where([['owner_id',Auth::user()->id],['order_status','Pending']])
-        // ->with(['location','shop','customer','deliveryGuy','orderItem'])
-        // ->orderBy('id', 'DESC')
-        // ->get();
+
         $categories = Category::orderBy('id','DESC')->get();
         //$location = Location::orderBy('id', 'DESC')->get();
-        $groceryOrders =  GroceryOrder::with(['shop','customer','deliveryGuy'])->where([['owner_id',Auth::user()->id],['order_status','Pending']])->orderBy('id', 'DESC')->paginate(10);
         //dd('mm');
          $store_users_count = User::where('role' , 4)->count();
          $tech_users_count = User::where('role' , 3)->count();
-        return view('admin.dashboard',['master'=>$master,'groceryOrders'=>$groceryOrders,'users'=>$users, 'category' => $categories , 'tech_users_count'=>$tech_users_count , 'store_users_count' =>$store_users_count]);
+        return view('admin.dashboard',['master'=>$master,'users'=>$users, 'orders'=>$orders ,  'category' => $categories , 'tech_users_count'=>$tech_users_count , 'store_users_count' =>$store_users_count]);
     }
 
     public function paytabsPayment(){

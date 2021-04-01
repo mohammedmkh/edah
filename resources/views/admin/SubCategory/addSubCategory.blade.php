@@ -18,12 +18,12 @@
                                         <h3 class="mb-0">{{ __('Add Grocery SubCategory') }}</h3>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <a href="{{ url('GrocerySubCategory') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
+                                        <a href="{{ url(adminPath().'SubCategory') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form method="post" action="{{url('GrocerySubCategory')}}" class="grocery_subcategory" autocomplete="off" enctype="multipart/form-data" >
+                                <form method="post" action="{{url(adminPath().'SubCategory')}}" class="grocery_subcategory" autocomplete="off" enctype="multipart/form-data" >
                                     @csrf
 
                                     <h6 class="heading-small text-muted mb-4">{{ __('SubCategory Detail') }}</h6>

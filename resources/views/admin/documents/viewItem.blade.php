@@ -16,7 +16,7 @@
                                     <h3 class="mb-0">{{ __('Documents') }}</h3>
                                 </div>
                                 <div class="col-4 text-right">
-                                    <a href="{{url('documents/create')}}" class="btn btn-sm btn-primary">{{ __('Add Document Item') }}</a>
+                                    <a href="{{url(adminPath().'documents/create')}}" class="btn btn-sm btn-primary">{{ __('Add Document Item') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                                                         </a>
                                                         <div class="dropdown-menu dropdown-men
                                                         u-right dropdown-menu-arrow">
-                                                            <a class="dropdown-item" href="{{url('documents/'.$item->id.'/edit')}}">{{ __('Edit') }}</a>
+                                                            <a class="dropdown-item" href="{{url(adminPath().'documents/'.$item->id.'/edit')}}">{{ __('Edit') }}</a>
                                                             <a class="dropdown-item" onclick="deleteData('documents','{{$item->id}}');" href="#">{{ __('Delete') }}</a>
                                                             {{-- onclick="deleteData('Item','{{$item->id}}');" --}}
                                                         </div>

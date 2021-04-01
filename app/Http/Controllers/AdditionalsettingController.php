@@ -59,7 +59,7 @@ class AdditionalsettingController extends Controller
         }
         $AdditionalSetting->save();
 
-        return redirect('additionalsettings');
+        return redirect(adminPath().'additionalsettings');
     }
 
     /**
@@ -104,7 +104,7 @@ class AdditionalsettingController extends Controller
         }
         $Setting->save();
 
-        return redirect('additionalsettings');
+        return redirect(adminPath().'additionalsettings');
     }
 
     /**

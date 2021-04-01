@@ -8,7 +8,8 @@ class UserEvaluation extends Model
 {
 
     protected $fillable = [
-      '	evaluated_user_id','evaluator_user_id','evaluation_no','evaluation_text','type','deleted_at', 'created_at', 'updated_at'];
+      'evaluated_user_id','evaluator_user_id',
+        'evaluation_no','evaluation_text','type','order_id'];
 
 
     protected $table = 'user_evaluations';

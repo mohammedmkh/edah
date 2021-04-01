@@ -18,12 +18,12 @@
                                 <h3 class="mb-0">{{ __('Edit Country') }}</h3>
                             </div>
                             <div class="col-4 text-right">
-                                <a href="{{ url('countries') }}" class="btn btn-sm btn-primary">{{   __('Back to list') }}</a>
+                                <a href="{{ url(adminPath().'countries') }}" class="btn btn-sm btn-primary">{{   __('Back to list') }}</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="{{url('countries/'.$data->id)}}" autocomplete="off" enctype="multipart/form-data" >
+                        <form method="post" action="{{url(adminPath().'countries/'.$data->id)}}" autocomplete="off" enctype="multipart/form-data" >
                             @csrf
                             @method('put')
 

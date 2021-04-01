@@ -73,12 +73,8 @@
                                         @foreach ($data->orderItem as $item)
                                         
                                             <tr>
-                                                <td>{{$loop->iteration}}</td>
-                                                @if($item->item==null)
-                                                <td>{{ $item->packageName }}</td>
-                                                @else 
-                                                <td>{{ $item->itemName }}</td>
-                                                @endif
+                                                <td>{{$loop->iteration}}</td>                                            
+                                                <td>{{ $item->itemName }}</td>                                               
                                                 <td>{{ $item->quantity}}</td>
                                                 <td>{{ $currency.$item->price.'.00'}}</td>
                                                
@@ -94,9 +90,10 @@
                                 <div class="row">
                                     <div class="col-12 text-right">
                                         <h3><span>Items Total : </span>{{$currency.$total.'.00'}}</h3>
-                                        <h3><span>Shop Charge : </span>{{$currency.$data->shop_charge.'.00'}}</h3>
+                                        
                                         <h3><span>Delivery Charge : </span>{{$currency.$data->delivery_charge.'.00'}}</h3>
-                                        <h3><span>Total Payment : </span>{{$currency}}{{$total + $data->shop_charge + $data->delivery_charge}}.00</h3>
+                                        <h3><span>Coupon Discount : </span>{{$currency.$data->coupon_price.'.00'}}</h3>
+                                        <h3><span>Total Payment : </span>{{$currency}}{{$total + $data->shop_charge + $data->delivery_charge  - $data->coupon_price}}.00</h3>
                                     </div>
                                 </div>
                             </div>

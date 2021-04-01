@@ -26,6 +26,10 @@ use DB;
 use Route;
 use App\TechStoreDocuments;
 use App;
+use App\Devicetoken;
+use App\Notifications;
+
+
 use Illuminate\Database\Eloquent\Builder;
 
 class UsersApiController extends Controller
@@ -36,12 +40,13 @@ class UsersApiController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|digits:10',
         ]);
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
 
@@ -69,7 +74,7 @@ class UsersApiController extends Controller
         $user->save();
 
 
-        $message = 'Code ' . $user->sms_verify . ' for verification';
+        $message = 'Code : ' . $user->registration_code . ' is For Verification';
         sendSMS($user->phone, $message);
 
         $message = __('api.success');
@@ -87,7 +92,8 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
 
@@ -102,20 +108,20 @@ class UsersApiController extends Controller
         }
 
 
-        if ($user) {
+        if ($user && $user->is_complete_register == 1 ) {
             $message_error = __('api.user_exist_before');
             return jsonResponse(false, $message_error, null, 104);
+        }else{
+            $user = new User;
         }
 
-
-        $user = new User;
         $user->phone = $request->phone;
         $user->role = 3;
         $user->registration_code = $this->getSmsCode();
         $user->save();
 
 
-        $message = 'Code ' . $user->sms_verify . ' for verification';
+        $message = 'Code : ' . $user->registration_code . ' For Verification';
         sendSMS($user->phone, $message);
 
         $message = __('api.success');
@@ -128,12 +134,13 @@ class UsersApiController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|digits:10',
         ]);
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message , null, 111, null, null, $validator);
         }
 
 
@@ -148,20 +155,22 @@ class UsersApiController extends Controller
         }
 
 
-        if ($user) {
+
+        if ($user && $user->is_complete_register == 1 ) {
             $message_error = __('api.user_exist_before');
             return jsonResponse(false, $message_error, null, 104);
+        }else{
+            $user = new User;
         }
 
 
-        $user = new User;
         $user->phone = $request->phone;
         $user->role = 4;
         $user->registration_code = $this->getSmsCode();
         $user->save();
 
 
-        $message = 'Code ' . $user->sms_verify . ' for verification';
+        $message = 'Code : ' . $user->registration_code . ' For Verification';
         sendSMS($user->phone, $message);
 
         $message = __('api.success');
@@ -180,7 +189,8 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
 
@@ -239,13 +249,14 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
         //
         $user = User::where('phone', $request->phone)->first();
         if ($user) {
-            if ($user->verify != 1 | $user->is_complete_register != 1) {
+            if ($user->verify != 1 | $user->is_complete_register != 0) {
                 return jsonResponse(false, __('api.wrong_verify_code'), null, 106, null, null, $validator);
             }
 
@@ -262,7 +273,7 @@ class UsersApiController extends Controller
         }
 
 
-        return jsonResponse(false, __('api.error'), null, 115);
+        return jsonResponse(false, __('api.user_not_found'), null, 115);
 
 
     }
@@ -276,13 +287,13 @@ class UsersApiController extends Controller
             'category_id' => 'required',
             'status' => 'required',
             'is_immediately' => 'required',
-            'time' => 'required',
             'price' => 'required',
         ]);
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $data['user_id'] = Auth::guard('api')->id();
 
@@ -305,7 +316,8 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,$message, null, 111, null, null, $validator);
         }
 
         //
@@ -316,14 +328,13 @@ class UsersApiController extends Controller
             }
 
 
-            /*
+
             Devicetoken::where('device_token',  $request->device_token )->delete();
             $device = Devicetoken::where('user_id' ,  $user->id)->first();
             if($device){
-                // delete other device of that user  or  other users that have this device token
                 Devicetoken::where('user_id', $user->id )->where('id' ,'<>' ,$device->id)->delete();
             }else{
-                $device =new Devicetoken;
+                $device =new  Devicetoken;
             }
             $device->device_type = $request->device_type ;
             $device->device_token = $request->device_token ;
@@ -332,7 +343,6 @@ class UsersApiController extends Controller
 
             ///  delete access token this user
             DB::table('oauth_access_tokens')->where('user_id' , $user->id)->delete();
-            */
 
 
             $tokenRequest = $request->create('/oauth/token', 'POST', $request->all());
@@ -369,10 +379,12 @@ class UsersApiController extends Controller
         }
 
 
-        return jsonResponse(false, __('api.error'), null, 115);
+        return jsonResponse(false, __('api.wrong_login'), null, 115);
 
 
     }
+
+
 
     public function loginSupplier(Request $request)
     {
@@ -385,14 +397,15 @@ class UsersApiController extends Controller
         // dd('login');
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,$message, null, 111, null, null, $validator);
         }
 
         //
         $user = User::where('phone', $request->phone)->first();
         if ($user) {
             if ($user->verify != 1 | $user->is_complete_register != 1) {
-                return jsonResponse(false, __('api.wrong_verify_code'), null, 106, null, null, $validator);
+                return jsonResponse(false, __('api.wrong_verify_person'), null, 106, null, null, $validator);
             }
 
 
@@ -411,6 +424,18 @@ class UsersApiController extends Controller
             $response = Route::dispatch($tokenRequest);
             $json = (array)json_decode($response->getContent());
 
+
+            Devicetoken::where('device_token',  $request->device_token )->delete();
+            $device = Devicetoken::where('user_id' ,  $user->id)->first();
+            if($device){
+                Devicetoken::where('user_id', $user->id )->where('id' ,'<>' ,$device->id)->delete();
+            }else{
+                $device =new  Devicetoken;
+            }
+            $device->device_type = $request->device_type ;
+            $device->device_token = $request->device_token ;
+            $device->user_id = $user->id ;
+            $device->save();
 
            // return $json;
 
@@ -449,6 +474,47 @@ class UsersApiController extends Controller
 
     }
 
+
+    public  function updateProfile(Request $request){
+
+        $user = Auth::guard('api')->user();
+
+        $validator = Validator::make($request->all(), [
+            'phone' => 'numeric|unique:users,phone,'.  $user->id . ',id',
+            'email' => 'unique:users,email,' .  $user->id . ',id',
+        ]);
+
+
+        if ($validator->fails()) {
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,  $message, null, 111, null, null, $validator);
+        }
+
+        if($request->email){
+            $user->email = $request->email ;
+        }
+
+        if($request->phone){
+            $user->phone = $request->phone ;
+        }
+        if($request->name){
+            $user->name = $request->name ;
+        }
+        if(isset($request->password) && $request->password != ''){
+            $user->password =  bcrypt($request->password);
+        }
+
+        $user->save();
+
+
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $user, 200);
+
+
+    }
+
+
     public function setTechnicianLocation(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -456,7 +522,8 @@ class UsersApiController extends Controller
             'lang' => 'required',
         ]);
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $lat = $request->lat;
         $lang = $request->lang;
@@ -526,7 +593,8 @@ class UsersApiController extends Controller
             'key' => 'required',
         ]);
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $key = $request->key;
 
@@ -558,7 +626,8 @@ class UsersApiController extends Controller
             'key' => 'required',
         ]);
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,  $message, null, 111, null, null, $validator);
         }
         $key = $request->key;
 
@@ -627,18 +696,30 @@ class UsersApiController extends Controller
     public function getOrders(Request $request)
     {
 
-        $data = Order::with(['userOrder:id,name', 'categoryOrder:id'])->get();
-
-
+        $auth= Auth::guard('api')->user();
+        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id' ])->Where('technical_id' ,  $auth->id )->paginate(10);
         if ($request->id) {
 
-            $data = Order::where('status', $request->id)->with(['userOrder:id,name', 'categoryOrder:id'])->get();
+            $data = Order::where('status', $request->id)->Where('technical_id' ,  $auth->id )->with(['userOrder:id,name,phone', 'categoryOrder:id'])->paginate(10);
         }
-        $message = __('api.success');
-        return jsonResponse(true, $message, $data, 200);
+        return jsonResponse( true  , __('api.success'),$data->items() , 200 , $data->currentPage(), $data->lastPage() );
+
 
 
     }
+
+    public function getOrdersNotEnd(Request $request)
+    {
+        $auth= Auth::guard('api')->user();
+        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id' ])->where('status' , '==' , 1)->Where('technical_id' ,  $auth->id )->paginate(10);
+
+        return jsonResponse( true  , __('api.success'),$data->items() , 200 , $data->currentPage(), $data->lastPage() );
+
+
+    }
+
+
+
 
     public function registerTechnician(Request $request)
     {
@@ -646,7 +727,7 @@ class UsersApiController extends Controller
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
             'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'email|unique:users',
             'password' => 'required|min:6',
             'identity' => 'required',
             'has_vehicle' => 'required',
@@ -662,7 +743,8 @@ class UsersApiController extends Controller
         $data = $request->all();
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,  $message, null, 111, null, null, $validator);
         }
 
 
@@ -746,19 +828,15 @@ class UsersApiController extends Controller
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
             'name' => 'required',
-            'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            'identity' => 'required',
-            'work_time_from' => 'required',
-            'work_time_to' => 'required',
             'categories' => 'required',
-            'order_min' => 'required',
         ]);
 
         $data = $request->all();
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
 
@@ -838,6 +916,32 @@ class UsersApiController extends Controller
 
     }
 
+
+
+    public function uploadImage(Request $request)
+    {
+        if ($request->file) {
+
+            $data = [];
+            foreach ($request->file as $file) {
+                $file_name = uploadFile($file , 300 , 'images/upload/');
+                $link = 'images/upload/' . $file_name;
+
+                $items['file'] = url('/') . '/' . $link;
+                $items['path'] = $link;
+
+                $data[] = (object)$items;
+            }
+
+            return jsonResponse(true, __('api.success'), $data, 200);
+        }
+
+        $message = __('api.file_has_error');
+        return jsonResponse(false, $message, null, 130);
+    }
+
+
+
     public function uploadFile(Request $request)
     {
         if ($request->file) {
@@ -878,7 +982,8 @@ class UsersApiController extends Controller
             'lang' => 'required',
         ]);
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,$message, null, 111, null, null, $validator);
         }
         $LATITUDE = $request->lat;
         $LONGITUDE = $request->lang;
@@ -916,47 +1021,27 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,$message, null, 111, null, null, $validator);
         }
 
-        $cheak_status = OrderStatus::find($data['order_status_id']);
+        $order= Order::where('id' , $request->order_id)->first();
+       // $cheak_status = OrderStatus::find($data['order_status_id']);
 
-        if (!$cheak_status) {
+        if (!$order) {
             $message_error = __('api.order status id not found');
             return jsonResponse(false, $message_error, null, 100);
         }
 
-        $OrderStatus = OrderStatusHistory::create($data);
+        $order->status = $request->order_status_id ;
+        $order->save();
 
         $message = __('api.success');
-        return jsonResponse(true, $message, $OrderStatus, 200);
+        return jsonResponse(true, $message, $order, 200);
 
 
     }
 
-    public function setSupplierPriceOffer(Request $request)
-    {
-
-        $data = $request->all();
-        $validator = Validator::make($request->all(), [
-            'price' => 'required|numeric',
-        ]);
-
-
-        if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
-        }
-
-
-        $data['user_id'] = Auth::guard('api')->id();
-
-        $setSupplierPriceOffer = SupplierPriceOffer::create($data);
-
-        $message = __('api.success');
-        return jsonResponse(true, $message, $setSupplierPriceOffer, 200);
-
-
-    }
 
     public function getTechnicanAvilable(Request $request)
     {
@@ -970,7 +1055,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $user_id = Auth::guard('api')->id();
         $setLocation = User::find($user_id);
@@ -1025,7 +1111,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,$message, null, 111, null, null, $validator);
         }
         $user_id = Auth::guard('api')->id();
         $setLocation = User::find($user_id);
@@ -1068,7 +1155,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
         $data['user_id'] = Auth::guard('api')->id();
@@ -1092,7 +1180,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
         $data['user_id'] = Auth::guard('api')->id();
@@ -1112,16 +1201,28 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
             'order_id' => 'required|numeric',
             'evaluation_no' => 'required|numeric',
             'evaluator_user_id' => 'required|numeric',
-            //'evaluation_text' => 'required',
-
         ]);
 
 
         if ($validator->fails()) {
-            return jsonResponse(false, __('api.validation_input_error'), null, 111, null, null, $validator);
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
-        $data['evaluated_user_id'] = Auth::guard('api')->id();
+        $is_exist = UserEvaluation::where('order_id' , $request->order_id)->where('type' ,2)->first();
+        if($is_exist){
+            $message ='api.you_evaluted_user_before' ;
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
+        }
+
+        $order = Order::where('id' ,$request->order_id)->first();
+        if(  $order ){
+            $evaluated_user_id =  $order ->user_id;
+        }
+
+        $data['evaluator_user_id'] = Auth::guard('api')->id();
+        $data['evaluated_user_id'] =  $evaluated_user_id;
+        $data['type'] = 2 ;
         $TechnicianEvaluation = UserEvaluation::create($data);
 
         $message = __('api.success');
@@ -1129,6 +1230,176 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
     }
+
+
+    public function searchStoreByName(Request $request){
+
+        $users = User::where('name' , 'like' , '%' .$request->key. '%')->get();
+
+        $message = __('api.success');
+        return jsonResponse(true, $message,  $users, 200);
+
+    }
+
+    public  function searchStores(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required|numeric',
+            'lang' => 'required|numeric',
+        ]);
+
+
+        if ($validator->fails()) {
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false,$message, null, 111, null, null, $validator);
+        }
+
+        $lat = $request->lat;
+        $lang = $request->lang;
+
+        $avilableSuppliers = DB::table("users");
+        $avilableSuppliers->leftjoin('user_evaluations', 'user_evaluations.evaluated_user_id', '=', 'users.id');
+
+        $avilableSuppliers = $avilableSuppliers->select("users.name", "users.id", "users.phone",'users.lat','users.lang',
+            DB::raw("round(6371 * acos(cos(radians(" . $lat . "))
+                     * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
+                     + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance"),
+            DB::raw("AVG(user_evaluations.evaluation_no) as evaluation")
+        );
+        $avilableSuppliers = $avilableSuppliers->orderBy('distance', 'asc');
+        $avilableSuppliers = $avilableSuppliers->where('role', 4);
+        $avilableSuppliers->groupBy('users.id');
+
+        $avilableSuppliers = $avilableSuppliers->get();
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $avilableSuppliers, 200);
+
+    }
+
+
+    public function setSupplierPriceOffer(Request $request)
+    {
+
+        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+            'price' => 'numeric',
+            'offer_id' =>'required'
+        ]);
+
+
+        if ($validator->fails()) {
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
+        }
+
+
+
+
+        $setSupplierPriceOffer = SupplierPriceOffer::where('id' , $request->offer_id)->first();
+        if(   $setSupplierPriceOffer){
+            $setSupplierPriceOffer->status = $request->status ;
+            $setSupplierPriceOffer->price = $request->price ;
+            $setSupplierPriceOffer->detail = $request->detail ;
+            $setSupplierPriceOffer->document = $request->document ;
+
+
+            $setSupplierPriceOffer->save();
+        }
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $setSupplierPriceOffer, 200);
+
+
+    }
+
+    public  function addRequestToStore(Request $request){
+
+
+        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required',
+            'description' => 'required',
+            'store_id' => 'required',
+        ]);
+
+
+        if ($validator->fails()) {
+            $message =  getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
+        }
+
+
+        $data['user_id'] = Auth::guard('api')->id();
+        $setSupplierPriceOffer = SupplierPriceOffer::create($data);
+
+        //send notifications to  Store User;
+
+        $user_id = $request->store_id ;
+        $tokens =Devicetoken::where('user_id', $user_id)->first();
+        $title  = 'لديك طلب من تقني ';
+        $body   = 'هناك طلب عرض سعر تم ارساله من تقني';
+        $data['action_type']   = 'addorderstore' ;
+        $data['action_id']   = $setSupplierPriceOffer->id ;
+        $data['user_id']   =  $user_id ;
+        $data['date']   = Carbon::now()->timestamp ;
+        $data['title']   = $title ;
+        $data['body']   = $body ;
+
+        sendFCM($title, $body,  $data, $tokens , 1 ,1);
+
+
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $setSupplierPriceOffer, 200);
+    }
+
+
+    public  function getNotifications(Request $request){
+        $user = Auth::guard('api')->user();
+        $notications = Notifications::where('user_id' , $user->id )->paginate(10);
+        $items['data']=$notications->items();
+        $items['count_unread']=Notifications::where('user_id' , $user->id )->where('is_read' , 0 )->count();
+
+        return jsonResponse( true  , __('api.success'),$items , 200 ,$notications->currentPage(), $notications->lastPage() );
+
+    }
+
+    public function readNotification(Request $request){
+        $user = Auth::guard('api')->user();
+        $notications = Notifications::where('user_id' , $user->id )->where('id' , $request->notification_id)->first();
+        if($notications){
+            $notications->is_read = 1 ;
+            $notications->save();
+        }
+        return jsonResponse( true  , __('api.success'),null, 200 );
+    }
+
+    public function readAllNotification(Request $request ){
+        $user = Auth::guard('api')->user();
+        $notications = Notifications::where('user_id' , $user->id )
+            ->where('is_read' , 0)->get();
+        foreach ($notications as $notif){
+            $notif->is_read = 1 ;
+            $notif->save();
+        }
+
+        return jsonResponse( true  , __('api.success'),null, 200 );
+    }
+
+
+    public function getRequestToStore(Request $request){
+
+
+        $setSupplierPriceOffer = SupplierPriceOffer::with('technician')->where('id' , $request->offer_id)->first();
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, $setSupplierPriceOffer, 200);
+
+    }
+
+
 
 
 

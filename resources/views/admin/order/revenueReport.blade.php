@@ -2,7 +2,7 @@
 
 @section('content')
     @include('admin.layout.topHeader', [
-        'title' => __('Orders') ,
+        'title' => __('Grocery Orders') ,
         'class' => 'col-lg-7'
     ]) 
     <div class="container-fluid mt--7">
@@ -13,25 +13,16 @@
                         <div class="card-header border-0">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h3 class="mb-0">{{ __('Orders') }}</h3>
-                                </div>
-                                {{-- <div class="col-4 text-right">
-                                    <a href="{{url('Customer/create')}}" class="btn btn-sm btn-primary">{{ __('Add New user') }}</a>
-                                </div> --}}
+                                    <h3 class="mb-0">{{ __('Grocery Orders') }}</h3>
+                                </div>                               
                             </div>
                         </div>
 
                         <div class="table-responsive">
                                
-                                <?php $shop_charge = 0;$driver_charge = 0;
-                                      $total_payment = 0;
-                                      $total_shop = 0;
-                                     ?>  
-                                <?php $s_charge = \App\Setting::find(1)->commission_per; 
-                                    //   $d_charge = \App\Setting::find(1)->delivery_charge_per;
-                                ?>  
-
-                                <form id="booking-filter" method="post" action="{{url('ownerRevenueFilter')}}">
+                                <?php    $total_payment = 0;  ?>  
+                              
+                                {{-- <form id="booking-filter" method="post" action="{{url('groceryRevenueFilter')}}">
                                     @csrf
                                     <div class="row">
                                         <div class="col-3">
@@ -73,9 +64,9 @@
                                         <div class="col-3">
                                             <button class="btn btn-primary" type="submit">Apply</button>
                                         </div>
-                                        {{-- onclick="getfilter();" --}}
+                                     
                                     </div>
-                                </form>
+                                </form> --}}
 
                                 <table class="table data-table align-items-center table-flush" id="reports">
                                     <thead class="thead-light">
@@ -84,28 +75,26 @@
                                             <th scope="col">{{ __('Order ID') }}</th>
                                             <th scope="col">{{ __('Customer') }}</th>
                                             <th scope="col">{{ __('Shop Name') }}</th>
-                                            <th scope="col">{{ __('Date') }}</th>
+                                            <th scope="col">{{ __('Date') }}</th>                                           
+                                            <th scope="col">{{ __('Payment Gateway') }}</th>
+                                            <th scope="col">{{ __('Order Status') }}</th>
                                             <th scope="col">{{ __('Payment') }}</th>
-                                            <th scope="col">{{ __('Shop Charge') }}</th>
-                                           
-                                           
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $item)
-                                            <?php $earning = $item->payment - ($item->payment*$s_charge/100); ?>
+                                           
                                             <?php $total_payment = $total_payment + $item->payment; ?>
-                                            <?php $total_shop = $total_shop + ($item->payment*$s_charge/100); ?>
-                                            
+                                           
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{$item->order_no}}</td>
                                                 <td>{{ $item->customer->name }}</td>
                                                 <td>{{ $item->shop_name }}</td>
-                                                <td>{{$item->date}} </td>
+                                                <td>{{$item->date}} </td>                                               
+                                                <td>{{$item->payment_type}} </td>
+                                                <td>{{$item->order_status}} </td>
                                                 <td>{{ $currency.$item->payment }}</td>
-                                                <td>{{ $currency.$item->payment*$s_charge/100 }}</td>
-                                            
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -113,12 +102,13 @@
                                         <tr >
                                             <th></th> 
                                             <th></th>
+                                            <th></th>   
                                             <th></th>                                        
+                                            <th></th>   
                                             <th></th>
                                             <th>Total Income </th>
                                             <th>{{$currency.$total_payment}}</th>
-                                            <th>{{$currency.$total_shop}}</th>
-                                            
+                                           
                                         </tr>
                                     </thead>
                                 </table>

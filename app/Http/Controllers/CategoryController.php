@@ -7,6 +7,7 @@ use App\CategoryLangs;
 use App\Cities;
 use App\GroceryShop;
 use App\GroceryItem;
+use App\Order;
 use Illuminate\Http\Request;
 use \Validator;
 
@@ -23,7 +24,7 @@ class CategoryController extends Controller
         $data = Category::where('parent',0)->orderBy('id', 'DESC')->paginate(7);
        // dd('CategoryCategory');
 
-        return view('mainAdmin.GroceryCategory.viewGroceryCategory',['categories'=>$data]);
+        return view('admin.category.viewCategory',['categories'=>$data]);
     }
 
     /**
@@ -36,7 +37,7 @@ class CategoryController extends Controller
         //
 
 
-        return view('mainAdmin.GroceryCategory.addGroceryCategory');
+        return view('admin.category.addCategory');
     }
 
     /**
@@ -84,7 +85,7 @@ class CategoryController extends Controller
         $this->addUpdateTranslation( $category_no_langs , $data );
 
        // dd($category_no_langs);
-        return redirect('GroceryCategory');
+        return redirect(adminPath().'Category');
 
     }
 
@@ -110,7 +111,7 @@ class CategoryController extends Controller
     {
         //
         $data = Category::findOrFail($id);
-        return view('mainAdmin.GroceryCategory.editGroceryCategory',['data'=>$data]);
+        return view('admin.category..editCategory',['data'=>$data]);
     }
 
     /**
@@ -155,7 +156,7 @@ class CategoryController extends Controller
         $category_no_langs = $category->update($data);
         $category_no_langs = Category::find($id);
         $this->addUpdateTranslation( $category_no_langs , $data );
-        return redirect('GroceryCategory');
+        return redirect(adminPath().'Category');
 
 
     }
@@ -170,8 +171,9 @@ class CategoryController extends Controller
     {
         //
         try {
-            $item = Category::where('parent',$id)->get();
+            $item = Order::where('category_id',$id)->get();
             if(count($item)==0){
+                CategoryLangs::where('category_id',$id)->delete();
                 $delete = Category::find($id);
                 $delete->delete();
                 return 'true';

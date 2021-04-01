@@ -111,18 +111,17 @@
                             <h3 class="mb-0">{{ __('Grocery Order Requests') }}</h3>
                         </div>
                         <div class="col-4 text-right">
-                            <a href="{{url('GroceryOrder')}}" class="btn btn-sm btn-primary">{{ __('See all') }}</a>
+                            <a href="{{url(adminPath().'Order')}}" class="btn btn-sm btn-primary">{{ __('See all') }}</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="table-responsive" id="grocery-pending-order">
-                    @if(count($groceryOrders)>0)
+                    @if(count($orders)>0)
                     <table class="table align-items-center table-flush">
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">{{ __('Order ID') }}</th>
-                                <th scope="col">{{ __('Shop') }}</th>
                                 <th scope="col">{{ __('Customer') }}</th>
                                 <th scope="col">{{ __('payment') }}</th>
                                 <th scope="col">{{ __('date') }}</th>
@@ -131,26 +130,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($groceryOrders as $order)
+                            @foreach ($orders as $order)
                             <tr>
-                                <td><span class="badge label label-light-warning">{{ $order->order_no }}</span></td>
-                                <td>{{ $order->shop->name }}</td>
-                                <td>{{ $order->customer->name }}</td>
-                                <td>{{ $currency.$order->payment.'.00'}}</td>
+                                <td><span class="badge label label-light-warning">{{ $order->id }}</span></td>
+                                <td>{{ $order->userOrder->name }}</td>
+                                <td>{{ $order->price.'.00'}}</td>
                                 <td>{{ $order->date ." | ".$order->time}}</td>
-                                <td>{{ $order->payment_type}}</td>
+                                <td>{{ $order->price}}</td>
                                 <td>
                                     {{-- "{{url('accept-gocery-order/'.$order->id)}}" --}}
-                                    <a href="{{url('accept-grocery-order/'.$order->id)}}" class="table-action"
-                                        data-toggle="tooltip" data-original-title="Accept Order">
-                                        <i class="fas fa-check-square text-success"></i>
-                                    </a>
-                                    <a href="{{url('reject-grocery-order/'.$order->id)}}" class="table-action"
-                                        data-toggle="tooltip" data-original-title="Reject Order">
-                                        <i class="fas fa-window-close text-danger"></i>
-                                    </a>
+
                                     {{-- {{url('reject-grocery-order/'.$order->id)}} --}}
-                                    <a href="{{url('viewGroceryOrder/'.$order->id.$order->order_no)}}" class="table-action"
+                                    <a href="{{url(adminPath().'viewOrder/'.$order->id)}}" class="table-action"
                                         data-toggle="tooltip" data-original-title="View Order">
                                         <i class="fas fa-eye"></i>
                                     </a>

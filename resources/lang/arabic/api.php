@@ -12,7 +12,10 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+    'wrong_verify_person' => 'لم يتم استكمال التسجيل او تأكيد الحساب ' ,
+    'error_not_exist_user'=> 'هذا المستخدم غير موجود ' ,
+    'wrong_verify_code' => 'خطأ في كود التحقق ' ,
+    'wrong_login' => 'بيانات تسجيل الدخول للنظام غير صحيحة',
 
     'success' => 'تم تنفيذ الأمر' ,
     'not_found' => 'العنصر غير موجود',

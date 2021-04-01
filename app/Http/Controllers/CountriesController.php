@@ -52,7 +52,7 @@ class CountriesController extends Controller
         Countries::create($data);
 
 
-        return redirect('countries');
+        return redirect(adminPath().'countries');
 
     }
 
@@ -102,7 +102,7 @@ class CountriesController extends Controller
 
 
 
-        return redirect('countries');
+        return redirect(adminPath().'countries');
 
     }
 

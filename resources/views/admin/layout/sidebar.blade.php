@@ -94,7 +94,7 @@
                 <ul class="navbar-nav">
                     @if(Auth::check())
                     <li class="nav-item">
-                        <a class="nav-link" href="{{url('home')}}">
+                        <a class="nav-link" href="{{url(adminPath().'home')}}">
                             <i class="ni ni-chart-pie-35 text-primary"></i> {{ __('Dashboard') }}
                         </a>
                     </li>
@@ -104,7 +104,7 @@
                         </a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{url('GroceryOrder')}}">
+                        <a class="nav-link" href="{{url(adminPath().'Order')}}">
                             <i class="ni ni-calendar-grid-58 text-primary"></i> {{ __('Orders') }}
                         </a>
                     </li>
@@ -125,12 +125,12 @@
                             <div class="collapse" id="navbar-examples_2">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{url('GroceryCategory')}}">
+                                        <a class="nav-link" href="{{url(adminPath().'Category')}}">
                                             <i class="ni ni-app " style="color: #f3a4b5;"></i> {{ __('Category') }}
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{url('GrocerySubCategory')}}">
+                                        <a class="nav-link" href="{{url(adminPath().'SubCategory')}}">
                                             <i class="fas fa-list-ul text-primary"></i> {{ __('Grocery SubCategory') }}
                                         </a>
                                     </li>
@@ -153,7 +153,7 @@
                     -->
                     @if(View::exists('admin.coupon.viewCoupon'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{url('GroceryCoupon')}}">
+                        <a class="nav-link" href="{{url(adminPath().'Coupon')}}">
                             <i class="fas fa-tags text-orange"></i> {{ __('Coupon') }}
                         </a>
                     </li>
@@ -169,7 +169,7 @@
                     --->
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{url('documents')}}">
+                            <a class="nav-link" href="{{url(adminPath().'documents')}}">
                                 <i class="ni ni-app text-success"></i> {{ __('Documents') }}
                             </a>
                         </li>
@@ -185,19 +185,19 @@
                         <div class="collapse" id="navbar-examples">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{url('Customer')}}">
+                                    <a class="nav-link" href="{{url(adminPath().'Customer')}}">
                                         <i class="fas fa-users" style="color:#8abf4d;"></i> {{ __('Customers') }}
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{url('techusers')}}">
+                                    <a class="nav-link" href="{{url(adminPath().'techusers')}}">
                                         <i class="fas fa-truck-moving" style="color:#8abf4d;"></i>
                                         {{ __('Technician Users') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{url('storeusers')}}">
+                                    <a class="nav-link" href="{{url(adminPath().'storeusers')}}">
                                         <i class="fas fa-truck-moving" style="color:#8abf4d;"></i>
                                         {{ __('Store Users') }}
                                     </a>
@@ -217,12 +217,12 @@
                             <div class="collapse" id="report-expand">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{url('cities')}}">
+                                        <a class="nav-link" href="{{url(adminPath().'cities')}}">
                                             <i class="ni ni-paper-diploma" style="color:#ff9200;"></i> {{ __('Cities') }}
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{url('countries')}}">
+                                        <a class="nav-link" href="{{url(adminPath().'countries')}}">
                                             <i class="ni ni-chart-pie-35" style="color:#8abf4d;"></i>
                                             {{ __('Countries') }}
                                         </a>
@@ -241,13 +241,13 @@
                          -->
                     @endif
                     <li class="nav-item">
-                        <a class="nav-link" href="{{url('OwnerSetting')}}">
+                        <a class="nav-link" href="{{url(adminPath().'OwnerSetting')}}">
                             <i class="ni ni-settings-gear-65 text-info"></i> {{ __('Setting') }}
                         </a>
                     </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{url('additionalsettings')}}">
+                            <a class="nav-link" href="{{url(adminPath().'additionalsettings')}}">
                                 <i class="ni ni-settings-gear-65 text-info"></i> {{ __('Additional Settings') }}
                             </a>
                         </li>

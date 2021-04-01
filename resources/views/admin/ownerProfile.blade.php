@@ -25,7 +25,7 @@
                             <a href="#" class="btn btn-sm btn-default float-right">{{ __('Message') }}</a>
                         </div> --}}
                     </div>
-                    <div class="card-body pt-0 pt-md-4">
+                    <div class="card-body pt-0 pt-md-4" style="margin-top: 150px">
 
                         <div class="text-center">
                             <h3>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="{{url('editOwnerProfile')}}" autocomplete="off"  enctype="multipart/form-data">
+                        <form method="post" action="{{url(adminPath().'editOwnerProfile')}}" autocomplete="off"  enctype="multipart/form-data">
                             @csrf
                           
                             <h6 class="heading-small text-muted mb-4">{{ __('Owner information') }}</h6>
@@ -92,7 +92,7 @@
                             </div>
                         </form>
                         <hr class="my-4"/>
-                        <form method="post" action="{{url('changeOwnerPassword')}}" autocomplete="off">
+                        <form method="post" action="{{url(adminPath().'changeOwnerPassword')}}" autocomplete="off">
                             @csrf
                             
                             <h6 class="heading-small text-muted mb-4">{{ __('Change Password') }}</h6>

@@ -136,7 +136,7 @@
                                            
                                         </div>
                                         <div class="tab-pane {{ $status==1?'active':''}}" id="general-v">
-                                                <form method="post" id="company-setting-form" action="{{url('adminSetting/'.$companyData->id)}}" autocomplete="off"
+                                                <form method="post" id="company-setting-form" action="{{url(adminPath().'adminSetting/'.$companyData->id)}}" autocomplete="off"
                                                     enctype="multipart/form-data">
                                                     @csrf
                                                     @method('put')

@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Coupon;
-use App\Setting;
-use Carbon\Carbon;
-use App\Currency;
-use App\User;
-use DB;
-use App\GroceryShop;
 use Auth;
+use App\GroceryShop;
+use App\Shop;
+use App\Setting;
+use App\Currency;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
@@ -22,10 +20,15 @@ class CouponController extends Controller
     public function index()
     {
         //
-      
-       
-    }
+        $s = array();
 
+        $data = Coupon::orderBy('id', 'DESC')->get();
+
+        $currency_code = Setting::where('id',1)->first()->currency;
+        // $currency = Currency::where('code',$currency_code)->first()->symbol;
+
+        return view('admin.coupon.viewCoupon',['coupons'=>$data]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -35,7 +38,8 @@ class CouponController extends Controller
     public function create()
     {
         //
-       
+        // $shop = GroceryShop::where('user_id',Auth::user()->id)->get();
+        return view('admin.coupon.addGroceryCoupon');
     }
 
     /**
@@ -47,16 +51,34 @@ class CouponController extends Controller
     public function store(Request $request)
     {
         //
-        
+        $request->validate( [
+            'name' => 'bail|required',
+            'type' => 'bail|required',
+            'discount' => 'bail|required',
+            'max_use' => 'bail|required',
+            'start_date' => 'bail|required',
+            'status' => 'bail|required',
+        ]);
+        $data = $request->all();
+        $date = explode(" to ",$request->start_date);
+        $data['start_date'] = $date[0];
+        $data['end_date'] = $date[1];
+        $data['use_for'] = 'Grocery';
+        $data['code'] = chr(rand(65,90)).chr(rand(65,90)).chr(rand(65,90)).chr(rand(65,90)).'-'.rand(999,10000);
+
+
+
+        Coupon::create($data);
+        return redirect('GroceryCoupon');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Coupon $coupon)
+    public function show($id)
     {
         //
     }
@@ -64,24 +86,21 @@ class CouponController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        //
-        $data = Coupon::where('code',$id)->first();
-        // $shop = Shop::where('user_id',Auth::user()->id)->get();
-        $groceryShop = GroceryShop::where('user_id',Auth::user()->id)->get();
-        return view('admin.coupon.editCoupon',['data'=>$data,'groceryShop'=>$groceryShop ]);
 
+        $data = Coupon::where('code',$id)->first();
+        return view('admin.coupon.editCoupon',['data'=>$data]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -89,7 +108,6 @@ class CouponController extends Controller
         //
         $request->validate( [
             'name' => 'bail|required',
-            'shop_id' => 'bail|required',
             'type' => 'bail|required',
             'discount' => 'bail|required',
             'max_use' => 'bail|required',
@@ -102,6 +120,7 @@ class CouponController extends Controller
             $data['start_date'] = $date[0];
             $data['end_date'] = $date[1];
         }
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $name = time() . '.' . $image->getClientOriginalExtension();
@@ -110,13 +129,13 @@ class CouponController extends Controller
             $data['image'] = $name;
         }
         Coupon::find($id)->update($data);
-        return redirect('Coupon');
+        return redirect(adminPath().'Coupon');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -131,42 +150,14 @@ class CouponController extends Controller
         }
     }
 
-    public function viewCoupon(){
+    public function viewGroceryCoupon(){
         $data = Coupon::where([['status',0],['use_for','Grocery']])->orderBy('id', 'DESC')->get();
         return response()->json(['msg' => null, 'data' => $data,'success'=>true], 200);
     }
 
-    public function chkCoupon(Request $request){
-        $request->validate( [
-            'code' => 'bail|required',
-            // 'date' => 'bail|required|date_format:Y-m-d',
-        ]);
-        $date = Carbon::now()->format('Y-m-d');
-
-        $data = Coupon::where([['code',$request->code],['status',0]])->first();
-        if($data){
-            if (Carbon::parse($date)->between(Carbon::parse($data->start_date),Carbon::parse($data->end_date))){
-                if($data->max_use<=$data->use_count){
-                    return response()->json(['success'=>false,'msg'=>'This coupon is expire!' ,'data' =>null ], 200);
-                }
-                else{
-                    return response()->json(['success'=>true,'msg'=>null ,'data' =>$data ], 200);
-                }
-            }
-            else{
-                return response()->json(['success'=>false,'msg'=>'This coupon is expire!' ,'data' =>null ], 200);
-            }
-        }
-        else{
-            return response()->json(['success'=>false,'msg'=>'Invalid Coupon code!' ,'data' =>null ], 200);
-        }
-    }
-
-    public function viewShopCoupon($id){
+    public function viewGroceryShopCoupon($id){
         $data = Coupon::where([['shop_id',$id],['status',0],['use_for','Grocery']])->orderBy('id', 'DESC')->get();
         return response()->json(['msg' => null, 'data' => $data,'success'=>true], 200);
     }
-
-
 
 }

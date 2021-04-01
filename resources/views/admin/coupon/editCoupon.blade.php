@@ -22,14 +22,14 @@
                                         @if($data->use_for =="Food")
                                         <a href="{{ url('Coupon') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                                         @elseif($data->use_for =="Grocery")
-                                        <a href="{{ url('GroceryCoupon') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
+                                        <a href="{{ url(adminPath().'Coupon') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
 
-                                <form method="post" id="add-coupon-form" action="{{url('GroceryCoupon/'.$data->id)}}" autocomplete="off" enctype="multipart/form-data" >
+                                <form method="post" id="add-coupon-form" action="{{url(adminPath().'Coupon/'.$data->id)}}" autocomplete="off" enctype="multipart/form-data" >
 
                                     @csrf
                                     @method('put')

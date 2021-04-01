@@ -16,7 +16,7 @@
                                     <h3 class="mb-0">{{ __('Category') }}</h3>
                                 </div>
                                 <div class="col-4 text-right">
-                                    <a href="{{url('Category/create')}}" class="btn btn-sm btn-primary">{{ __('Add New Category') }}</a>
+                                    <a href="{{url(adminPath().'Category/create')}}" class="btn btn-sm btn-primary">{{ __('Add New Category') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                                                                 <i class="fas fa-ellipsis-v"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                                <a class="dropdown-item" href="{{url('Category/'.$category->id.'/edit')}}">{{ __('Edit') }}</a>
+                                                                <a class="dropdown-item" href="{{url(adminPath().'Category/'.$category->id.'/edit')}}">{{ __('Edit') }}</a>
                                                                 <a class="dropdown-item " onclick="deleteData('Category','{{$category->id}}');" href="#">{{ __('Delete') }}</a>
                                                                 {{-- onclick="deleteData('Category','{{$category->id}}');" --}}
                                                             </div>

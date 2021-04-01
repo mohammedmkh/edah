@@ -4,7 +4,7 @@
     @include('admin.layout.topHeader', [
         'title' => __('Invoice') ,
         'headerData' => __('Orders') ,
-        'url' => 'ViewOrder' ,
+        'url' => 'GroceryOrder' ,
         'class' => 'col-lg-7'
     ]) 
     <div class="container-fluid mt--7">
@@ -15,7 +15,7 @@
                         <div class="card-header border-0">
                             <div class="row align-items-center">
                                 <div class="col-12 text-right" >
-                                    <a href="{{url('printInvoice/'.$data->id.$data->order_no)}}"  target="_blank"><button class="btn btn-primary" type="button">Print</button></a>
+                                    <a href="{{url('printGroceryInvoice/'.$data->id.$data->order_no)}}"  target="_blank"><button class="btn btn-primary" type="button">Print</button></a>
                                     {{-- <h3 class="mb-0">{{ __('Invoice') }}</h3> --}}
                                 </div>
                                 {{-- <div class="col-4 text-right">
@@ -72,11 +72,9 @@
                                         @foreach ($data->orderItem as $item)                                        
                                             <tr>
                                                 <td>{{$loop->iteration}}</td>
-                                                @if($item->item==null)
-                                                    <td>{{ $item->packageName }}</td>
-                                                @else 
-                                                    <td>{{ $item->itemName }}</td>
-                                                @endif
+                                               
+                                                <td>{{ $item->itemName }}</td>
+                                                
                                                 <td>{{ $item->quantity}}</td>
                                                 <td>{{ $currency.$item->price.'.00'}}</td>                                               
                                             </tr> 
@@ -89,10 +87,10 @@
                             <div class="table-bottom mt-5  mb-5">
                                 <div class="row">
                                     <div class="col-12 text-right">
-                                        <h3><span>Items Total : </span>{{$currency.$total.'.00'}}</h3>
-                                        <h3><span>Shop Charge : </span>{{$currency.$data->shop_charge.'.00'}}</h3>
+                                        <h3><span>Items Total : </span>{{$currency.$total.'.00'}}</h3>                                      
                                         <h3><span>Delivery Charge : </span>{{$currency.$data->delivery_charge.'.00'}}</h3>
-                                        <h3><span>Total Payment : </span>{{$currency}}{{$total + $data->shop_charge + $data->delivery_charge}}.00</h3>
+                                        <h3><span>Coupon Discount : </span>{{$currency.$data->coupon_price.'.00'}}</h3>
+                                        <h3><span>Total Payment : </span>{{$currency}}{{$total  + $data->delivery_charge - $data->coupon_price}}.00</h3>
                                     </div>
                                 </div>
                             </div>

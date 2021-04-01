@@ -19,7 +19,7 @@ class Category extends Model
 
     public function getImagePathAttribute()
     {
-        return url('images/upload') . '/';
+        return url('images/upload') . '/'.$this->image;
     }
 
 
