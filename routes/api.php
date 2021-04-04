@@ -92,6 +92,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
     Route::post('setSupplierPriceOffer', 'UsersApiController@setSupplierPriceOffer');
     Route::post('initOrder', 'UsersApiController@initOrder');
 
+
+    Route::post('acceptOrderOrDeny', 'UsersApiController@acceptOrderOrDeny');
+
+
     Route::get('getOrdersNotEnd', 'UsersApiController@getOrdersNotEnd');
     Route::get('getOrders', 'UsersApiController@getOrders');
 

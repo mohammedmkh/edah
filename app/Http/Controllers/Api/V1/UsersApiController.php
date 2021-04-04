@@ -1059,10 +1059,13 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $user_id = Auth::guard('api')->id();
+        $owner_id = Auth::guard('api')->id();
         $setLocation = User::find($user_id);
         $setLocation->update(['lat' => $data['lat'], 'lang' => $data['lang']]);
         $lat = $setLocation->lat;
         $lang = $setLocation->lang;
+
+        $max_avali = 15 ;
 
         $avilableTechnical = DB::table("users");
         $order_minimum_value = DB::table("general_setting")->select('order_minimum_value')->get();
@@ -1079,22 +1082,70 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $avilableTechnical = $avilableTechnical->where('role', 3);
         $avilableTechnical = $avilableTechnical->get();
         $data = array();
-        foreach ($avilableTechnical as $kay => $value) {
 
-            foreach ($value as $kay1 => $value1) {
 
-                $data[$kay1] = $value1;
-                $data['price'] = $order_minimum_value[0]->order_minimum_value;
-            }
+        //// this data to be payload in notification
+
+        $data_order['user_id'] = Auth::guard('api')->id();
+        $data_order['category_id'] =$request->category_id;
+        $data_order['note'] =$request->category_id;
+        $order = Order::create($data_order);
+
+
+
+        $action['order_id'] = $order ->id ;
+        $action['name'] = $order->userOrder->name ;
+        $action['image'] = $order->userOrder->imagePath ;
+        $action['phone'] = $order->userOrder->phone ;
+        $action['lat'] = $order->userOrder->lat ;
+        $action['lang'] = $order->userOrder->lang ;
+        $action['note'] = $order->note ;
+
+
+        foreach ($avilableTechnical as $tech) {
+
+
+                $d['price'] = $order_minimum_value[0]->order_minimum_value;
+                $d['name'] =$tech->name;
+                $d['distance'] =$tech->distance;
+                $data[] =$d ;
+
+                // send notification to Technician To Show This Order
+
+                $user_id = $tech->id ;
+                $tokens =Devicetoken::where('user_id', $user_id)->first();
+                $title  = 'هعملية بحث عن فني ';
+                $body   = 'هناك طلب من عميل يبحث عن فني ';
+                $data_fcm['action_type']   = 'initiateorder' ;
+                $data_fcm['action_id']   = $order ->id;
+                $data_fcm['action']   = (Object)$action;
+                $data_fcm['user_id']   =  $user_id ;
+                $data_fcm['date']   = Carbon::now()->timestamp ;
+                $data_fcm['title']   = $title ;
+                $data_fcm['body']   = $body ;
+
+                sendFCM($title, $body,  $data_fcm, $tokens , 1 ,1);
+
+
+
+
+                // save the tech how is display in search
+
+                $ordertech = new App\Ordertech ;
+                $ordertech->order_id = $order ->id;
+                $ordertech->tech_id = $user_id ;
+                $ordertech->user_id = $owner_id ;
+                $ordertech->save();
+            
 
 
         }
 
-        /* $collection = collect($avilableTechnical);
-         $merged = $collection->merge(['price'=> $order_minimum_value]);
-         $merged->all();*/
+        //dd($data);
+
+
         $message = __('api.success');
-        return jsonResponse(true, $message, $data, 200);
+        return jsonResponse(true, $message, null, 200);
 
 
     }
@@ -1401,6 +1452,45 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
 
+    public  function acceptOrderOrDeny(Request $request){
+        $user = Auth::guard('api')->user();
+        $is_exist_ordertech = App\Ordertech::where('order_id' , $request->order_id)
+            ->where('tech_id' ,$user->id )->first();
+        if( $is_exist_ordertech ){
+            $is_exist_ordertech ->status = $request->accept;
+            $is_exist_ordertech ->save();
+
+            //send Notification To Owner Order  --- The Client ---
+
+            if($request->accept == 1){
+                $action['name']= $is_exist_ordertech->technician->name;
+                $action['image']= $is_exist_ordertech->technician->imagePath;
+                $action['distance']= $is_exist_ordertech->distance;
+                $action['min_order'] = $is_exist_ordertech->technician->techstore->min_order_value ;
+
+                $user_id =  $is_exist_ordertech ->user_id ;
+                $tokens =Devicetoken::where('user_id', $user_id)->first();
+                $title  = 'اضافة فني في نتائج البحث';
+                $body   = 'تم اضافة فني لديك في شاشة البحث عن فنيين ';
+                $data_fcm['action_type']   = 'acceptordenyorder' ;
+                $data_fcm['action_id']   = $is_exist_ordertech ->id;
+                $data_fcm['action']   = (Object)$action;
+                $data_fcm['user_id']   =  $user_id ;
+                $data_fcm['date']   = Carbon::now()->timestamp ;
+                $data_fcm['title']   = $title ;
+                $data_fcm['body']   = $body ;
+
+                sendFCM($title, $body,  $data_fcm, $tokens , 1 ,1);
+            }
+
+
+
+        }
+
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, null, 200);
+    }
 
 
 

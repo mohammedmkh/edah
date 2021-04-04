@@ -151,6 +151,7 @@ function sendFCM($title, $body, $data, $tokens, $badge)
     $notif-> title = $data['title'] ;
     $notif-> body = $data['body']  ;
     $notif-> is_read = 0 ;
+    $notif-> action = json_encode($data['action'] )  ;
     $date = Carbon\Carbon::now()->toDateTimeString();
     if($date){
         $notif-> date =   $date;
@@ -166,7 +167,7 @@ function sendFCM($title, $body, $data, $tokens, $badge)
 
 
 
-    $user = User::where('id' , $notif->user_id)->where('active_notif' , 1)->first() ;
+    $user = User::where('id' , $notif->user_id)->first() ;
     if($user){
 
         $count_unread=\App\Notifications::where('user_id' , $data['user_id'] )->where('is_read' , 0 )->count();
@@ -175,7 +176,7 @@ function sendFCM($title, $body, $data, $tokens, $badge)
         $newData['action_type'] = $data['action_type'] ;
         $newData['action_id'] = $data['action_id'] ;
         $newData['date'] = $data['date'] ;
-
+        $newData['action'] = $data['action'] ;
 
         $optionBuilder = new \LaravelFCM\Message\OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
