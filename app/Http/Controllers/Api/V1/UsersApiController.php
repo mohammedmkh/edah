@@ -1065,7 +1065,9 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $lat = $setLocation->lat;
         $lang = $setLocation->lang;
 
-        $max_avali = 15 ;
+
+        $distance=15;
+
 
         $avilableTechnical = DB::table("users");
         $order_minimum_value = DB::table("general_setting")->select('order_minimum_value')->get();
@@ -1074,14 +1076,16 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $avilableTechnical = $avilableTechnical->select("users.name", "users.role", "users.id",
             DB::raw("round(6371 * acos(cos(radians(" . $lat . "))
                      * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
-                     + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance"),
+                     + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance "),
             DB::raw("AVG(user_evaluations.evaluation_no) as evaluation")
         );
         $avilableTechnical->groupBy('users.id');
         $avilableTechnical = $avilableTechnical->orderBy('distance', 'asc');
         $avilableTechnical = $avilableTechnical->where('role', 3);
         $avilableTechnical = $avilableTechnical->get();
+
         $data = array();
+
 
 
         //// this data to be payload in notification
@@ -1090,7 +1094,6 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $data_order['category_id'] =$request->category_id;
         $data_order['note'] =$request->category_id;
         $order = Order::create($data_order);
-
 
 
         $action['order_id'] = $order ->id ;
@@ -1104,39 +1107,51 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
         foreach ($avilableTechnical as $tech) {
 
+            $max_distance_tech = $tech->driver_radius;
+             // if( $max_distance_tech >= $tech->distance  ) { //my max distance  // search result;
 
-                $d['price'] = $order_minimum_value[0]->order_minimum_value;
-                $d['name'] =$tech->name;
-                $d['distance'] =$tech->distance;
-                $data[] =$d ;
+                  $d['price'] = $order_minimum_value[0]->order_minimum_value;
+                  $d['name'] = $tech->name;
+                  $d['distance'] = $tech->distance;
+                  $data[] = $d;
 
-                // send notification to Technician To Show This Order
+                  // send notification to Technician To Show This Order
 
-                $user_id = $tech->id ;
-                $tokens =Devicetoken::where('user_id', $user_id)->first();
-                $title  = 'هعملية بحث عن فني ';
-                $body   = 'هناك طلب من عميل يبحث عن فني ';
-                $data_fcm['action_type']   = 'initiateorder' ;
-                $data_fcm['action_id']   = $order ->id;
-                $data_fcm['action']   = (Object)$action;
-                $data_fcm['user_id']   =  $user_id ;
-                $data_fcm['date']   = Carbon::now()->timestamp ;
-                $data_fcm['title']   = $title ;
-                $data_fcm['body']   = $body ;
+                  $user_id = $tech->id;
+                  $tokens = Devicetoken::where('user_id', $user_id)->first();
+                  $title = 'عملية بحث عن فني ';
+                  $body = 'هناك طلب من عميل يبحث عن فني ';
+                  $data_fcm['action_type'] = 'initiateorder';
+                  $data_fcm['action_id'] = $order->id;
+                  $data_fcm['action'] = (Object)$action;
+                  $data_fcm['user_id'] = $user_id;
+                  $data_fcm['date'] = Carbon::now()->timestamp;
+                  $data_fcm['title'] = $title;
+                  $data_fcm['body'] = $body;
 
-                sendFCM($title, $body,  $data_fcm, $tokens , 1 ,1);
-
-
+                  sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
 
 
-                // save the tech how is display in search
+                  // save the tech how is display in search
 
-                $ordertech = new App\Ordertech ;
-                $ordertech->order_id = $order ->id;
-                $ordertech->tech_id = $user_id ;
-                $ordertech->user_id = $owner_id ;
-                $ordertech->save();
-            
+                  $ordertech = new App\Ordertech;
+                  $ordertech->order_id = $order->id;
+                  $ordertech->tech_id = $user_id;
+                  $ordertech->user_id = $owner_id;
+                  $ordertech->save();
+
+           //  }
+
+                /*
+            foreach ($value as $kay1 => $value1) {
+                $getDriverRadius=TechStoreUser::where('user_id',$value->id)->first()['driver_radius'];
+
+                if( intval($getDriverRadius) >= intval($value->distance)  ) {
+                    $data[$kay1] = $value1;
+                    $data['price'] = $order_minimum_value[0]->order_minimum_value;
+                }
+            }*/
+
 
 
         }
@@ -1145,7 +1160,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         $message = __('api.success');
-        return jsonResponse(true, $message, null, 200);
+        return jsonResponse(true, $message,   $data, 200);
 
 
     }
