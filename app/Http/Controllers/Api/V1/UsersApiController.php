@@ -1063,6 +1063,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $setLocation->update(['lat' => $data['lat'], 'lang' => $data['lang']]);
         $lat = $setLocation->lat;
         $lang = $setLocation->lang;
+        $destence=15;
 
         $avilableTechnical = DB::table("users");
         $order_minimum_value = DB::table("general_setting")->select('order_minimum_value')->get();
@@ -1071,7 +1072,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $avilableTechnical = $avilableTechnical->select("users.name", "users.role", "users.id",
             DB::raw("round(6371 * acos(cos(radians(" . $lat . "))
                      * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
-                     + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance"),
+                     + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance "),
             DB::raw("AVG(user_evaluations.evaluation_no) as evaluation")
         );
         $avilableTechnical->groupBy('users.id');
@@ -1082,9 +1083,12 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         foreach ($avilableTechnical as $kay => $value) {
 
             foreach ($value as $kay1 => $value1) {
+                $getDriverRadius=TechStoreUser::where('user_id',$value->id)->first()['driver_radius'];
 
-                $data[$kay1] = $value1;
-                $data['price'] = $order_minimum_value[0]->order_minimum_value;
+                if( intval($getDriverRadius) >= intval($value->distance)  ) {
+                    $data[$kay1] = $value1;
+                    $data['price'] = $order_minimum_value[0]->order_minimum_value;
+                }
             }
 
 
