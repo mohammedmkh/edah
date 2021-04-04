@@ -45,7 +45,7 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -92,7 +92,7 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -108,10 +108,10 @@ class UsersApiController extends Controller
         }
 
 
-        if ($user && $user->is_complete_register == 1 ) {
+        if ($user && $user->is_complete_register == 1) {
             $message_error = __('api.user_exist_before');
             return jsonResponse(false, $message_error, null, 104);
-        }else{
+        } else {
             $user = new User;
         }
 
@@ -139,8 +139,8 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false, $message , null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
 
@@ -155,11 +155,10 @@ class UsersApiController extends Controller
         }
 
 
-
-        if ($user && $user->is_complete_register == 1 ) {
+        if ($user && $user->is_complete_register == 1) {
             $message_error = __('api.user_exist_before');
             return jsonResponse(false, $message_error, null, 104);
-        }else{
+        } else {
             $user = new User;
         }
 
@@ -189,7 +188,7 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -249,7 +248,7 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -292,7 +291,7 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $data['user_id'] = Auth::guard('api')->id();
@@ -316,8 +315,8 @@ class UsersApiController extends Controller
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,$message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
         //
@@ -328,21 +327,20 @@ class UsersApiController extends Controller
             }
 
 
-
-            Devicetoken::where('device_token',  $request->device_token )->delete();
-            $device = Devicetoken::where('user_id' ,  $user->id)->first();
-            if($device){
-                Devicetoken::where('user_id', $user->id )->where('id' ,'<>' ,$device->id)->delete();
-            }else{
-                $device =new  Devicetoken;
+            Devicetoken::where('device_token', $request->device_token)->delete();
+            $device = Devicetoken::where('user_id', $user->id)->first();
+            if ($device) {
+                Devicetoken::where('user_id', $user->id)->where('id', '<>', $device->id)->delete();
+            } else {
+                $device = new  Devicetoken;
             }
-            $device->device_type = $request->device_type ;
-            $device->device_token = $request->device_token ;
-            $device->user_id = $user->id ;
+            $device->device_type = $request->device_type;
+            $device->device_token = $request->device_token;
+            $device->user_id = $user->id;
             $device->save();
 
             ///  delete access token this user
-            DB::table('oauth_access_tokens')->where('user_id' , $user->id)->delete();
+            DB::table('oauth_access_tokens')->where('user_id', $user->id)->delete();
 
 
             $tokenRequest = $request->create('/oauth/token', 'POST', $request->all());
@@ -385,7 +383,6 @@ class UsersApiController extends Controller
     }
 
 
-
     public function loginSupplier(Request $request)
     {
 
@@ -397,8 +394,8 @@ class UsersApiController extends Controller
         // dd('login');
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,$message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
         //
@@ -407,8 +404,6 @@ class UsersApiController extends Controller
             if ($user->verify != 1 | $user->is_complete_register != 1) {
                 return jsonResponse(false, __('api.wrong_verify_person'), null, 106, null, null, $validator);
             }
-
-
 
 
             $tokenRequest = $request->create('/oauth/token', 'POST', $request->all());
@@ -425,19 +420,19 @@ class UsersApiController extends Controller
             $json = (array)json_decode($response->getContent());
 
 
-            Devicetoken::where('device_token',  $request->device_token )->delete();
-            $device = Devicetoken::where('user_id' ,  $user->id)->first();
-            if($device){
-                Devicetoken::where('user_id', $user->id )->where('id' ,'<>' ,$device->id)->delete();
-            }else{
-                $device =new  Devicetoken;
+            Devicetoken::where('device_token', $request->device_token)->delete();
+            $device = Devicetoken::where('user_id', $user->id)->first();
+            if ($device) {
+                Devicetoken::where('user_id', $user->id)->where('id', '<>', $device->id)->delete();
+            } else {
+                $device = new  Devicetoken;
             }
-            $device->device_type = $request->device_type ;
-            $device->device_token = $request->device_token ;
-            $device->user_id = $user->id ;
+            $device->device_type = $request->device_type;
+            $device->device_token = $request->device_token;
+            $device->user_id = $user->id;
             $device->save();
 
-           // return $json;
+            // return $json;
 
             if (isset($json['error'])) {
                 $message = __('api.wrong_login');
@@ -465,7 +460,6 @@ class UsersApiController extends Controller
     }
 
 
-
     public function myInfo(Request $request)
     {
         $user = Auth::guard('api')->user();
@@ -475,37 +469,37 @@ class UsersApiController extends Controller
     }
 
 
-    public  function updateProfile(Request $request){
+    public function updateProfile(Request $request)
+    {
 
         $user = Auth::guard('api')->user();
 
         $validator = Validator::make($request->all(), [
-            'phone' => 'numeric|unique:users,phone,'.  $user->id . ',id',
-            'email' => 'unique:users,email,' .  $user->id . ',id',
+            'phone' => 'numeric|unique:users,phone,' . $user->id . ',id',
+            'email' => 'unique:users,email,' . $user->id . ',id',
         ]);
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,  $message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
-        if($request->email){
-            $user->email = $request->email ;
+        if ($request->email) {
+            $user->email = $request->email;
         }
 
-        if($request->phone){
-            $user->phone = $request->phone ;
+        if ($request->phone) {
+            $user->phone = $request->phone;
         }
-        if($request->name){
-            $user->name = $request->name ;
+        if ($request->name) {
+            $user->name = $request->name;
         }
-        if(isset($request->password) && $request->password != ''){
-            $user->password =  bcrypt($request->password);
+        if (isset($request->password) && $request->password != '') {
+            $user->password = bcrypt($request->password);
         }
 
         $user->save();
-
 
 
         $message = __('api.success');
@@ -522,7 +516,7 @@ class UsersApiController extends Controller
             'lang' => 'required',
         ]);
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $lat = $request->lat;
@@ -586,14 +580,13 @@ class UsersApiController extends Controller
     }
 
 
-
     public function searchCategory(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'key' => 'required',
         ]);
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $key = $request->key;
@@ -626,8 +619,8 @@ class UsersApiController extends Controller
             'key' => 'required',
         ]);
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,  $message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $key = $request->key;
 
@@ -662,8 +655,6 @@ class UsersApiController extends Controller
     }
 
 
-
-
     public function docsOfStore(Request $request)
     {
 
@@ -696,29 +687,26 @@ class UsersApiController extends Controller
     public function getOrders(Request $request)
     {
 
-        $auth= Auth::guard('api')->user();
-        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id' ])->Where('technical_id' ,  $auth->id )->paginate(10);
+        $auth = Auth::guard('api')->user();
+        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id'])->Where('technical_id', $auth->id)->paginate(10);
         if ($request->id) {
 
-            $data = Order::where('status', $request->id)->Where('technical_id' ,  $auth->id )->with(['userOrder:id,name,phone', 'categoryOrder:id'])->paginate(10);
+            $data = Order::where('status', $request->id)->Where('technical_id', $auth->id)->with(['userOrder:id,name,phone', 'categoryOrder:id'])->paginate(10);
         }
-        return jsonResponse( true  , __('api.success'),$data->items() , 200 , $data->currentPage(), $data->lastPage() );
-
+        return jsonResponse(true, __('api.success'), $data->items(), 200, $data->currentPage(), $data->lastPage());
 
 
     }
 
     public function getOrdersNotEnd(Request $request)
     {
-        $auth= Auth::guard('api')->user();
-        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id' ])->where('status' , '==' , 1)->Where('technical_id' ,  $auth->id )->paginate(10);
+        $auth = Auth::guard('api')->user();
+        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id'])->where('status', '==', 1)->Where('technical_id', $auth->id)->paginate(10);
 
-        return jsonResponse( true  , __('api.success'),$data->items() , 200 , $data->currentPage(), $data->lastPage() );
+        return jsonResponse(true, __('api.success'), $data->items(), 200, $data->currentPage(), $data->lastPage());
 
 
     }
-
-
 
 
     public function registerTechnician(Request $request)
@@ -743,8 +731,8 @@ class UsersApiController extends Controller
         $data = $request->all();
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,  $message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
 
@@ -823,7 +811,7 @@ class UsersApiController extends Controller
     {
 
 
-       // return $this->loginSupplier($request  ) ;
+        // return $this->loginSupplier($request  ) ;
 
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
@@ -835,7 +823,7 @@ class UsersApiController extends Controller
         $data = $request->all();
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -893,9 +881,9 @@ class UsersApiController extends Controller
                 $message = __('api.success');
 
                 $request['phone'] = $user->phone;
-                $request['password'] = $request->password ;
+                $request['password'] = $request->password;
 
-                return $this->loginSupplier( $request ) ;
+                return $this->loginSupplier($request);
 
             } catch (\Exception $e) {
                 \DB::rollback();
@@ -904,8 +892,6 @@ class UsersApiController extends Controller
                 return jsonResponse(false, $message, null, 200);
 
             }
-
-
 
 
         }
@@ -917,14 +903,13 @@ class UsersApiController extends Controller
     }
 
 
-
     public function uploadImage(Request $request)
     {
         if ($request->file) {
 
             $data = [];
             foreach ($request->file as $file) {
-                $file_name = uploadFile($file , 300 , 'images/upload/');
+                $file_name = uploadFile($file, 300, 'images/upload/');
                 $link = 'images/upload/' . $file_name;
 
                 $items['file'] = url('/') . '/' . $link;
@@ -939,7 +924,6 @@ class UsersApiController extends Controller
         $message = __('api.file_has_error');
         return jsonResponse(false, $message, null, 130);
     }
-
 
 
     public function uploadFile(Request $request)
@@ -982,8 +966,8 @@ class UsersApiController extends Controller
             'lang' => 'required',
         ]);
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,$message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $LATITUDE = $request->lat;
         $LONGITUDE = $request->lang;
@@ -1021,19 +1005,19 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,$message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
-        $order= Order::where('id' , $request->order_id)->first();
-       // $cheak_status = OrderStatus::find($data['order_status_id']);
+        $order = Order::where('id', $request->order_id)->first();
+        // $cheak_status = OrderStatus::find($data['order_status_id']);
 
         if (!$order) {
             $message_error = __('api.order status id not found');
             return jsonResponse(false, $message_error, null, 100);
         }
 
-        $order->status = $request->order_status_id ;
+        $order->status = $request->order_status_id;
         $order->save();
 
         $message = __('api.success');
@@ -1055,7 +1039,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $user_id = Auth::guard('api')->id();
@@ -1065,92 +1049,97 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $lat = $setLocation->lat;
         $lang = $setLocation->lang;
 
-
-        $distance=15;
-
-
-        $avilableTechnical = DB::table("users");
+        $distance = 15;
         $order_minimum_value = DB::table("general_setting")->select('order_minimum_value')->get();
-        $avilableTechnical->leftjoin('user_evaluations', 'user_evaluations.evaluated_user_id', '=', 'users.id');
 
-        $avilableTechnical = $avilableTechnical->select("users.name", "users.role", "users.id",
-            DB::raw("round(6371 * acos(cos(radians(" . $lat . "))
-                     * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
-                     + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance "),
-            DB::raw("AVG(user_evaluations.evaluation_no) as evaluation")
-        );
-        $avilableTechnical->groupBy('users.id');
-        $avilableTechnical = $avilableTechnical->orderBy('distance', 'asc');
-        $avilableTechnical = $avilableTechnical->where('role', 3);
-        $avilableTechnical = $avilableTechnical->get();
+        $avilableTechnical = DB::select("
+SELECT users.id ,
+users.role ,
+users.lat ,
+users.lang ,
+users.distance,
+AVG(user_evaluations.evaluation_no) as evaluation,
+ technicians_stores.driver_radius FROM (
+    SELECT *,
+        (
+            (
+                (
+                    acos(
+                        sin(( {$lat} * pi() / 180))
+                        *
+                        sin(( `lat` * pi() / 180)) + cos(( {$lat} * pi() /180 ))
+                        *
+                        cos(( `lat` * pi() / 180)) * cos((( {$lang} - `lang`) * pi()/180)))
+                ) * 180/pi()
+            ) * 60 * 1.1515 * 1.609344
+        )
+    as distance FROM `users`
+)
+ `users` LEFT JOIN  technicians_stores ON technicians_stores.user_id = users.id
+          LEFT JOIN  user_evaluations ON user_evaluations.evaluated_user_id = users.id
+
+WHERE distance <= {$distance} and role =3
+GROUP BY users.id
+order BY distance asc
+");
+    
 
         $data = array();
-
 
 
         //// this data to be payload in notification
 
         $data_order['user_id'] = Auth::guard('api')->id();
-        $data_order['category_id'] =$request->category_id;
-        $data_order['note'] =$request->category_id;
+        $data_order['category_id'] = $request->category_id;
+        $data_order['note'] = $request->category_id;
         $order = Order::create($data_order);
 
 
-        $action['order_id'] = $order ->id ;
-        $action['name'] = $order->userOrder->name ;
-        $action['image'] = $order->userOrder->imagePath ;
-        $action['phone'] = $order->userOrder->phone ;
-        $action['lat'] = $order->userOrder->lat ;
-        $action['lang'] = $order->userOrder->lang ;
-        $action['note'] = $order->note ;
+        $action['order_id'] = $order->id;
+        $action['name'] = $order->userOrder->name;
+        $action['image'] = $order->userOrder->imagePath;
+        $action['phone'] = $order->userOrder->phone;
+        $action['lat'] = $order->userOrder->lat;
+        $action['lang'] = $order->userOrder->lang;
+        $action['note'] = $order->note;
 
 
         foreach ($avilableTechnical as $tech) {
 
             $max_distance_tech = $tech->driver_radius;
-             // if( $max_distance_tech >= $tech->distance  ) { //my max distance  // search result;
+            if ($max_distance_tech >= $tech->distance) { //my max distance  // search result;
 
-                  $d['price'] = $order_minimum_value[0]->order_minimum_value;
-                  $d['name'] = $tech->name;
-                  $d['distance'] = $tech->distance;
-                  $data[] = $d;
+                $d['price'] = $order_minimum_value[0]->order_minimum_value;
+                $d['name'] = $tech->name;
+                $d['distance'] = $tech->distance;
+                $data[] = $d;
 
-                  // send notification to Technician To Show This Order
+                // send notification to Technician To Show This Order
 
-                  $user_id = $tech->id;
-                  $tokens = Devicetoken::where('user_id', $user_id)->first();
-                  $title = 'عملية بحث عن فني ';
-                  $body = 'هناك طلب من عميل يبحث عن فني ';
-                  $data_fcm['action_type'] = 'initiateorder';
-                  $data_fcm['action_id'] = $order->id;
-                  $data_fcm['action'] = (Object)$action;
-                  $data_fcm['user_id'] = $user_id;
-                  $data_fcm['date'] = Carbon::now()->timestamp;
-                  $data_fcm['title'] = $title;
-                  $data_fcm['body'] = $body;
+                $user_id = $tech->id;
+                $tokens = Devicetoken::where('user_id', $user_id)->first();
+                $title = 'عملية بحث عن فني ';
+                $body = 'هناك طلب من عميل يبحث عن فني ';
+                $data_fcm['action_type'] = 'initiateorder';
+                $data_fcm['action_id'] = $order->id;
+                $data_fcm['action'] = (object)$action;
+                $data_fcm['user_id'] = $user_id;
+                $data_fcm['date'] = Carbon::now()->timestamp;
+                $data_fcm['title'] = $title;
+                $data_fcm['body'] = $body;
 
-                  sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
+                sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
 
 
-                  // save the tech how is display in search
+                // save the tech how is display in search
 
-                  $ordertech = new App\Ordertech;
-                  $ordertech->order_id = $order->id;
-                  $ordertech->tech_id = $user_id;
-                  $ordertech->user_id = $owner_id;
-                  $ordertech->save();
+                $ordertech = new App\Ordertech;
+                $ordertech->order_id = $order->id;
+                $ordertech->tech_id = $user_id;
+                $ordertech->user_id = $owner_id;
+                $ordertech->save();
 
-           //  }
-
-                /*
-            foreach ($value as $kay1 => $value1) {
-                $getDriverRadius=TechStoreUser::where('user_id',$value->id)->first()['driver_radius'];
-
-                if( intval($getDriverRadius) >= intval($value->distance)  ) {
-                    $data[$kay1] = $value1;
-                    $data['price'] = $order_minimum_value[0]->order_minimum_value;
-                }
-            }*/
+            }
 
 
 
@@ -1160,7 +1149,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         $message = __('api.success');
-        return jsonResponse(true, $message,   $data, 200);
+        return jsonResponse(true, $message, $data, 200);
 
 
     }
@@ -1177,8 +1166,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,$message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
         $user_id = Auth::guard('api')->id();
         $setLocation = User::find($user_id);
@@ -1221,7 +1210,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -1246,7 +1235,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -1271,24 +1260,24 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
-        $is_exist = UserEvaluation::where('order_id' , $request->order_id)->where('type' ,2)->first();
-        if($is_exist){
-            $message ='api.you_evaluted_user_before' ;
+        $is_exist = UserEvaluation::where('order_id', $request->order_id)->where('type', 2)->first();
+        if ($is_exist) {
+            $message = 'api.you_evaluted_user_before';
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
-        $order = Order::where('id' ,$request->order_id)->first();
-        if(  $order ){
-            $evaluated_user_id =  $order ->user_id;
+        $order = Order::where('id', $request->order_id)->first();
+        if ($order) {
+            $evaluated_user_id = $order->user_id;
         }
 
         $data['evaluator_user_id'] = Auth::guard('api')->id();
-        $data['evaluated_user_id'] =  $evaluated_user_id;
-        $data['type'] = 2 ;
+        $data['evaluated_user_id'] = $evaluated_user_id;
+        $data['type'] = 2;
         $TechnicianEvaluation = UserEvaluation::create($data);
 
         $message = __('api.success');
@@ -1298,16 +1287,18 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
     }
 
 
-    public function searchStoreByName(Request $request){
+    public function searchStoreByName(Request $request)
+    {
 
-        $users = User::where('name' , 'like' , '%' .$request->key. '%')->get();
+        $users = User::where('name', 'like', '%' . $request->key . '%')->get();
 
         $message = __('api.success');
-        return jsonResponse(true, $message,  $users, 200);
+        return jsonResponse(true, $message, $users, 200);
 
     }
 
-    public  function searchStores(Request $request){
+    public function searchStores(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'lat' => 'required|numeric',
@@ -1316,8 +1307,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
-            return jsonResponse(false,$message, null, 111, null, null, $validator);
+            $message = getFirstMessageError($validator);
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
         $lat = $request->lat;
@@ -1326,7 +1317,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $avilableSuppliers = DB::table("users");
         $avilableSuppliers->leftjoin('user_evaluations', 'user_evaluations.evaluated_user_id', '=', 'users.id');
 
-        $avilableSuppliers = $avilableSuppliers->select("users.name", "users.id", "users.phone",'users.lat','users.lang',
+        $avilableSuppliers = $avilableSuppliers->select("users.name", "users.id", "users.phone", 'users.lat', 'users.lang',
             DB::raw("round(6371 * acos(cos(radians(" . $lat . "))
                      * cos(radians(lat)) * cos(radians(lang) - radians(" . $lang . "))
                      + sin(radians(" . $lat . ")) * sin(radians(lat)))) AS distance"),
@@ -1351,24 +1342,22 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $validator = Validator::make($request->all(), [
             'status' => 'required',
             'price' => 'numeric',
-            'offer_id' =>'required'
+            'offer_id' => 'required'
         ]);
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
 
-
-
-        $setSupplierPriceOffer = SupplierPriceOffer::where('id' , $request->offer_id)->first();
-        if(   $setSupplierPriceOffer){
-            $setSupplierPriceOffer->status = $request->status ;
-            $setSupplierPriceOffer->price = $request->price ;
-            $setSupplierPriceOffer->detail = $request->detail ;
-            $setSupplierPriceOffer->document = $request->document ;
+        $setSupplierPriceOffer = SupplierPriceOffer::where('id', $request->offer_id)->first();
+        if ($setSupplierPriceOffer) {
+            $setSupplierPriceOffer->status = $request->status;
+            $setSupplierPriceOffer->price = $request->price;
+            $setSupplierPriceOffer->detail = $request->detail;
+            $setSupplierPriceOffer->document = $request->document;
 
 
             $setSupplierPriceOffer->save();
@@ -1380,7 +1369,8 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
     }
 
-    public  function addRequestToStore(Request $request){
+    public function addRequestToStore(Request $request)
+    {
 
 
         $data = $request->all();
@@ -1392,7 +1382,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
 
         if ($validator->fails()) {
-            $message =  getFirstMessageError($validator);
+            $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
@@ -1402,19 +1392,18 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
 
         //send notifications to  Store User;
 
-        $user_id = $request->store_id ;
-        $tokens =Devicetoken::where('user_id', $user_id)->first();
-        $title  = 'لديك طلب من تقني ';
-        $body   = 'هناك طلب عرض سعر تم ارساله من تقني';
-        $data['action_type']   = 'addorderstore' ;
-        $data['action_id']   = $setSupplierPriceOffer->id ;
-        $data['user_id']   =  $user_id ;
-        $data['date']   = Carbon::now()->timestamp ;
-        $data['title']   = $title ;
-        $data['body']   = $body ;
+        $user_id = $request->store_id;
+        $tokens = Devicetoken::where('user_id', $user_id)->first();
+        $title = 'لديك طلب من تقني ';
+        $body = 'هناك طلب عرض سعر تم ارساله من تقني';
+        $data['action_type'] = 'addorderstore';
+        $data['action_id'] = $setSupplierPriceOffer->id;
+        $data['user_id'] = $user_id;
+        $data['date'] = Carbon::now()->timestamp;
+        $data['title'] = $title;
+        $data['body'] = $body;
 
-        sendFCM($title, $body,  $data, $tokens , 1 ,1);
-
+        sendFCM($title, $body, $data, $tokens, 1, 1);
 
 
         $message = __('api.success');
@@ -1422,43 +1411,47 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
     }
 
 
-    public  function getNotifications(Request $request){
+    public function getNotifications(Request $request)
+    {
         $user = Auth::guard('api')->user();
-        $notications = Notifications::where('user_id' , $user->id )->paginate(10);
-        $items['data']=$notications->items();
-        $items['count_unread']=Notifications::where('user_id' , $user->id )->where('is_read' , 0 )->count();
+        $notications = Notifications::where('user_id', $user->id)->paginate(10);
+        $items['data'] = $notications->items();
+        $items['count_unread'] = Notifications::where('user_id', $user->id)->where('is_read', 0)->count();
 
-        return jsonResponse( true  , __('api.success'),$items , 200 ,$notications->currentPage(), $notications->lastPage() );
+        return jsonResponse(true, __('api.success'), $items, 200, $notications->currentPage(), $notications->lastPage());
 
     }
 
-    public function readNotification(Request $request){
+    public function readNotification(Request $request)
+    {
         $user = Auth::guard('api')->user();
-        $notications = Notifications::where('user_id' , $user->id )->where('id' , $request->notification_id)->first();
-        if($notications){
-            $notications->is_read = 1 ;
+        $notications = Notifications::where('user_id', $user->id)->where('id', $request->notification_id)->first();
+        if ($notications) {
+            $notications->is_read = 1;
             $notications->save();
         }
-        return jsonResponse( true  , __('api.success'),null, 200 );
+        return jsonResponse(true, __('api.success'), null, 200);
     }
 
-    public function readAllNotification(Request $request ){
+    public function readAllNotification(Request $request)
+    {
         $user = Auth::guard('api')->user();
-        $notications = Notifications::where('user_id' , $user->id )
-            ->where('is_read' , 0)->get();
-        foreach ($notications as $notif){
-            $notif->is_read = 1 ;
+        $notications = Notifications::where('user_id', $user->id)
+            ->where('is_read', 0)->get();
+        foreach ($notications as $notif) {
+            $notif->is_read = 1;
             $notif->save();
         }
 
-        return jsonResponse( true  , __('api.success'),null, 200 );
+        return jsonResponse(true, __('api.success'), null, 200);
     }
 
 
-    public function getRequestToStore(Request $request){
+    public function getRequestToStore(Request $request)
+    {
 
 
-        $setSupplierPriceOffer = SupplierPriceOffer::with('technician')->where('id' , $request->offer_id)->first();
+        $setSupplierPriceOffer = SupplierPriceOffer::with('technician')->where('id', $request->offer_id)->first();
 
         $message = __('api.success');
         return jsonResponse(true, $message, $setSupplierPriceOffer, 200);
@@ -1466,38 +1459,37 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
     }
 
 
-
-    public  function acceptOrderOrDeny(Request $request){
+    public function acceptOrderOrDeny(Request $request)
+    {
         $user = Auth::guard('api')->user();
-        $is_exist_ordertech = App\Ordertech::where('order_id' , $request->order_id)
-            ->where('tech_id' ,$user->id )->first();
-        if( $is_exist_ordertech ){
-            $is_exist_ordertech ->status = $request->accept;
-            $is_exist_ordertech ->save();
+        $is_exist_ordertech = App\Ordertech::where('order_id', $request->order_id)
+            ->where('tech_id', $user->id)->first();
+        if ($is_exist_ordertech) {
+            $is_exist_ordertech->status = $request->accept;
+            $is_exist_ordertech->save();
 
             //send Notification To Owner Order  --- The Client ---
 
-            if($request->accept == 1){
-                $action['name']= $is_exist_ordertech->technician->name;
-                $action['image']= $is_exist_ordertech->technician->imagePath;
-                $action['distance']= $is_exist_ordertech->distance;
-                $action['min_order'] = $is_exist_ordertech->technician->techstore->min_order_value ;
+            if ($request->accept == 1) {
+                $action['name'] = $is_exist_ordertech->technician->name;
+                $action['image'] = $is_exist_ordertech->technician->imagePath;
+                $action['distance'] = $is_exist_ordertech->distance;
+                $action['min_order'] = $is_exist_ordertech->technician->techstore->min_order_value;
 
-                $user_id =  $is_exist_ordertech ->user_id ;
-                $tokens =Devicetoken::where('user_id', $user_id)->first();
-                $title  = 'اضافة فني في نتائج البحث';
-                $body   = 'تم اضافة فني لديك في شاشة البحث عن فنيين ';
-                $data_fcm['action_type']   = 'acceptordenyorder' ;
-                $data_fcm['action_id']   = $is_exist_ordertech ->id;
-                $data_fcm['action']   = (Object)$action;
-                $data_fcm['user_id']   =  $user_id ;
-                $data_fcm['date']   = Carbon::now()->timestamp ;
-                $data_fcm['title']   = $title ;
-                $data_fcm['body']   = $body ;
+                $user_id = $is_exist_ordertech->user_id;
+                $tokens = Devicetoken::where('user_id', $user_id)->first();
+                $title = 'اضافة فني في نتائج البحث';
+                $body = 'تم اضافة فني لديك في شاشة البحث عن فنيين ';
+                $data_fcm['action_type'] = 'acceptordenyorder';
+                $data_fcm['action_id'] = $is_exist_ordertech->id;
+                $data_fcm['action'] = (object)$action;
+                $data_fcm['user_id'] = $user_id;
+                $data_fcm['date'] = Carbon::now()->timestamp;
+                $data_fcm['title'] = $title;
+                $data_fcm['body'] = $body;
 
-                sendFCM($title, $body,  $data_fcm, $tokens , 1 ,1);
+                sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
             }
-
 
 
         }
@@ -1506,7 +1498,6 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $message = __('api.success');
         return jsonResponse(true, $message, null, 200);
     }
-
 
 
 }
