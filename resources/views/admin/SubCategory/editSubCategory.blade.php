@@ -121,7 +121,7 @@
                                                 <img class=" avatar-lg round-5 view-image" style="width: 100%;height: 90px;" src="{{url('images/upload/'.$data->image)}}">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group{{ $errors->has('status') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="input-status">{{ __('Status') }}</label>
                                             <Select name="status" id="input-status" class="form-control form-control-alternative{{ $errors->has('status') ? ' is-invalid' : '' }}"  required>
@@ -161,7 +161,7 @@
 @endsection
 
 
-@section('javascript')
+@section('java_script')
     <script>
 
 

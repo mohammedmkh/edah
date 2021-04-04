@@ -24,6 +24,8 @@
         <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" id="theme" rel="stylesheet">
         <link href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" id="theme" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
         @if(session()->get('locale') == 'english')
             <link href="{{url('admin/css/nucleo.css')}}" rel="stylesheet">
@@ -90,7 +92,7 @@
         <input type="hidden" value="{{Auth::check()?1:0}}" id="auth_role">
         @if(Auth::check())
         <?php $status = \App\Setting::find(1)->license_status; ?>
-           
+
             @include('admin.layout.sidebar')
             <div class="main-content">
                 @include('admin.layout.header')
@@ -102,7 +104,7 @@
                 @include('admin.layout.footer')
             </div>
         {{-- @elseif(Auth::guard('mainAdmin')->check())
-       
+
             @include('admin.layout.sidebar')
             <div class="main-content">
                 @include('admin.layout.header')
@@ -138,7 +140,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
         <script src="{{url('admin/js/notify.js')}}"></script>
-        <?php 
+        <?php
         $key = \App\Setting::find(1)->map_key;
         ?>
         <script src="https://maps.googleapis.com/maps/api/js?key={{$key}}" async defer></script>
@@ -149,8 +151,12 @@
         <script src="{{url('admin/js/googleMap.js')}}"></script>
         <script src="{{url('admin/js/charts.js')}}"></script>
         <script src="{{url('admin/js/lightbox.js')}}"></script>
-       
+
         <script src="{{url('admin/js/custom.js')}}"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
 
@@ -265,6 +271,6 @@
 
 
 
-        @yield('javascript')
+        @yield('java_script')
     </body>
 </html>

@@ -6,9 +6,9 @@
         'headerData' => __('Users') ,
         'url' => 'Customer' ,
         'class' => 'col-lg-7'
-    ]) 
+    ])
     <div class="container-fluid mt--7">
-           
+
             <div class="row">
                     <div class="col-xl-12 order-xl-1">
                         <div class="card form-card bg-secondary shadow">
@@ -225,9 +225,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                                                         
 
-        
+
+
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-success mt-4">{{ __('Save') }}</button>
                                         </div>
@@ -237,12 +237,12 @@
                         </div>
                     </div>
                 </div>
-       
+
     </div>
 
 @endsection
 
-@section('javascript')
+@section('java_script')
     <script>
         $(document).ready(function(){
             if($('#have_vehicle').is(":checked")){

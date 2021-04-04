@@ -6,9 +6,9 @@
         'headerData' => __('Orders') ,
         'url' => 'Order' ,
         'class' => 'col-lg-7'
-    ]) 
+    ])
     <div class="container-fluid mt--7">
-           
+
         <div class="row">
             <div class="col">
                     <div class="card form-card shadow">
@@ -25,7 +25,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6 order-left">
-                                 
+
                                     <h3>Customer</h3>
                                     <p class="mb-0">{{$data->userOrder->name}}</p>
                                     <p>{{$data->userOrder->email}}</p>
@@ -33,8 +33,8 @@
                                     <p class="mb-0">{{$data->deliveryGuy->name}}</p>
                                     <p>{{$data->deliveryGuy->email}}</p> --}}
                                     <h3>Technician Details </h3>
-                                    <p class="mb-0">Name: {{$data->technician->name}}</p>
-                                    <p class="mb-0">{{$data->technician->email}}</p>
+                                    <p class="mb-0">Name: {{$data->technician->name ?? ''}}</p>
+                                    <p class="mb-0">{{$data->technician->email ?? ''}}</p>
                                     {{-- <p>{{$data->location->name}}</p> --}}
                                 </div>
                                 <div class="col-6 text-right order-rigth">
@@ -60,7 +60,7 @@
 
                             <div class="item-table table-responsive mt-5">
 
-                                
+
                             </div>
                             <div class="table-bottom mt-5">
                                 <div class="row">
@@ -77,7 +77,7 @@
                     </div>
             </div>
         </div>
-       
+
     </div>
 
 @endsection

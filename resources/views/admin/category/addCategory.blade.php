@@ -144,7 +144,7 @@
 
 @endsection
 
-@section('javascript')
+@section('java_script')
     <script>
 
 
