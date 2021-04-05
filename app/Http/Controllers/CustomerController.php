@@ -35,7 +35,7 @@ use App\GroceryOrderChild;
 use App\GroceryReview;
 use App\GrocerySubCategory;
 use App\GroceryItem;
-
+use Yajra\DataTables\DataTables;
 class CustomerController extends Controller
 {
     /**
@@ -46,7 +46,7 @@ class CustomerController extends Controller
     public function index()
     {
 
-        $data = User::where('role',0)->orderBy('id', 'DESC')->get();
+        $data = User::where('role',2)->orderBy('id', 'DESC')->get();
         return view('admin.users.users',['users'=>$data]);
 
     }
@@ -59,7 +59,7 @@ class CustomerController extends Controller
     public function create()
     {
         //
-        return view('mainAdmin.users.addUser');
+        return view('admin.users.addUser');
     }
 
     /**
@@ -68,6 +68,113 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function techniciansList(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            $query = User::query()->where('role',3)->orderBy('id', 'DESC');
+
+            if ($request->has('status') and $request->status ) {
+                $query->where('status', $request->status);
+            }
+
+            $table = Datatables::of($query);
+
+            $table->addColumn('placeholder', '&nbsp;');
+
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : "";
+            });
+
+            $table->editColumn('image', function ($row) {
+                return '<img class=" avatar-lg round-5" src="'.url('images/upload/'.$row->image).'">';
+            });
+            $table->addColumn('created_at', function ($row) {
+                return $row->created_at!=null ? $row->created_at->diffForHumans() : '';
+            });
+
+
+            $table->editColumn('status', function ($row) {
+                return ' <span class="badge badge-dot mr-4">
+                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
+                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
+                                                    </span>';
+            });
+            $table->addColumn('actions', function ($row) {
+                return ' <div class="dropdown">
+                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                    <a class="dropdown-item" href="'.url(adminPath().'Customer/'.$row->id.'/edit').'">'. __('Edit') .'</a>
+                                                    <a class="dropdown-item" onclick="deleteData(`Customer`,'.$row->id.');" href="#">'. __('Delete') .'</a>
+
+                                                </div>
+                                            </div>
+';
+            });
+
+            $table->rawColumns(['actions','image','role']);
+            return $table->make(true);
+        }
+
+    }
+    public function customerList(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            $query = User::query()->where('role',1)->orderBy('id', 'DESC');
+
+            if ($request->has('status') and $request->status ) {
+                $query->where('status', $request->status);
+            }
+
+            $table = Datatables::of($query);
+
+            $table->addColumn('placeholder', '&nbsp;');
+
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : "";
+            });
+
+            $table->editColumn('image', function ($row) {
+                return '<img class=" avatar-lg round-5" src="'.url('images/upload/'.$row->image).'">';
+            });
+            $table->addColumn('created_at', function ($row) {
+                return $row->created_at!=null ? $row->created_at->diffForHumans() : '';
+            });
+
+
+            $table->editColumn('status', function ($row) {
+                return ' <span class="badge badge-dot mr-4">
+                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
+                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
+                                                    </span>';
+            });
+            $table->addColumn('actions', function ($row) {
+                return ' <div class="dropdown">
+                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                    <a class="dropdown-item" href="'.url(adminPath().'Customer/'.$row->id.'/edit').'">'. __('Edit') .'</a>
+                                                    <a class="dropdown-item" onclick="deleteData(`Customer`,'.$row->id.');" href="#">'. __('Delete') .'</a>
+
+                                                </div>
+                                            </div>
+';
+            });
+
+            $table->rawColumns(['actions','image','role']);
+            return $table->make(true);
+        }
+
+    }
+
     public function store(Request $request)
     {
         //
@@ -187,20 +294,20 @@ class CustomerController extends Controller
         //
         try {
             $user = User::findOrFail($id);
-            if($user->role==0){               
+            if($user->role==0){
                 $Order = GroceryOrder::where('customer_id',$id)->get();
                 if($Order){
-                    foreach ($Order as $value) {                                                
+                    foreach ($Order as $value) {
                         $OrderChild = GroceryOrderChild::where('order_id',$value->id)->get();
                         if($OrderChild){
                             foreach ($OrderChild as $oc) {
                                 $oc->delete();
                             }
-                        }                       
+                        }
                         $value->delete();
                     }
                 }
-              
+
                 $GroceryReview = GroceryReview::where('customer_id',$id)->get();
                 if($GroceryReview){
                     foreach ($GroceryReview as $r) {
@@ -224,19 +331,19 @@ class CustomerController extends Controller
                     foreach ($UserGallery as $g) {
                         $g->delete();
                     }
-                }                
+                }
             }
             if($user->role==2){
-              
+
                 $GroceryOrder = GroceryOrder::where('deliveryBoy_id',$id)
                 ->whereIn('order_status',['DriverApproved','PickUpGrocery','OutOfDelivery','DriverReach'])
                 ->get();
                 if($GroceryOrder){
-                    return response('Data is Connected with other Data', 400);   
+                    return response('Data is Connected with other Data', 400);
                 }
             }
             if($user->role==1){
-              
+
 
 
                 $GroceryItem = GroceryItem::where('user_id',$id)->get();
@@ -251,8 +358,8 @@ class CustomerController extends Controller
                         $value->delete();
                     }
                 }
-              
-                    
+
+
                 $GroceryOrder = GroceryOrder::where('owner_id',$id)->get();
                 if($GroceryOrder){
                     foreach ($GroceryOrder as $value) {
@@ -273,24 +380,24 @@ class CustomerController extends Controller
                             foreach ($GroceryOrderChild as $oc) {
                                 $oc->delete();
                             }
-                        }                   
+                        }
                         $value->delete();
                     }
                 }
 
                 $gShops = GroceryShop::where('user_id',$id)->get();
                 if($gShops){
-                    foreach ($gShops as $gShop) {                                              
+                    foreach ($gShops as $gShop) {
                         $Coupon = Coupon::where([['shop_id',$gShop->id],'use_for'=>'Grocery'])->get();
                         if($Coupon){
                             foreach ($Coupon as $value) {
                                 $value->delete();
                             }
-                        }                    
-                       
+                        }
+
                         $gShop->delete();
                     }
-                } 
+                }
             }
 
             $user->delete();
@@ -547,7 +654,7 @@ class CustomerController extends Controller
     }
 
 
-   
+
 
     public function ownerProfileform(){
 
@@ -609,7 +716,7 @@ class CustomerController extends Controller
             try{
             Mail::to($user)->send(new ForgetPassword($content,$detail));
             } catch (\Exception $e) {
-                
+
             }
             User::findOrFail($user->id)->update(['password'=>Hash::make($password)]);
             return Redirect::back()->with('success_msg','Please check your email new password will send on it.');
@@ -668,7 +775,7 @@ class CustomerController extends Controller
         ]);
 
         $data = $request->all();
-        
+
         if($data['provider']=='LOCAL'){
             $userdata = array(
                 'email'     => $request->email,
@@ -725,7 +832,7 @@ class CustomerController extends Controller
         }
         $data1 = User::create($data);
 
-        if($user_verify==1){    
+        if($user_verify==1){
             return response()->json(['msg' => 'Register Successfully!', 'data' => $data1,'success'=>true], 200);
         }
         else if($user_verify==0){
@@ -811,7 +918,7 @@ class CustomerController extends Controller
                 try{
                 Mail::to($user)->send(new UserVerification($content,$detail));
             } catch (\Exception $e) {
-               
+
             }
             }
 
@@ -865,7 +972,7 @@ class CustomerController extends Controller
                 try{
                 Mail::to($user)->send(new UserVerification($content,$detail));
             } catch (\Exception $e) {
-                
+
             }
             }
 
@@ -917,7 +1024,7 @@ class CustomerController extends Controller
                     try{
                     Mail::to($user)->send(new UserVerification($content,$detail));
                     } catch (\Exception $e) {
-                       
+
                     }
                 }
 
@@ -1070,7 +1177,7 @@ class CustomerController extends Controller
             try{
             Mail::to($user)->send(new ForgetPassword($content,$detail));
             } catch (\Exception $e) {
-            
+
             }
             $password=Hash::make($password);
             User::findOrFail($user->id)->update(['password'=>$password]);
@@ -1113,17 +1220,17 @@ class CustomerController extends Controller
         }
         else{
             return response()->json(['msg' => null ,'data' =>null, 'success'=>false], 200);
-        }   
+        }
     }
 
     public function userHome(){
         $data['shop'] = GroceryShop::with('locationData')->orderBy('id', 'DESC')->get();
         $data['category'] = GroceryCategory::orderBy('id', 'DESC')->get();
-        $data['item'] = GroceryItem::orderBy('price', 'DESC')->get();  
-        $data['totalShop'] = count($data['shop']);  
+        $data['item'] = GroceryItem::orderBy('price', 'DESC')->get();
+        $data['totalShop'] = count($data['shop']);
         return response()->json(['msg' => null, 'data' => $data,'success'=>true], 200);
     }
-    
+
     public function customerReport(){
         $user = User::where('role',0)->orderBy('id', 'DESC')->get();
         return view('mainAdmin.users.userReport',['users'=>$user]);
@@ -1277,7 +1384,7 @@ class CustomerController extends Controller
         return response()->json(['msg' => null, 'data' => $data,'success'=>true], 200);
     }
 
-  
+
 
     public function getAddress($id){
         $data = UserAddress::findOrFail($id);

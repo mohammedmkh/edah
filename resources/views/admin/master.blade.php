@@ -7,7 +7,6 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <script src="{{url('admin/js/jquery.min.js')}}"></script>
-       <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 
 
         <title>{{\App\CompanySetting::find(1)->name}}</title>
@@ -143,7 +142,6 @@
         <?php
         $key = \App\Setting::find(1)->map_key;
         ?>
-        <script src="https://maps.googleapis.com/maps/api/js?key={{$key}}" async defer></script>
         {{-- <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script> --}}
         <script src="{{url('admin/js/jquery-jvectormap.min.js')}}"></script>
         <script src="{{url('admin/js/jquery-jvectormap-world-mill.js')}}"></script>
@@ -153,10 +151,12 @@
         <script src="{{url('admin/js/lightbox.js')}}"></script>
 
         <script src="{{url('admin/js/custom.js')}}"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
         <script>
 
@@ -266,6 +266,12 @@
             }
 
             @endif
+function resetFilter(){
+    $("#search").find('.form-control').val(null)
+    $("#public_search").click()
+    $("#search").find('select').val(null).trigger('change')
+
+}
         </script>
 
 

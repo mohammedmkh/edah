@@ -20,10 +20,42 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="search" class="pl-lg-4">
 
-                        <div class="table-responsive">
-                            @if(count($categories)>0)
-                                <table class="table align-items-center table-flush">
+
+                            <div  class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-status"> الحالة</label>
+                                        <Select  name="status" id="status"
+                                                 class="form-control select2 form-control-alternative" required>
+                                            <option  value="">الحالة</option>
+                                            <option  value="0">Active</option>
+                                            <option  value="1">DeActive</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button id="public_search" type="button" class="btn btn-success mt-4">بحث
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button onclick="resetFilter()"  type="button" class="btn btn-danger mt-4">إعادة تعيين
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style=" padding: 10px; " class="table-responsive">
+                                <table class="table yajra-datatable align-items-center table-flush">
                                     <thead class="thead-light">
                                         <tr>
                                             <th scope="col">{{ __('#') }}</th>
@@ -35,45 +67,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($categories as $category)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td><img class=" avatar-lg round-5" src="{{url('images/upload/'.$category->image)}}"></td>
-                                                <td>{{ $category->translation()->name ?? '' }}</td>
-
-                                                <td>
-                                                    <span class="badge badge-dot mr-4">
-                                                        <i class="{{$category->status==0?'bg-success': 'bg-danger'}}"></i>
-                                                        <span class="status">{{$category->status==0?'فعال': 'غير فعال '}}</span>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    {{$category->categoryName->translation()->name ?? ''}}
-                                                    {{-- <span class=" label label-light-primary">{{ $category->totalItems.' Items' }}</span> --}}
-                                                </td>
-                                                <td >
-                                                    <div class="dropdown">
-                                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-v"></i>
-                                                        </a>
-                                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                            <a class="dropdown-item" href="{{url(adminPath().'SubCategory/'.$category->id.'/edit')}}">{{ __('Edit') }}</a>
-                                                            <a class="dropdown-item" onclick="deleteData('SubCategory','{{$category->id}}');" href="#">{{ __('Delete') }}</a>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
                                     </tbody>
                                 </table>
-                                <?php echo $categories->render(); ?>
-                            @else
-                                <div class="empty-state text-center pb-3">
-                                    <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
-                                    <h2 class="pt-3 mb-0" style="font-size:25px;">Nothing!!</h2>
-                                    <p style="font-weight:600;">Your Collection list is empty....</p>
-                                </div>
-                            @endif
                             </div>
                     </div>
             </div>
@@ -81,4 +76,56 @@
 
     </div>
 
+@endsection
+@section('java_script')
+
+    <script type="text/javascript">
+
+        $(function () {
+
+
+            var table = $('.yajra-datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                scrollX: false,
+                type: "GET",
+
+                "initComplete": function (settings, json) {
+                    $(".dataTables_length").css('float', 'right')
+                    $(".dataTables_filter").css('float', 'left')
+                },
+                ajax: {
+                    url: "{{route('subCategoryList')}}",
+                    data: function (d) {
+                        d.status=$('[name="status"]').val()
+
+
+                    }
+                },
+                columns: [
+                    {data: 'id', name: 'id',searchable:true},
+                    {data: 'image', name: 'image',searchable:false},
+                    {data: 'name', name: 'name',searchable:false},
+                    {data: 'status', name: 'status',searchable:true},
+                    {data: 'categoryName', name: 'categoryName',searchable:true},
+                    {data: 'actions', name: 'actions',searchable:false},
+                ]
+            });
+            $('#public_search').on('click', function (e) {
+                table.draw();
+                e.preventDefault();
+            });
+
+
+        });
+
+
+
+
+        $( document ).ready(function() {
+            /*
+                        $('input[name="daterange"]').val(null)
+            */
+        });
+    </script>
 @endsection

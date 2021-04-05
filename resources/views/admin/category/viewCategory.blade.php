@@ -4,9 +4,9 @@
     @include('admin.layout.topHeader', [
         'title' => __('Category') ,
         'class' => 'col-lg-7'
-    ]) 
+    ])
     <div class="container-fluid mt--7">
-           
+
         <div class="row">
             <div class="col">
                     <div class="card form-card shadow">
@@ -20,67 +20,110 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="search" class="pl-lg-4">
 
-                        <div class="table-responsive">
-                            @if(count($categories)>0)
-                                <table class="table align-items-center table-flush">
+
+                            <div  class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-status"> الحالة</label>
+                                        <Select  name="status" id="status"
+                                                 class="form-control select2 form-control-alternative" required>
+                                            <option  value="">الحالة</option>
+                                            <option  value="0">Active</option>
+                                            <option  value="1">DeActive</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button id="public_search" type="button" class="btn btn-success mt-4">بحث
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button onclick="resetFilter()"  type="button" class="btn btn-danger mt-4">إعادة تعيين
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style=" padding: 10px;" class="table-responsive">
+                                <table class="table align-items-center yajra-datatable table-flush">
                                     <thead class="thead-light">
                                         <tr>
                                             <th scope="col">{{ __('Id') }}</th>
                                             <th scope="col">{{ __('Image') }}</th>
                                             <th scope="col">{{ __('Name') }}</th>
-                                            <th scope="col">{{ __('Status') }}</th>    
+                                            <th scope="col">{{ __('Status') }}</th>
                                             <th scope="col">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($categories as $category)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td><img class=" avatar-lg round-5" src="{{url('images/upload/'.$category->image)}}"></td>
-                                                <td>{{ $category->name }}</td>                                              
-                                                <td>
-                                                    <span class="badge badge-dot mr-4">
-                                                        <i class="{{$category->status==0?'bg-success': 'bg-danger'}}"></i>
-                                                        <span class="status">{{$category->status==0?'Active': 'Deactive'}}</span>
-                                                    </span>
-                                                </td>
-                                                <td>                            
-                                                    {{-- <a href="{{url('Category/'.$category->id.'/edit')}}" class="table-action" data-toggle="tooltip" data-original-title="Edit product">
-                                                        <i class="fas fa-user-edit"></i>
-                                                    </a>
-                                                    <a href="#" onclick="deleteData('Category','{{$category->id}}');" class="table-action table-action-delete" data-toggle="tooltip" data-original-title="Delete product">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a> --}}
-
-                                                    <div class="dropdown">
-                                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="fas fa-ellipsis-v"></i>
-                                                            </a>
-                                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                                <a class="dropdown-item" href="{{url(adminPath().'Category/'.$category->id.'/edit')}}">{{ __('Edit') }}</a>
-                                                                <a class="dropdown-item " onclick="deleteData('Category','{{$category->id}}');" href="#">{{ __('Delete') }}</a>
-                                                                {{-- onclick="deleteData('Category','{{$category->id}}');" --}}
-                                                            </div>
-                                                        </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
                                     </tbody>
                                 </table>
-                                <?php echo $categories->render(); ?>
-                                @else 
-                                    <div class="empty-state text-center pb-3">
-                                        <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
-                                        <h2 class="pt-3 mb-0" style="font-size:25px;">Nothing!!</h2>
-                                        <p style="font-weight:600;">Your Collection list is empty....</p>
-                                    </div> 
-                                @endif
                             </div>
                     </div>
             </div>
         </div>
-       
+
     </div>
 
+@endsection
+@section('java_script')
+
+    <script type="text/javascript">
+
+        $(function () {
+
+
+            var table = $('.yajra-datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                scrollX: false,
+                type: "GET",
+
+                "initComplete": function (settings, json) {
+                    $(".dataTables_length").css('float', 'right')
+                    $(".dataTables_filter").css('float', 'left')
+                },
+                ajax: {
+                    url: "{{route('categoryList')}}",
+                    data: function (d) {
+                        d.status=$('[name="status"]').val()
+
+
+                    }
+                },
+                columns: [
+                    {data: 'id', name: 'id',searchable:true},
+                    {data: 'image', name: 'image',searchable:false},
+                    {data: 'name', name: 'name',searchable:false},
+                    {data: 'status', name: 'status',searchable:true},
+                    {data: 'actions', name: 'actions',searchable:false},
+                ]
+            });
+            $('#public_search').on('click', function (e) {
+                table.draw();
+                e.preventDefault();
+            });
+
+
+        });
+
+
+
+
+        $( document ).ready(function() {
+            /*
+                        $('input[name="daterange"]').val(null)
+            */
+        });
+    </script>
 @endsection

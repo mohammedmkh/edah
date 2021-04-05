@@ -10,7 +10,7 @@ use App\GroceryItem;
 use App\Order;
 use Illuminate\Http\Request;
 use \Validator;
-
+use DataTables;
 class CategoryController extends Controller
 {
     /**
@@ -25,6 +25,55 @@ class CategoryController extends Controller
        // dd('CategoryCategory');
 
         return view('admin.category.viewCategory',['categories'=>$data]);
+    }
+    public function categoryList(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            $query = Category::query()->where('parent',0)->orderBy('id', 'DESC');
+
+            if ($request->has('status') and $request->status ) {
+                $query->where('status', $request->status);
+            }
+
+            $table = Datatables::of($query);
+
+            $table->addColumn('placeholder', '&nbsp;');
+
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : "";
+            });
+
+            $table->editColumn('image', function ($row) {
+                return '<img class=" avatar-lg round-5" src="'.url('images/upload/'.$row->image).'">';
+            });
+
+            $table->editColumn('status', function ($row) {
+                return ' <span class="badge badge-dot mr-4">
+                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
+                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
+                                                    </span>';
+            });
+            $table->addColumn('actions', function ($row) {
+                return ' <div class="dropdown">
+                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                    <a class="dropdown-item" href="'.url(adminPath().'Category/'.$row->id.'/edit').'">'. __('Edit') .'</a>
+                                                    <a class="dropdown-item" onclick="deleteData(`Category`,'.$row->id.');" href="#">'. __('Delete') .'</a>
+
+                                                </div>
+                                            </div>
+';
+            });
+
+            $table->rawColumns(['actions','image']);
+            return $table->make(true);
+        }
+
     }
 
     /**
@@ -177,10 +226,10 @@ class CategoryController extends Controller
                 $delete = Category::find($id);
                 $delete->delete();
                 return 'true';
-            }     
+            }
             else{
                 return response('Data is Connected with other Data', 400);
-            }                               
+            }
         } catch (\Exception $e) {
             return response('Data is Connected with other Data', 400);
         }

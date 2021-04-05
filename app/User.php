@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\Request;
 use Laravel\Passport\HasApiTokens;
 use Auth;
 use Illuminate\Support\Facades\DB;
@@ -80,5 +81,9 @@ class User extends Authenticatable
 
         return $this->hasone(UserAddress::class, 'user_id', 'id');
     }
+    public function userRole()
+    {
 
+        return $this->belongsTo(role::class, 'role', 'id');
+    }
 }

@@ -14,10 +14,10 @@
                             <div class="col-8">
                                 <h3 class="mb-0">{{ __('Grocery Orders') }}</h3>
                                 <br>
-                                <div class="pl-lg-4">
+                                <div id="search" class="pl-lg-4">
 
 
-                                    <div id="search" class="row">
+                                    <div  class="row">
                                         <div class="col-4">
                                             <div class="form-group ">
                                                 <label class="form-control-label" for="input-hour_work">رقم الطلب
@@ -38,10 +38,23 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="input-status">الحالة</label>
-                                                <Select  name="technical" id="technical"
-                                                        class="form-control select2 form-control-alternative" required>
-                                                    <option  value="">التقني</option>
+                                                <label class="form-control-label" for="input-status">حالة الطلب</label>
+                                                <Select  name="status" id="status"
+                                                         class="form-control select2 form-control-alternative" required>
+                                                    <option  value="">حالة الطلب</option>
+                                                    @foreach($status as $value)
+                                                        <option value="{{$value->id}}">{{$value->status_name}}</option>
+
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="input-status">التقنيين</label>
+                                                <Select  name="technical_id" id="technical_id"
+                                                         class="form-control select2 form-control-alternative" required>
+                                                    <option  value="">التقنيين</option>
                                                     @foreach($technical as $value)
                                                         <option value="{{$value->id}}">{{$value->name}}</option>
 
@@ -49,11 +62,32 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="input-status">الزبائن</label>
+                                                <Select  name="user_id" id="user_id"
+                                                         class="form-control select2 form-control-alternative" required>
+                                                    <option  value="">الزبائن</option>
+                                                    @foreach($customer as $value)
+                                                        <option value="{{$value->id}}">{{$value->name}}</option>
+
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-3">
-                                        <div class="form-group ">
-                                            <button id="public_search" type="button" class="btn btn-success mt-4">بحث
-                                            </button>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <div class="form-group ">
+                                                <button id="public_search" type="button" class="btn btn-success mt-4">بحث
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="form-group ">
+                                                <button onclick="resetFilter()"  type="button" class="btn btn-danger mt-4">إعادة تعيين
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -66,7 +100,6 @@
                 </div>
             </div>
             <div style="padding:10px;" class="table-responsive">
-                @if(count($orders)>0)
                     <table class="table data-table align-items-center table-flush yajra-datatable">
                         <thead class="thead-light">
                         <tr>
@@ -84,43 +117,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($orders as $order)
-                            <tr>
-
-                                <td>{{ $order->id }}</td>
-
-                                <td>{{ $order->userOrder->name }}</td>
-                                <td>{{ $order->price.'.00' }}</td>
-                                <td>{{ $order->date.' | '.$order->time }}</td>
-
-                                <td>{{ $order->payment_type }}</td>
-
-
-                                <td>
-                                                <span class="badge badge-dot mr-4">
-                                                    <i class="{{$order->payment_status==1?'bg-success': 'bg-warning'}}"></i>
-                                                    <span
-                                                        class="status">{{$order->payment_status==1?'Completed': 'Pending'}}</span>
-                                                </span>
-                                </td>
-                                <td>
-
-                                    <a href="{{url(adminPath().'viewOrder/'.$order->id)}}" class="table-action"
-                                       data-toggle="tooltip" data-original-title="View Order">
-                                        <i class="fas fa-eye"></i></a>
-
-                                </td>
-                            </tr>
-                        @endforeach
                         </tbody>
                     </table>
-                    {{$orders->render()}}
-                @else
-                    <div class="empty-state text-center pb-3" style="background: #fff;">
-                        <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
-                        <p style="font-weight:600;">لا يوجد طلبات بعد</p>
-                    </div>
-                @endif
+
             </div>
 
         </div>
@@ -134,16 +133,14 @@
 @section('java_script')
 
 
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-
     <script type="text/javascript">
 
-        $("#technical").select2()
+        $("#technical_id").select2()
+        $("#user_id").select2()
         $(function () {
             $('input[name="daterange"]').daterangepicker({
                 opens: 'right',
-                autoUpdateInput: false,
+               // autoUpdateInput: false,
                 autoApply: true,
                 locale: {
                     cancelLabel: 'Clear',
@@ -172,7 +169,10 @@
                     data: function (d) {
                         d.order_no=$('input[name="order_no"]').val()
                         d.daterange=$('input[name="daterange"]').val()
-                        d.technical=$('[name="technical"]').val()
+                        d.technical_id=$('[name="technical_id"]').val()
+                        d.user_id=$('[name="user_id"]').val()
+                        d.status=$('[name="status"]').val()
+
                     }
                 },
                 columns: [
@@ -221,6 +221,12 @@
             $('.ajaxTable').show();
             oTable.ajax.reload();
         }
+
+        $( document ).ready(function() {
+/*
+            $('input[name="daterange"]').val(null)
+*/
+        });
     </script>
 
 

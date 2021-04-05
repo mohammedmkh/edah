@@ -4,9 +4,9 @@
     @include('admin.layout.topHeader', [
         'title' => __('Users') ,
         'class' => 'col-lg-7'
-    ]) 
+    ])
     <div class="container-fluid mt--7">
-           
+
         <div class="row">
             <div class="col">
                     <div class="card form-card shadow">
@@ -15,13 +15,47 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">{{ __('Users') }}</h3>
                                 </div>
+                                <div class="col-4 text-right">
+                                    <a href="{{url(adminPath().'Customer/create')}}" class="btn btn-sm btn-primary">{{ __('Add New Customer') }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="search" class="pl-lg-4">
 
+
+                            <div  class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-status"> الحالة</label>
+                                        <Select  name="status" id="status"
+                                                 class="form-control select2 form-control-alternative" required>
+                                            <option  value="">الحالة</option>
+                                            <option  value="0">Active</option>
+                                            <option  value="1">DeActive</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button id="public_search" type="button" class="btn btn-success mt-4">بحث
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button onclick="resetFilter()"  type="button" class="btn btn-danger mt-4">إعادة تعيين
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="table-responsive">
-                            @if(count($users)>0)                                 
-                                <table class="table align-items-center table-flush">
+                        <div style=" padding: 10px; " class="table-responsive">
+                                <table class="table align-items-center yajra-datatable table-flush">
                                     <thead class="thead-light">
                                         <tr>
                                             <th scope="col">{{ __('#') }}</th>
@@ -31,59 +65,75 @@
                                             <th scope="col">{{ __('Phone') }}</th>
                                             {{-- <th scope="col">{{ __('Date of Birth') }}</th> --}}
                                             <th scope="col">{{ __('Status') }}</th>
-                                            <th scope="col">{{ __('Role') }}</th>
                                             <th scope="col">{{ __('Registered at') }}</th>
                                             <th scope="col">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($users as $user)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td><img class="avatar avatar-lg" src="{{url('images/upload/'.$user->image)}}"></td>
-                                                <td>{{ $user->name }}</td>
-                                                <td>
-                                                    <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
-                                                </td>
-                                                <td>{{ $user->phone }}</td>
-                                                {{-- <td>{{ $user->dateOfBirth }}</td> --}}
-                                                <td>
-                                                    <span class="badge badge-dot mr-4">
-                                                        <i class="{{$user->status==0?'bg-success': 'bg-danger'}}"></i>
-                                                        <span class="status">{{$user->status==0?'Active': 'Block'}}</span>
-                                                    </span>
-                                                </td>
-                                                <td><span class="badge border-1">Customer</span></td>
-                                               
-                                                <td>{{$user->created_at->diffForHumans()}}</td>
-                                                <td>
-                                                     <div class="dropdown">
-                                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-v"></i>
-                                                        </a>
-                                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                            <a class="dropdown-item" href="{{url(adminPath().'Customer/'.$user->id.'/edit')}}">{{ __('Edit') }}</a>
-                                                            <a class="dropdown-item" href="#" onclick="deleteData('Customer','{{$user->id}}');" >{{ __('Delete') }}</a>                                                          
-                                                        </div>
-                                                    </div> 
-                                                  
-                                                </td>
-                                            </tr>
-                                        @endforeach
+
                                     </tbody>
                                 </table>
-                            @else 
-                                <div class="empty-state text-center pb-3">
-                                    <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
 
-                                    <p style="font-weight:600;">لا يوجد بيانات</p>
-                                </div>
-                            @endif                                 
                             </div>
                     </div>
             </div>
         </div>
-       
+
     </div>
 
+@endsection
+
+@section('java_script')
+
+    <script type="text/javascript">
+
+        $(function () {
+
+
+            var table = $('.yajra-datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                scrollX: false,
+                type: "GET",
+
+                "initComplete": function (settings, json) {
+                    $(".dataTables_length").css('float', 'right')
+                    $(".dataTables_filter").css('float', 'left')
+                },
+                ajax: {
+                    url: "{{route('customerList')}}",
+                    data: function (d) {
+                        d.status=$('[name="status"]').val()
+
+
+                    }
+                },
+                columns: [
+                    {data: 'id', name: 'id',searchable:true},
+                    {data: 'image', name: 'image',searchable:false},
+                    {data: 'name', name: 'name',searchable:false},
+                    {data: 'email', name: 'email',searchable:false},
+                    {data: 'phone', name: 'phone',searchable:false},
+                    {data: 'status', name: 'status',searchable:false},
+                    {data: 'created_at', name: 'created_at',searchable:false},
+                    {data: 'actions', name: 'actions',searchable:false},
+                ]
+            });
+            $('#public_search').on('click', function (e) {
+                table.draw();
+                e.preventDefault();
+            });
+
+
+        });
+
+
+
+
+        $( document ).ready(function() {
+            /*
+                        $('input[name="daterange"]').val(null)
+            */
+        });
+    </script>
 @endsection

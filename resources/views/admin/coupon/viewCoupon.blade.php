@@ -13,17 +13,51 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col-8">
-                                <h3 class="mb-0">{{ __('Grocery Coupon') }}</h3>
+                                <h3 class="mb-0">{{ __('Grocery Coupon') }}</h3><br>
+
                             </div>
                             <div class="col-4 text-right">
                                 <a href="{{url(adminPath().'Coupon/create')}}" class="btn btn-sm btn-primary">{{ __('Add New Coupon') }}</a>
                             </div>
                         </div>
+                        <div id="search" class="pl-lg-4">
+
+
+                            <div  class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-status"> الحالة</label>
+                                        <Select  name="status" id="status"
+                                                 class="form-control select2 form-control-alternative" required>
+                                            <option  value="">الحالة</option>
+                                            <option  value="0">Active</option>
+                                            <option  value="1">DeActive</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button id="public_search" type="button" class="btn btn-success mt-4">بحث
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="form-group ">
+                                        <button onclick="resetFilter()"  type="button" class="btn btn-danger mt-4">إعادة تعيين
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="table-responsive">
-                        @if(count($coupons)>0)
-                            <table class="table align-items-center table-flush">
+                    <div style="padding: 10px;  "  class="table-responsive">
+                            <table class="table align-items-center yajra-datatable table-flush">
                                 <thead class="thead-light">
                                 <tr>
                                     <th scope="col">{{ __('#') }}</th>
@@ -38,46 +72,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($coupons as $coupon)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{$coupon->name}}</td>
-                                        <td>{{ $coupon->code }}</td>
-
-                                        <td>{{$coupon->discount}}{{$coupon->type=="percentage"? ' %' :''}}</td>
-                                        <td>{{ $coupon->max_use.' times' }}</td>
-                                        <td>{{ $coupon->use_count.' times' }}</td>
-                                        <td>{{ $coupon->start_date.' to '.$coupon->end_date }}</td>
-                                        <td>
-                                                    <span class="badge badge-dot mr-4">
-                                                        <i class="{{$coupon->status==0?'bg-success': 'bg-danger'}}"></i>
-                                                        <span class="status">{{$coupon->status==0?'Active': 'Deactive'}}</span>
-                                                    </span>
-                                        </td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                    <a class="dropdown-item" href="{{url(adminPath().'Coupon/'.$coupon->code.'/edit')}}">{{ __('Edit') }}</a>
-                                                    <a class="dropdown-item" onclick="deleteData('Coupon','{{$coupon->id}}');" href="#">{{ __('Delete') }}</a>
-                                                    {{-- onclick="deleteData('Coupon','{{$coupon->id}}');" --}}
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
                                 </tbody>
                             </table>
-                            <?php // echo $categories->render(); ?>
-                            @else
-                            <div class="empty-state text-center pb-3">
-                                <img src="{{url('images/empty3.png')}}" style="width:35%;height:220px;">
-                                <h2 class="pt-3 mb-0" style="font-size:25px;">Nothing!!</h2>
-                                <p style="font-weight:600;">Your Collection list is empty....</p>
-                            </div>
-                            @endif
+
                     </div>
                 </div>
             </div>
@@ -86,3 +83,58 @@
     </div>
 
     @endsection
+@section('java_script')
+
+<script type="text/javascript">
+
+    $(function () {
+
+
+        var table = $('.yajra-datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            scrollX: false,
+            type: "GET",
+
+            "initComplete": function (settings, json) {
+                $(".dataTables_length").css('float', 'right')
+                $(".dataTables_filter").css('float', 'left')
+            },
+            ajax: {
+                url: "{{route('couponsList')}}",
+                data: function (d) {
+                    d.status=$('[name="status"]').val()
+
+
+                }
+            },
+            columns: [
+                {data: 'id', name: 'id',searchable:true},
+                {data: 'name', name: 'name',searchable:true},
+                {data: 'code', name: 'code',searchable:true},
+                {data: 'discount', name: 'discount',searchable:true},
+                {data: 'max_use', name: 'max_use',searchable:true},
+                {data: 'use_count', name: 'use_count' ,searchable:true},
+                {data: 'duration', name: 'duration' ,searchable:false},
+                {data: 'status', name: 'status',searchable:true},
+                {data: 'actions', name: 'actions',searchable:false},
+            ]
+        });
+        $('#public_search').on('click', function (e) {
+            table.draw();
+            e.preventDefault();
+        });
+
+
+    });
+
+
+
+
+    $( document ).ready(function() {
+        /*
+                    $('input[name="daterange"]').val(null)
+        */
+    });
+</script>
+@endsection

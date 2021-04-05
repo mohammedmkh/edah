@@ -230,7 +230,7 @@
                                 </ul>
                             </div>
                         </li>
-                    
+
                     @if(View::exists('mainAdmin.notification.viewNotification'))
                         <!--
                     <li class="nav-item">

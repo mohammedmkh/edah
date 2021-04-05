@@ -27,12 +27,13 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/customerReport', 'CustomerController@customerReport');
     Route::get('/ownerProfile', 'CustomerController@ownerProfileform');
     Route::post('/editOwnerProfile', 'CustomerController@editOwnerProfile');
-    Route::post('/changeOwnerPassword', 'CustomerController@changeOwnerPassword');   
+    Route::post('/changeOwnerPassword', 'CustomerController@changeOwnerPassword');
     Route::get('/viewOrder/{id}', 'OrderController@viewsingleOrder');
     Route::get('/notifications', 'CustomerController@viewNotifications');
     Route::get('/changeLanguage/{locale}', 'CustomerController@changeLanguage');
     Route::get('/itemSubcategory/{category_id}', 'GroceryShopController@itemSubcategory');
 
+    Route::get('/techniciansList', 'CustomerController@techniciansList')->name('techniciansList');
     Route::get('/techusers', 'CustomerController@techUsers');
     Route::get('/storeusers', 'CustomerController@storeUsers');
     Route::get('/technicians/create', 'CustomerController@addTechnicianPage');
@@ -43,8 +44,12 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::post('/addTechnician', 'CustomerController@addTechnician');
 
     Route::get('/ordersList', 'OrderController@ordersList')->name('ordersList');
+    Route::get('/couponsList', 'CouponController@couponsList')->name('couponsList');
+    Route::get('/categoryList', 'CategoryController@categoryList')->name('categoryList');
+    Route::get('/subCategoryList', 'SubCategoryController@subCategoryList')->name('subCategoryList');
+    Route::get('/customerList', 'CustomerController@customerList')->name('customerList');
 
-    
+
     Route::resources([
         'Category' => 'CategoryController',
         'SubCategory' => 'SubCategoryController',

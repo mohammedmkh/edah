@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\GroceryOrderChild;
+use App\OrderStatus;
 use App\Setting;
 use App\GroceryShop;
 use Config;
@@ -29,10 +30,11 @@ class OrderController extends Controller
         //
         $data = Order::with(['userOrder', 'categoryOrder'])->orderBy('id', 'DESC')->paginate(10);
         $currency_code = Setting::where('id', 1)->first()->currency;
-
+        $customer = User::where('role', 0)->get();
         $technical = User::where('role', 3)->get();
+        $status=OrderStatus::all();
         // dd( $data );
-        return view('admin.order.orders', ['orders' => $data, 'technical' => $technical]);
+        return view('admin.order.orders', ['orders' => $data, 'status' => $status,'technical' => $technical,'customer'=>$customer]);
     }
 
 
@@ -41,20 +43,28 @@ class OrderController extends Controller
 
         if ($request->ajax()) {
             $data = $request->all();
+
             $query = Order::with(['userOrder', 'categoryOrder'])->orderBy('id', 'DESC');
 
             if ($request->has('order_id') and $request->order_id > 0) {
                 $query->where('id', $request->order_id);
             }
-            if ($request->has('daterange') and $data['daterange']!=null ) {
+            if ($request->has('daterange') and $data['daterange'] != null) {
                 $query->whereBetween('time', explode(' - ', $data['daterange']));
 
             }
-            if ($request->has('technical') and $data['technical']!=null ) {
+            if ($request->has('technical_id') and $data['technical_id'] != null) {
+                $query->where('technical_id', $request->technical_id);
 
-                $query->whereHas('userOrder', function ($query) use ($request) {
-                    $query->where('id', $request->user_id);
-                });
+
+
+            }
+            if ($request->has('user_id') and $data['user_id'] != null) {
+                $query->where('user_id', $request->user_id);
+
+           }
+            if ($request->has('status') and $data['status'] != null) {
+                $query->where('status', $request->status);
 
             }
             $table = Datatables::of($query);
