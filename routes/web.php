@@ -34,20 +34,26 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/itemSubcategory/{category_id}', 'GroceryShopController@itemSubcategory');
 
     Route::get('/techniciansList', 'CustomerController@techniciansList')->name('techniciansList');
+    Route::get('/storeList', 'CustomerController@storeList')->name('storeList');
+
+    Route::get('/adminusers', 'CustomerController@adminUsers');
     Route::get('/techusers', 'CustomerController@techUsers');
     Route::get('/storeusers', 'CustomerController@storeUsers');
     Route::get('/technicians/create', 'CustomerController@addTechnicianPage');
-    Route::get('/storeuser/create', 'CustomerController@addOwner');
+    Route::get('/storeuser/create', 'CustomerController@addStoreUser');
+    Route::get('/adminuser/create', 'CustomerController@addAdminUser');
 
     Route::get('/tech/edit/{id}', 'CustomerController@editTech');
 
     Route::post('/addTechnician', 'CustomerController@addTechnician');
+    Route::post('/addAdmin', 'CustomerController@addAdmin');
 
     Route::get('/ordersList', 'OrderController@ordersList')->name('ordersList');
     Route::get('/couponsList', 'CouponController@couponsList')->name('couponsList');
     Route::get('/categoryList', 'CategoryController@categoryList')->name('categoryList');
     Route::get('/subCategoryList', 'SubCategoryController@subCategoryList')->name('subCategoryList');
     Route::get('/customerList', 'CustomerController@customerList')->name('customerList');
+    Route::get('/adminList', 'CustomerController@adminList')->name('adminList');
 
 
     Route::resources([
@@ -62,6 +68,7 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
         'countries' => 'CountriesController',
         'documents' => 'DocumentsController',
         'adminSetting' => 'CompanySettingController',
+        'notifications' => 'NotificationController',
     ]);
 });
 

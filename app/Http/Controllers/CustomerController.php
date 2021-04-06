@@ -79,6 +79,15 @@ class CustomerController extends Controller
             if ($request->has('status') and $request->status ) {
                 $query->where('status', $request->status);
             }
+            if ($request->has('email') and $request->email ) {
+                $query->where('email', $request->email);
+            }
+            if ($request->has('name') and $request->name ) {
+                $query->where('name', $request->name);
+            }
+            if ($request->has('phone') and $request->phone ) {
+                $query->where('phone', $request->phone);
+            }
 
             $table = Datatables::of($query);
 
@@ -121,6 +130,70 @@ class CustomerController extends Controller
         }
 
     }
+
+    public function storeList(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            $query = User::query()->where('role',4)->orderBy('id', 'DESC');
+
+            if ($request->has('status') and $request->status ) {
+                $query->where('status', $request->status);
+            }
+            if ($request->has('email') and $request->email ) {
+                $query->where('email', $request->email);
+            }
+            if ($request->has('name') and $request->name ) {
+                $query->where('name', $request->name);
+            }
+            if ($request->has('phone') and $request->phone ) {
+                $query->where('phone', $request->phone);
+            }
+
+            $table = Datatables::of($query);
+
+            $table->addColumn('placeholder', '&nbsp;');
+
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : "";
+            });
+
+            $table->editColumn('image', function ($row) {
+                return '<img class=" avatar-lg round-5" src="'.url('images/upload/'.$row->image).'">';
+            });
+            $table->addColumn('created_at', function ($row) {
+                return $row->created_at!=null ? $row->created_at->diffForHumans() : '';
+            });
+
+
+            $table->editColumn('status', function ($row) {
+                return ' <span class="badge badge-dot mr-4">
+                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
+                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
+                                                    </span>';
+            });
+            $table->addColumn('actions', function ($row) {
+                return ' <div class="dropdown">
+                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                    <a class="dropdown-item" href="'.url(adminPath().'Customer/'.$row->id.'/edit').'">'. __('Edit') .'</a>
+                                                    <a class="dropdown-item" onclick="deleteData(`Customer`,'.$row->id.');" href="#">'. __('Delete') .'</a>
+
+                                                </div>
+                                            </div>
+';
+            });
+
+            $table->rawColumns(['actions','image','role']);
+            return $table->make(true);
+        }
+
+    }
+
     public function customerList(Request $request)
     {
 
@@ -132,7 +205,76 @@ class CustomerController extends Controller
             if ($request->has('status') and $request->status ) {
                 $query->where('status', $request->status);
             }
+            if ($request->has('email') and $request->email ) {
+                $query->where('email', $request->email);
+            }
+            if ($request->has('name') and $request->name ) {
+                $query->where('name', $request->name);
+            }
+            if ($request->has('phone') and $request->phone ) {
+                $query->where('phone', $request->phone);
+            }
+            $table = Datatables::of($query);
 
+            $table->addColumn('placeholder', '&nbsp;');
+
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : "";
+            });
+
+            $table->editColumn('image', function ($row) {
+                return '<img class=" avatar-lg round-5" src="'.url('images/upload/'.$row->image).'">';
+            });
+            $table->addColumn('created_at', function ($row) {
+                return $row->created_at!=null ? $row->created_at->diffForHumans() : '';
+            });
+
+
+            $table->editColumn('status', function ($row) {
+                return ' <span class="badge badge-dot mr-4">
+                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
+                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
+                                                    </span>';
+            });
+            $table->addColumn('actions', function ($row) {
+                return ' <div class="dropdown">
+                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                    <a class="dropdown-item" href="'.url(adminPath().'Customer/'.$row->id.'/edit').'">'. __('Edit') .'</a>
+                                                    <a class="dropdown-item" onclick="deleteData(`Customer`,'.$row->id.');" href="#">'. __('Delete') .'</a>
+
+                                                </div>
+                                            </div>
+';
+            });
+
+            $table->rawColumns(['actions','image','role']);
+            return $table->make(true);
+        }
+
+    }
+    public function adminList(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            $query = User::query()->where('role',2)->orderBy('id', 'DESC');
+
+            if ($request->has('status') and $request->status ) {
+                $query->where('status', $request->status);
+            }
+            if ($request->has('email') and $request->email ) {
+                $query->where('email', $request->email);
+            }
+            if ($request->has('name') and $request->name ) {
+                $query->where('name', $request->name);
+            }
+            if ($request->has('phone') and $request->phone ) {
+                $query->where('phone', $request->phone);
+            }
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -442,7 +584,7 @@ class CustomerController extends Controller
         $d['priority'] = $request->priority;
         $d['app_benifit_percentage'] = $request->app_benifit_percentage;
 
-            $d['have_vehicle'] = 0;
+        $d['have_vehicle'] = 0;
 
 
         $user_tech_store = App\TechStoreUser::create($d);
@@ -466,6 +608,28 @@ class CustomerController extends Controller
 
 
         return redirect('storeusers');
+
+    }
+
+    public function addAdmin(Request $request){
+        $request->validate([
+            'name' => 'bail|required',
+            'email' => 'bail|required|unique:users',
+            'phone' => 'bail|required|unique:users',
+            /*'identity' => 'bail|required',
+            'min_order_value' => 'bail|required'*/
+        ]);
+        $data = $request->all();
+        $data['role']=2;
+
+        $data['image'] = 'user.png';
+
+        // $data['otp'] = mt_rand(100000,999999);
+
+        $user = User::create($data);
+
+
+        return redirect(adminPath().'adminusers');
 
     }
 
@@ -645,12 +809,19 @@ class CustomerController extends Controller
         $users = User::where('role',4)->orderBy('id', 'DESC')->get();
         return view('admin.users.stores',['users'=>$users]);
     }
+    public function adminUsers(){
+        $users = User::where('role',2)->orderBy('id', 'DESC')->get();
+        return view('admin.users.admins',['users'=>$users]);
+    }
 
-
-    public function addOwner(){
+    public function addStoreUser(){
         $documents = App\Documents::where('type' ,2 )->get(); // technician
         $categories = App\Category::where('parent' ,0)->get();
-        return view('mainAdmin.users.addStore' , compact('documents' , 'categories'));
+        return view('admin.users.addStore' , compact('documents' , 'categories'));
+    }
+    public function addAdminUser(){
+        $users = User::where('role',2)->orderBy('id', 'DESC')->get();
+        return view('admin.users.addAdmin',['users'=>$users]);
     }
 
 

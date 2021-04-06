@@ -7,8 +7,8 @@
     ])
     <div class="container-fluid mt--7">
 
-        <div class="row">
-            <div class="col">
+        <div  class="row">
+            <div  class="col">
                     <div class="card form-card shadow">
                         <div class="card-header border-0">
                             <div class="row align-items-center">
@@ -20,11 +20,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="search" class="pl-lg-4">
+                        <div style=" padding: 10px; " id="search" class="pl-lg-4">
 
 
                             <div  class="row">
-                                <div class="col-4">
+                                <div class="col-3">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-status"> الحالة</label>
                                         <Select  name="status" id="status"
@@ -34,6 +34,33 @@
                                             <option  value="1">DeActive</option>
 
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group ">
+                                        <label class="form-control-label" for="input-hour_work">الإسم
+                                        </label>
+                                        <input type="text" name="name"
+                                               class="form-control form-control-alternative"
+                                               placeholder="الإسم" value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group ">
+                                        <label class="form-control-label" for="input-hour_work">رقم الجوال
+                                        </label>
+                                        <input type="text" name="phone"
+                                               class="form-control form-control-alternative"
+                                               placeholder="رقم الجوال" value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group ">
+                                        <label class="form-control-label" for="input-hour_work">الإيميل
+                                        </label>
+                                        <input type="email" name="email"
+                                               class="form-control form-control-alternative"
+                                               placeholder="الإيميل" value="" required>
                                     </div>
                                 </div>
 
@@ -95,6 +122,7 @@
                 serverSide: true,
                 scrollX: false,
                 type: "GET",
+                searching: false,
 
                 "initComplete": function (settings, json) {
                     $(".dataTables_length").css('float', 'right')
@@ -104,6 +132,9 @@
                     url: "{{route('customerList')}}",
                     data: function (d) {
                         d.status=$('[name="status"]').val()
+                        d.name=$('[name="name"]').val()
+                        d.email=$('[name="email"]').val()
+                        d.phone=$('[name="phone"]').val()
 
 
                     }

@@ -18,7 +18,7 @@
                                         <h3 class="mb-0">{{ __('Add Store Owner') }}</h3>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <a href="{{ url(' storeusers') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
+                                        <a href="{{ url('panel/storeusers') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                                     </div>
                                 </div>
                             </div>

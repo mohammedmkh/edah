@@ -20,11 +20,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="search" class="pl-lg-4">
+                        <div style=" padding: 10px; " id="search" class="pl-lg-4">
 
 
                             <div  class="row">
-                                <div class="col-4">
+                                <div class="col-3">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-status"> الحالة</label>
                                         <Select  name="status" id="status"
@@ -34,6 +34,33 @@
                                             <option  value="1">DeActive</option>
 
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group ">
+                                        <label class="form-control-label" for="input-hour_work">الإسم
+                                        </label>
+                                        <input type="text" name="name"
+                                               class="form-control form-control-alternative"
+                                               placeholder="الإسم" value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group ">
+                                        <label class="form-control-label" for="input-hour_work">رقم الجوال
+                                        </label>
+                                        <input type="text" name="phone"
+                                               class="form-control form-control-alternative"
+                                               placeholder="رقم الجوال" value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group ">
+                                        <label class="form-control-label" for="input-hour_work">الإيميل
+                                        </label>
+                                        <input type="email" name="email"
+                                               class="form-control form-control-alternative"
+                                               placeholder="الإيميل" value="" required>
                                     </div>
                                 </div>
 
@@ -54,25 +81,29 @@
                             </div>
                         </div>
 
-                        <div style=" padding: 10px; " class="table-responsive">
-                                <table class="table yajra-datatable align-items-center table-flush">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th scope="col">{{ __('#') }}</th>
-                                            <th scope="col">{{ __('Image') }}</th>
-                                            <th scope="col">{{ __('Name') }}</th>
-                                            <th scope="col">{{ __('Email') }}</th>
-                                            <th scope="col">{{ __('Phone') }}</th>
-                                            <th scope="col">{{ __('Status') }}</th>
-                                            <th scope="col">{{ __('Role') }}</th>
-                                            <th scope="col">{{ __('Action') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
 
-                            </div>
+                        <div style=" padding: 10px; " class="table-responsive">
+                            <table class="table yajra-datatable align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">{{ __('#') }}</th>
+                                    <th scope="col">{{ __('Image') }}</th>
+                                    <th scope="col">{{ __('Name') }}</th>
+                                    <th scope="col">{{ __('Email') }}</th>
+                                    <th scope="col">{{ __('Phone') }}</th>
+                                    <th scope="col">{{ __('Status') }}</th>
+                                    <th scope="col">{{ __('Role') }}</th>
+                                    <th scope="col">{{ __('Action') }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        </div>
+
                     </div>
             </div>
         </div>
@@ -128,6 +159,8 @@
                 processing: true,
                 serverSide: true,
                 scrollX: false,
+                searching: false,
+
                 type: "GET",
 
                 "initComplete": function (settings, json) {
@@ -138,7 +171,9 @@
                     url: "{{route('techniciansList')}}",
                     data: function (d) {
                         d.status=$('[name="status"]').val()
-
+                        d.name=$('[name="name"]').val()
+                        d.email=$('[name="email"]').val()
+                        d.phone=$('[name="phone"]').val()
 
                     }
                 },

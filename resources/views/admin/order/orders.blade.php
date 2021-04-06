@@ -97,28 +97,30 @@
 
                         </div>
                     </div>
+                    <div style="padding:10px;" class="table-responsive">
+                        <table class="table data-table align-items-center table-flush yajra-datatable">
+                            <thead class="thead-light">
+                            <tr>
+
+                                <th scope="col">{{ __('Order ID') }}</th>
+
+                                <th scope="col">{{ __('Customer') }}</th>
+                                <th scope="col">{{ __('payment') }}</th>
+                                <th scope="col">{{ __('date') }}</th>
+
+                                <th scope="col">{{ __('Payment GateWay') }}</th>
+
+                                <th scope="col">{{ __('Payment Status') }}</th>
+                                <th scope="col">{{ __('Action') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                    </div>
+
                 </div>
-            </div>
-            <div style="padding:10px;" class="table-responsive">
-                    <table class="table data-table align-items-center table-flush yajra-datatable">
-                        <thead class="thead-light">
-                        <tr>
-
-                            <th scope="col">{{ __('Order ID') }}</th>
-
-                            <th scope="col">{{ __('Customer') }}</th>
-                            <th scope="col">{{ __('payment') }}</th>
-                            <th scope="col">{{ __('date') }}</th>
-
-                            <th scope="col">{{ __('Payment GateWay') }}</th>
-
-                            <th scope="col">{{ __('Payment Status') }}</th>
-                            <th scope="col">{{ __('Action') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
 
             </div>
 
@@ -139,9 +141,20 @@
         $("#user_id").select2()
         $(function () {
             $('input[name="daterange"]').daterangepicker({
-                opens: 'right',
-               // autoUpdateInput: false,
-                autoApply: true,
+                startDate: '03/05/2005',
+                endDate: moment,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+
+                showDropdowns: true,
+                showCustomRangeLabel:true,
+                opens: 'left',
                 locale: {
                     cancelLabel: 'Clear',
 
@@ -159,7 +172,7 @@
                 serverSide: true,
                 scrollX: false,
                 type: "GET",
-
+                searching: false,
                 "initComplete": function (settings, json) {
                     $(".dataTables_length").css('float', 'right')
                     $(".dataTables_filter").css('float', 'left')
