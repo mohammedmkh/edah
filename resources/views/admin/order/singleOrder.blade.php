@@ -81,11 +81,14 @@
 
                                 </div>
                             </div>
+
+
+                        </div>
+                        <div>
                             <div class="row">
-                                <div class="col-md-8" style=" position: absolute ; margin-right: 170px; height: 50%; " id="map"></div>
+                                <div class="col-md-8" style=" margin: 0px 70px; width:100%; height:400px " id="map"></div>
 
                             </div>
-
                         </div>
 
                     </div>
