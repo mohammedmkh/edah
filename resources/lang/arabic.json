@@ -1,8 +1,10 @@
 {
+    "Total": "المجموع الكلي",
     "Filter": "بحث",
     "Admin Users":"مدير النظام",
     "Notifications":"الإشعارات",
-
+    "Owner Profit":"ربح المالك",
+    "Technical Profit":"ربح الفني",
     "Dashboard" : " اللوحة الرئيسة",
     "Orders" : "طلب",
     "Shop" : "متجر",
@@ -49,7 +51,7 @@
     "Payment GateWay" : "بوابة الدفع",
     "Order Status" : "حالة الطلب",
     "Payment Status" : "حالة الطلب",
-    "Action" : "عمل",
+    "Action" : "إجراء",
     "Item" : "بند",
     "Quantity" : "كمية",
     "View Order" : "مشاهدة الطلب",

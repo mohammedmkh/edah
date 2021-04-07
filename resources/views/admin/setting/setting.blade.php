@@ -4,9 +4,9 @@
     @include('admin.layout.topHeader', [
         'title' => __('Settings') ,
         'class' => 'col-lg-7'
-    ]) 
+    ])
     <div class="container-fluid mt--7">
-           
+
         <div class="row">
             <div class="col">
                     <div class="card bg-secondary form-card shadow">
@@ -14,7 +14,7 @@
                             <div class="row align-items-center">
                                 <div class="col-8">
                                     <h3 class="mb-0">{{ __('Settings') }}</h3>
-                                </div>                            
+                                </div>
                             </div>
                         </div>
 
@@ -22,7 +22,7 @@
                             <div class="row">
                                 <div class="col-3" style="border-right: 1px solid #ddd;">
                                     <?php $status = \App\Setting::find(1)->license_status;  ?>
-                                    <ul class="nav nav-tabs tabs-left sideways border-0">  
+                                    <ul class="nav nav-tabs tabs-left sideways border-0">
                                     <li><a href="#general-v" class="{{ $status==1?'active':'event-none'}} " data-toggle="tab"> <i class="ni ni-settings-gear-65 mr-2"></i>{{ __("General") }}</a></li>
                                         <!--
                                         <li><a href="#payment-v" class="{{ $status==0?'event-none':''}}" data-toggle="tab"><i class="far fa-credit-card mr-2"></i>{{ __("Payment Gateway") }}</a></li>
@@ -125,7 +125,7 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                        
+
                                                     <div class="text-right">
                                                         <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                     </div>
@@ -133,7 +133,7 @@
                                             </form>
 
 
-                                           
+
                                         </div>
                                         <div class="tab-pane {{ $status==1?'active':''}}" id="general-v">
                                                 <form method="post" id="company-setting-form" action="{{url(adminPath().'adminSetting/'.$companyData->id)}}" autocomplete="off"
@@ -187,7 +187,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group row{{ $errors->has('email') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label" for="input-email">{{ __('Email') }}</label>
@@ -225,7 +225,7 @@
                                                                     style="width:160px;height:60px;margin-bottom:15px;border-radius:5px;">
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group row{{ $errors->has('logo') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label" for="input-logo">{{ __('Logo') }}</label>
@@ -265,31 +265,46 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                                        <div class="form-group row {{ $errors->has('description') ? ' has-danger' : '' }}">
+                                                        <div class="form-group row {{ $errors->has('description') ? 'has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label" for="input-description">{{ __('Description') }}</label>
                                                             </div>
                                                             <div class="col-9">
                                                                 <textarea name="description" id="input-description"
-                                                                    class="form-control form-control-alternative{{ $errors->has('description') ? ' is-invalid' : '' }}"
-                                                                    placeholder="{{ __('Description') }}">{{$companyData->description}}</textarea>
+                                                                          class="form-control form-control-alternative{{ $errors->has('description') ? ' is-invalid' : '' }}"
+                                                                          placeholder="{{ __('Description') }}">{{$companyData->description}}</textarea>
                                                                 @if ($errors->has('description'))
-                                                                <span class="invalid-feedback" role="alert">
+                                                                    <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $errors->first('description') }}</strong>
                                                                 </span>
                                                                 @endif
                                                             </div>
-                                                        </div>                                                                                    
+                                                        </div>
+                                                        <div class="form-group row {{ $errors->has('profit_ratio') ? 'has-danger' : '' }}">
+                                                            <div class="col-3">
+                                                                <label class="form-control-label" for="input-description">{{ __('Profit ratio') }}</label>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <input name="profit_ratio" id="input-profit_ratio"
+                                                                          class="form-control form-control-alternative{{ $errors->has('profit_ratio') ? ' is-invalid' : '' }}"
+                                                                          placeholder="{{ __('Profit ratio') }}" value="{{$companyData->profit_ratio}}" />
+                                                                @if ($errors->has('profit_ratio'))
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $errors->first('profit_ratio') }}</strong>
+                                                                </span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>
                                                     </div>
-                                                </form>                                          
+                                                </form>
                                             </div>
                                             <div class="tab-pane" id="payment-v">
                                                 <form method="post" action="{{url('savePaymentSetting')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
-                                            
+
                                                     <h6 class="heading-small text-muted mb-4">{{ __("Payment Gateway Setting") }}</h6>
                                                     <div>
                                                         <div class="form-group{{ $errors->has('cod') ? ' has-danger' : '' }}">
@@ -377,7 +392,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group row {{ $errors->has('stripeSecretKey') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label" for="input-stripeSecretKey">{{ __('Stripe Secret Key') }}:</label>
@@ -408,9 +423,9 @@
                                                                 </span>
                                                                 @endif
                                                             </div>
-                                            
+
                                                         </div>
-                                            
+
                                                         <div class="form-group row {{ $errors->has('razorSecretKey') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label"
@@ -443,7 +458,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group row {{ $errors->has('paypalProduction') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label"
@@ -460,7 +475,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
+
                                                         {{-- <h6 class="heading-small text-muted mb-4 pt-4" style="border-top:1px solid #ddd;">{{ __("Paytabs") }}</h6>
                                                         <div class="form-group row{{ $errors->has('paytab_email') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
@@ -477,7 +492,7 @@
                                                                 @endif
                                                             </div>
                                                         </div> --}}
-                                            
+
                                                         <div class="form-group row {{ $errors->has('paytab_secret_key') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label" for="input-paytab_secret_key">{{ __('Paytabs Secret Key') }}:</label>
@@ -492,15 +507,15 @@
                                                                 </span>
                                                                 @endif
                                                             </div>
-                                                        </div> 
-                                            
+                                                        </div>
+
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>
                                                     </div>
                                                 </form>
                                             </div>
-                                            
+
                                             <div class="tab-pane" id="language-v">
                                                 <h6 class="heading-small text-muted mb-4">{{ __("Language Setting") }}</h6>
                                                 <div class="row">
@@ -554,7 +569,7 @@
                                                                     </span>
                                                                     @endif
                                                                     <label class="custom-file-label" for="file">Select file</label>
-                                            
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -573,7 +588,7 @@
                                                                     </span>
                                                                     @endif
                                                                     <label class="custom-file-label" for="icon">Select file</label>
-                                            
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -586,7 +601,7 @@
                                                     -->
                                                 </form>
                                             </div>
-                                            
+
                                             <div class="tab-pane" id="verification-v">
                                                 <form method="post" action="{{url('saveVerificationSettings')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
@@ -605,7 +620,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group{{ $errors->has('phone_verify') ? ' has-danger' : '' }}">
                                                             <div class="row">
                                                                 <div class="col-4"> <label class="form-control-label">{{ __('Verification using Phone') }}:</label>
@@ -640,7 +655,7 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                            
+
                                             <div class="tab-pane" id="commission-v">
                                                 <form method="post" action="{{url('saveCommissionSettings')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
@@ -695,7 +710,7 @@
                                                         @endif
                                                     </div>
                                             </div> --}}
-                                            
+
                                             <div class="form-group row {{ $errors->has('delivery_charge_per') ? ' has-danger' : '' }}">
                                                 <div class="col-3">
                                                     <label class="form-control-label"
@@ -719,12 +734,12 @@
                                             </div>
                                             </form>
                                             </div>
-                                            
-                                            
+
+
                                             <div class="tab-pane" id="notification-va">
                                                 <form method="post" action="{{url('saveNotificationSettings')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
-                                            
+
                                                     <h6 class="heading-small text-muted mb-4">{{ __("Push Notification Setting") }}</h6>
                                                     <div>
                                                         <div class="form-group{{ $errors->has('push_notification') ? ' has-danger' : '' }}">
@@ -741,8 +756,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                            
-                                            
+
+
                                                         <div class="form-group row {{ $errors->has('onesignal_api_key') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label"
@@ -759,7 +774,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group row {{ $errors->has('onesignal_auth_key') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label"
@@ -776,8 +791,8 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
-                                            
+
+
                                                         <div class="form-group row {{ $errors->has('onesignal_app_id') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label" for="input-onesignal_app_id">{{ __('One Signal AppID') }}:</label>
@@ -810,9 +825,9 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
-                                            
-                                            
+
+
+
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>
@@ -822,7 +837,7 @@
                                             <div class="tab-pane" id="mail-v">
                                                 <form method="post" action="{{url('saveMailSettings')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
-                                            
+
                                                     <h6 class="heading-small text-muted mb-4">{{ __("SMTP Setting") }}</h6>
                                                     <div>
                                                         <div class="form-group{{ $errors->has('mail_notification') ? ' has-danger' : '' }}">
@@ -839,7 +854,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group row {{ $errors->has('mail_host') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label" for="input-mail_host">{{ __('Mail Host') }}:</label>
@@ -915,7 +930,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>
@@ -925,7 +940,7 @@
                                             <div class="tab-pane" id="sms-v">
                                                 <form method="post" action="{{url('saveSMSSettings')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
-                                            
+
                                                     <h6 class="heading-small text-muted mb-4">{{ __("SMS Setting") }}</h6>
                                                     <div>
                                                         <div class="form-group{{ $errors->has('sms_twilio') ? ' has-danger' : '' }}">
@@ -942,9 +957,9 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                            
-                                            
-                                            
+
+
+
                                                         <div class="form-group row {{ $errors->has('twilio_account_id') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label"
@@ -977,7 +992,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="form-group row {{ $errors->has('twilio_phone_number') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
                                                                 <label class="form-control-label"
@@ -994,19 +1009,19 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                            
-                                            
+
+
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>
                                                     </div>
                                                 </form>
                                             </div>
-                                            
+
                                             <div class="tab-pane" id="map-v">
                                                 <form method="post" action="{{url('saveMapSettings')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
-                                            
+
                                                     <h6 class="heading-small text-muted mb-4">{{ __("Map Setting") }}</h6>
                                                     <div>
                                                         <div class="form-group row {{ $errors->has('map_key') ? ' has-danger' : '' }}">
@@ -1022,7 +1037,7 @@
                                                                     <strong>{{ $errors->first('map_key') }}</strong>
                                                                 </span>
                                                                 @endif
-                                            
+
                                                                 <p class="mt-4" style="font-weight:400;font-size:15px;letter-spacing: .5px;">
                                                                     {{ __('The Maps JavaScript API lets you customize maps with your own content and imagery for display on web pages and mobile devices. See')}}
                                                                     <a
@@ -1030,7 +1045,7 @@
                                                                     {{ __('for more information')}}.</p>
                                                             </div>
                                                         </div>
-                                            
+
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>
@@ -1042,10 +1057,10 @@
                                             <div class="tab-pane" id="additional-v">
                                                 <form method="post" action="{{url('saveSettings')}}" autocomplete="off" enctype="multipart/form-data">
                                                     @csrf
-                                            
+
                                                     <h6 class="heading-small text-muted mb-4">{{ __("General Setting") }}</h6>
                                                     <div>
-                                            
+
 
                                                         {{-- <div class="form-group row {{ $errors->has('default_food_order_status') ? ' has-danger' : '' }}">
                                                             <div class="col-3">
@@ -1088,7 +1103,7 @@
                                                                 <label class="form-control-label" for="input-request_duration">{{ __('Request Duration') }} (in MS):</label>
                                                             </div>
                                                             <div class="col-9">
-                                                                <input type="number" name="request_duration" placeholder="Enter request duratetion in Milliseconds" value="{{$setting->request_duration}}"  id="input-request_duration" class="form-control form-control-alternative{{ $errors->has('request_duration') ? ' is-invalid' : '' }}" required>                                                                                                                                 
+                                                                <input type="number" name="request_duration" placeholder="Enter request duratetion in Milliseconds" value="{{$setting->request_duration}}"  id="input-request_duration" class="form-control form-control-alternative{{ $errors->has('request_duration') ? ' is-invalid' : '' }}" required>
                                                                 @if ($errors->has('request_duration'))
                                                                     <span class="invalid-feedback" role="alert">
                                                                         <strong>{{ $errors->first('request_duration') }}</strong>
@@ -1103,8 +1118,8 @@
                                                             </div>
                                                             <div class="col-9">
                                                                 <input type="number" name="default_driver_radius" placeholder="Enter default radius of Driver" value="{{$setting->default_driver_radius}}"  id="input-default_driver_radius" class="form-control form-control-alternative{{ $errors->has('default_driver_radius') ? ' is-invalid' : '' }}" required>
-                                                                   
-                                                              
+
+
                                                                 @if ($errors->has('default_driver_radius'))
                                                                     <span class="invalid-feedback" role="alert">
                                                                         <strong>{{ $errors->first('default_driver_radius') }}</strong>
@@ -1152,11 +1167,11 @@
 
                                         {{-- <div class="tab-pane " id="notification-v">
                                             <form method="post" action="{{url('OwnerSetting/'.$data->id)}}" autocomplete="off" enctype="multipart/form-data" >
-                                                @csrf                                                 
-                                                @method('put')      
+                                                @csrf
+                                                @method('put')
                                                 <h6 class="heading-small text-muted mb-4">{{ __("Notification Setting") }}</h6>
-                                                <div>                                        
-                                                    <div class="form-group{{ $errors->has('web_notification') ? ' has-danger' : '' }}">                                            
+                                                <div>
+                                                    <div class="form-group{{ $errors->has('web_notification') ? ' has-danger' : '' }}">
                                                         <div class="row">
                                                             <div class="col-5"> <label class="form-control-label">{{ __('Desktop notification when order arrive') }}:</label></div>
                                                             <div class="col-7">
@@ -1166,8 +1181,8 @@
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                    </div>                                                        
-                                                        
+                                                    </div>
+
                                                     <div class="text-right">
                                                         <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                     </div>
@@ -1175,14 +1190,14 @@
                                             </form>
                                         </div>   --}}
 
-                                    </div>                                
+                                    </div>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
             </div>
         </div>
-       
+
     </div>
 
 @endsection

@@ -54,6 +54,10 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/subCategoryList', 'SubCategoryController@subCategoryList')->name('subCategoryList');
     Route::get('/customerList', 'CustomerController@customerList')->name('customerList');
     Route::get('/adminList', 'CustomerController@adminList')->name('adminList');
+    Route::get('/adminList', 'CustomerController@adminList')->name('adminList');
+    Route::get('/technicalAccountStatmentPage/{id}', 'CustomerController@technicalAccountStatmentPage');
+    Route::get('/technicalAccountStatment', 'CustomerController@technicalAccountStatment')->name("technicalAccountStatment");
+
 
 
     Route::resources([
