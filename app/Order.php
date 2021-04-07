@@ -9,7 +9,7 @@ class Order extends Model
 
     protected $fillable = [
       'user_id','technical_id','category_id', 'status','is_immediately'
-        ,'time','price','deleted_at', 'created_at', 'updated_at' , 'distance','lat','lang'];
+        ,'time','price','deleted_at', 'created_at', 'updated_at' , 'distance','lat','lang','profit_ratio'];
 
     protected $hidden = ['created_at' , 'updated_at' , 'deleted_at'];
 

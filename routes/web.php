@@ -57,7 +57,7 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/adminList', 'CustomerController@adminList')->name('adminList');
     Route::get('/technicalAccountStatmentPage/{id}', 'CustomerController@technicalAccountStatmentPage');
     Route::get('/technicalAccountStatment', 'CustomerController@technicalAccountStatment')->name("technicalAccountStatment");
-
+    Route::post('/tech_posting', 'CustomerController@tech_posting');
 
 
     Route::resources([

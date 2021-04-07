@@ -64,6 +64,26 @@ class CustomerController extends Controller
         return view('admin.users.addUser');
     }
 
+    public function tech_posting(Request $request)
+    {
+        $request->validate([
+            'first_id' => 'required',
+            'last_id' => 'required',
+            'totalTeachnical' => 'required',
+                    ]);
+        $data = $request->all();
+
+
+        $user = User::create($data);
+        if ($user->role == 1) {
+            $setting['user_id'] = $user->id;
+            OwnerSetting::create($setting);
+        }
+
+        return response(['success'=>true]);
+
+    }
+
     public function techniciansList(Request $request)
     {
 
@@ -111,7 +131,7 @@ class CustomerController extends Controller
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'Customer/' . $row->id . '/edit') . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
-                                                    <a class="dropdown-item" href="' . url(adminPath() . 'technicalAccountStatmentPage/' . $row->id) . '">' . __('Edit') . '</a>
+                                                    <a class="dropdown-item" href="' . url(adminPath() . 'technicalAccountStatmentPage/' . $row->id) . '">' . __('Technical Account Statment') . '</a>
                                                 </div>
                                             </div>
 ';
@@ -154,11 +174,11 @@ class CustomerController extends Controller
                 return $row->categoryOrder->translation()->name ;
             });
             $table->addColumn('owner_profit', function ($row)use($profit_ratio) {
-                return ($row->price*$profit_ratio)/100;
+                return $row->profit_ratio ? ($row->price*$row->profit_ratio)/100:$profit_ratio;
             });
 
             $table->addColumn('technical_profit', function ($row)use($profit_ratio) {
-                return ($row->price*(100-$profit_ratio)/100);
+                return $row->profit_ratio ?($row->price*(100-$row->profit_ratio)/100) :$profit_ratio ;
             });
             $table->addIndexColumn();
 
