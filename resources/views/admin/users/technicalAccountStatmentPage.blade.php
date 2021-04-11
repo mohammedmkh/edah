@@ -16,8 +16,13 @@
                                 <h3 class="mb-0">{{ __('Account Statment') }}</h3>
                             </div>
                             <div class="col-4 text-right">
-                                <a href="#" onclick="posting('{{$id}}')"
+                                <a href="#" onclick="posting('{{$technical_id}}')"
                                    class="btn btn-sm btn-primary">{{ __('Posting') }}</a>
+
+                                <a target="_blank" href="{{url(adminPath().'technicalAccountStatmentExcel/'.$posting_id.'/'.$technical_id)}}"
+                                   class="btn btn-sm btn-primary">{{ __('Excel') }}</a>
+                                <a target="_blank" href="{{url(adminPath().'technicalAccountStatmentExcel/'.$posting_id.'/'.$technical_id)}}"
+                                   class="btn btn-sm btn-primary">{{ __('PDF') }}</a>
                             </div>
                         </div>
                     </div>
@@ -81,7 +86,18 @@
                 info: false,
 
                 type: "GET",
+                dom: "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+                buttons: [
+                    {
+                        text: 'تحديث',
+                        className: 'btn green reload productTable',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload();
+                        }
+                    },
 
+
+                ],
                 "initComplete": function (settings, json) {
                     $(".dataTables_length").css('float', 'right')
                     $(".dataTables_filter").css('float', 'left')
@@ -89,7 +105,8 @@
                 ajax: {
                     url: "{{route('technicalAccountStatment')}}",
                     data: function (d) {
-                        d.id ={{$id}}
+                        d.id = '{{$technical_id}}'
+                        d.posting_id ='{{$posting_id}}'
 
 
                     }
@@ -136,7 +153,7 @@
 
 
                     // Total over all pages
-                    totalTeachnical = api
+                    totalTechnical = api
                         .column(4)
                         .data()
                         .reduce(function (a, b) {
@@ -153,9 +170,9 @@
 
 
                     $(api.column(4).footer()).html(
-                        ' ( {{__("Total")}} ' + totalTeachnical + ' {{__("SAR")}} )'
+                        ' ( {{__("Total")}} ' + totalTechnical + ' {{__("SAR")}} )'
                     );
-                    $(api.column(4).footer()).attr('totalTeachnical', totalTeachnical);
+                    $(api.column(4).footer()).attr('totalTechnical', totalTechnical);
 
 
                 }
@@ -171,19 +188,35 @@
 
 
         function posting(id) {
-            var first_id = $("tbody tr:first td:eq(1)").text();
-            var last_id = $("tbody tr:last td:eq(1)").text();
-            var totalTeachnical = $('tfoot tr th:eq(4)').attr('totalTeachnical');
+            event.preventDefault();
+            var first_order_id = $("tbody tr:last td:eq(1)").text();
+            var last_order_id = $("tbody tr:first td:eq(1)").text();
+            var total_technical = $('tfoot tr th:eq(4)').attr('totalTechnical');
+            var technical_id = '{{$technical_id}}';
 
             $.ajax({
                 url: '{{url('')}}/panel/tech_posting',
-                data: {_token: '{{csrf_token()}}', first_id: first_id, last_id: last_id,totalTeachnical:totalTeachnical},
+                data: {
+                    _token: '{{csrf_token()}}',
+                    technical_id: technical_id,
+                    first_order_id: first_order_id,
+                    last_order_id: last_order_id,
+                    total_technical: total_technical
+                },
                 type: "POST",
                 success: function (data, textStatus, jqXHR) {
+
+                    if (data.success == true) {
+                        location.reload();
+                    } else {
+                        alert("لا توجد بيانات متوفرة في الجدول لترحيلها")
+
+                    }
 
                 },
                 error: function (data, textStatus, jqXHR) {
 
+                    alert(data.message)
                 },
             });
 

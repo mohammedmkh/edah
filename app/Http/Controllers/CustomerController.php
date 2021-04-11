@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Rap2hpoutre\FastExcel\FastExcel;
+
 use App\User;
 use App\Admin;
 use App\UserAddress;
@@ -37,6 +39,8 @@ use App\GroceryReview;
 use App\GrocerySubCategory;
 use App\GroceryItem;
 use Yajra\DataTables\DataTables;
+use App\TeachnicalPosting;
+use \Validator;
 
 class CustomerController extends Controller
 {
@@ -66,21 +70,25 @@ class CustomerController extends Controller
 
     public function tech_posting(Request $request)
     {
-        $request->validate([
-            'first_id' => 'required',
-            'last_id' => 'required',
-            'totalTeachnical' => 'required',
-                    ]);
+
+        $validator = Validator::make($request->all(), [
+            'technical_id' => 'required',
+            'first_order_id' => 'required',
+            'last_order_id' => 'required',
+            'total_technical' => 'required',
+        ]);
         $data = $request->all();
-
-
-        $user = User::create($data);
-        if ($user->role == 1) {
-            $setting['user_id'] = $user->id;
-            OwnerSetting::create($setting);
+        if ($validator->fails()) {
+            $message = getFirstMessageError($validator);
+            return response(['success' => false, 'message' => $message]);
         }
+        $user = TeachnicalPosting::create($data);
 
-        return response(['success'=>true]);
+        $posting_order = Order::where('technical_id', $data['technical_id'])
+            ->whereBetween('id', [$data['first_order_id'], $data['last_order_id']])
+            ->update(['is_posting' => 1]);
+
+        return response(['success' => true]);
 
     }
 
@@ -129,9 +137,10 @@ class CustomerController extends Controller
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                    <a class="dropdown-item" href="' . url(adminPath() . 'Customer/' . $row->id . '/edit') . '">' . __('Edit') . '</a>
+                                                    <a class="dropdown-item" href="' . url(adminPath() . 'tech/edit/' . $row->id) . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'technicalAccountStatmentPage/' . $row->id) . '">' . __('Technical Account Statment') . '</a>
+                                                    <a class="dropdown-item" href="' . url(adminPath() . 'technicalAccountStatmentHistory/' . $row->id) . '">' . __('Technical Account Statement Historey') . '</a>
                                                 </div>
                                             </div>
 ';
@@ -149,6 +158,60 @@ class CustomerController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    public function getTechnicalAccountStatmentHistory(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            $query = TeachnicalPosting::query()->where('technical_id', $data['id'])->orderBy('id', 'DESC');
+
+
+            $table = Datatables::of($query);
+
+            $table->addColumn('placeholder', '&nbsp;');
+            $table->addColumn('action', function ($row) {
+                return ' <div class="dropdown">
+                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                    <a class="dropdown-item" href="' . url(adminPath() . 'technicalAccountStatmentPage/' . $row->technical_id . '/' . $row->id) . '">' . __('View') . '</a>
+
+                                                </div>
+                                            </div>
+';
+            });
+
+            $table->rawColumns(['action']);
+            return $table->make(true);
+        }
+
+    }
+
+    public function technicalAccountStatmentExcel($posting_id = null, $id = null)
+    {
+        $query = Order::orderBy('id', 'DESC');
+        if ($posting_id != null) {
+
+            $posting = TeachnicalPosting::find($posting_id);
+            $query->whereBetween('id', [$posting['first_order_id'], $posting['last_order_id']]);
+
+        } else {
+            $query->where('is_posting', 0);
+        }
+        $query->where('technical_id', $id);
+        $profit_ratio = CompanySetting::first()['profit_ratio'];
+        return (new FastExcel($query->get()))->download('users.csv', function ($row) use ($profit_ratio) {
+            return [
+                'التصنيفات' => $row->categoryOrder->translation()->name,
+                'ربح المالك' => $row->profit_ratio ? ($row->price * $row->profit_ratio) / 100 : $profit_ratio,
+                'ربح الفني' => $row->profit_ratio ? ($row->price * $row->profit_ratio) / 100 : $profit_ratio,
+            ];
+        });
+
+    }
+
     public function technicalAccountStatment(Request $request)
     {
 
@@ -156,12 +219,16 @@ class CustomerController extends Controller
             $data = $request->all();
 
             $query = Order::query()->orderBy('id', 'DESC');
+            if ($request->has('posting_id') and $request->posting_id) {
 
-            $profit_ratio=CompanySetting::first()['profit_ratio'];
+                $posting = TeachnicalPosting::find($data['posting_id']);
+                $query->whereBetween('id', [$posting['first_order_id'], $posting['last_order_id']]);
+            } else {
+                $query->where('is_posting', 0);
+            }
+            $query->where('technical_id', $data['id']);
+            $profit_ratio = CompanySetting::first()['profit_ratio'];
 
-            $query->whereHas('technician', function ($query) use ($data) {
-                $query->where('id',$data['id']);
-            });
 
             $table = Datatables::of($query);
 
@@ -171,30 +238,38 @@ class CustomerController extends Controller
                 return $row->id ? $row->id : "";
             });
             $table->addColumn('category', function ($row) {
-                return $row->categoryOrder->translation()->name ;
+                return $row->categoryOrder->translation()->name;
             });
-            $table->addColumn('owner_profit', function ($row)use($profit_ratio) {
-                return $row->profit_ratio ? ($row->price*$row->profit_ratio)/100:$profit_ratio;
+            $table->addColumn('owner_profit', function ($row) use ($profit_ratio) {
+                return $row->profit_ratio ? ($row->price * $row->profit_ratio) / 100 : $profit_ratio;
             });
 
-            $table->addColumn('technical_profit', function ($row)use($profit_ratio) {
-                return $row->profit_ratio ?($row->price*(100-$row->profit_ratio)/100) :$profit_ratio ;
+            $table->addColumn('technical_profit', function ($row) use ($profit_ratio) {
+                return $row->profit_ratio ? ($row->price * (100 - $row->profit_ratio) / 100) : $profit_ratio;
             });
             $table->addIndexColumn();
 
 
-            $table->rawColumns([ 'category', 'technical_profit', 'owner_profit']);
+            $table->rawColumns(['category', 'technical_profit', 'owner_profit']);
             return $table->make(true);
         }
 
     }
 
-    public function technicalAccountStatmentPage($id = null)
+    public function technicalAccountStatmentPage($technical_id = null, $posting_id = null)
     {
 
 
-      $checkUser= user::findOrfail($id);
-        return view('admin.users.technicalAccountStatmentPage', compact('id'));
+        $checkUser = user::findOrfail($technical_id);
+        return view('admin.users.technicalAccountStatmentPage', compact('technical_id', 'posting_id'));
+    }
+
+    public function technicalAccountStatmentHistoryPage($id = null)
+    {
+
+
+        $checkUser = user::findOrfail($id);
+        return view('admin.users.technicalAccountStatmentHistoryPage', compact('id'));
     }
 
     public function storeList(Request $request)
@@ -243,7 +318,7 @@ class CustomerController extends Controller
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                    <a class="dropdown-item" href="' . url(adminPath() . 'Customer/' . $row->id . '/edit') . '">' . __('Edit') . '</a>
+                                                    <a class="dropdown-item" href="' . url(adminPath() . 'store/edit/' . $row->id ) . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
 
                                                 </div>
@@ -307,6 +382,7 @@ class CustomerController extends Controller
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'Customer/' . $row->id . '/edit') . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
+                                                    <a class="dropdown-item" href="' . url(adminPath() . 'Order/' . $row->id) . '">' . __('Orders') . '</a>
 
                                                 </div>
                                             </div>
@@ -673,6 +749,61 @@ class CustomerController extends Controller
         return redirect('storeusers');
 
     }
+    public function updateStoreUser(Request $request)
+    {
+        $data = $request->all();
+        $id=$data['id'];
+        $request->validate([
+            'name' => 'bail|required',
+            'email' => 'bail|required|unique:users,email,' . $id . ',id',
+            'phone' => 'bail|required|unique:users,phone,' . $id . ',id',
+            'identity' => 'bail|required',
+            'min_order_value' => 'bail|required'
+        ]);
+        $data['role'] = 4;
+        //    dd($data);
+
+        $data['image'] = 'user.png';
+
+        // $data['otp'] = mt_rand(100000,999999);
+
+        $user= User::findOrFail($id)->update($data);
+
+        $d['phone'] = $request->phone;
+        $d['tech_store_email'] = $request->email;
+        $d['type'] = 1;
+
+        $d['min_order_value'] = $request->min_order_value;
+        $d['tech_store_email'] = $request->email;
+        $d['priority'] = $request->priority;
+        $d['app_benifit_percentage'] = $request->app_benifit_percentage;
+
+        $d['have_vehicle'] = 0;
+
+
+        $user_tech_store = App\TechStoreUser::create($d);
+        $user_tech_store->user_id = $id;
+        $user_tech_store->save();
+
+
+        // now save any documents in tech-store-documents
+        $documents = App\Documents::where('type', 2)->get();
+        foreach ($documents as $doc) {
+            if ($request->has('file' . $doc->id)) {
+                $file = uploadDocument($request['file' . $doc->id]);
+                $new_tech_store_doc = new  App\TechStoreDocuments;
+                $new_tech_store_doc->user_id = $id;
+                $new_tech_store_doc->document_id = $doc->id;
+                $new_tech_store_doc->document_link = 'documentfiles/' . $file;
+                $new_tech_store_doc->document_description = $doc->document_description;
+                $new_tech_store_doc->save();
+            }
+        }
+
+
+        return redirect(adminPath().'storeusers');
+
+    }
 
     public function addAdmin(Request $request)
     {
@@ -762,27 +893,11 @@ class CustomerController extends Controller
 
     }
 
-    public function editTech($id)
-    {
-        $data = User::findOrFail($id);
-
-        $documents = App\Documents::where('type', 1)->get(); // technician
-        $categories = App\Category::where('parent', 0)->get();
-
-
-        return view('admin.users.editTech', ['data' => $data, 'documents' => $documents, 'categories' => $categories]);
-    }
-
-    public function assignRadius(Request $request)
-    {
-        User::findOrFail($request->driver_id)->update(['driver_radius' => $request->driver_radius]);
-        return back();
-    }
-
-    public function updateDriver(Request $request, $id)
+    public function updateTechnican(Request $request)
     {
 
-
+        $data = $request->all();
+        $id=$request->id;
         $request->validate([
             'name' => 'bail|required',
             'email' => 'bail|required|unique:users,email,' . $id . ',id',
@@ -843,7 +958,32 @@ class CustomerController extends Controller
         // all good
 
 
-        return redirect('deliveryGuys');
+        return redirect(adminPath() . 'techusers');
+    }
+
+    public function editTech($id)
+    {
+        $data = User::findOrFail($id);
+
+        $documents = App\Documents::where('type', 1)->get(); // technician
+        $categories = App\Category::where('parent', 0)->get();
+
+
+        return view('admin.users.editTech', ['data' => $data, 'documents' => $documents, 'categories' => $categories]);
+    }
+    public function editStore($id)
+    {
+        $data = User::findOrFail($id);
+
+        $documents = App\Documents::where('type', 2)->get(); // technician
+        $categories = App\Category::where('parent', 0)->get();
+        return view('admin.users.editStore', compact('data','documents', 'categories'));
+    }
+
+    public function assignRadius(Request $request)
+    {
+        User::findOrFail($request->driver_id)->update(['driver_radius' => $request->driver_radius]);
+        return back();
     }
 
 

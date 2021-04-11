@@ -42,8 +42,11 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/technicians/create', 'CustomerController@addTechnicianPage');
     Route::get('/storeuser/create', 'CustomerController@addStoreUser');
     Route::get('/adminuser/create', 'CustomerController@addAdminUser');
+    Route::POST('/updateTechnican', 'CustomerController@updateTechnican');
+    Route::POST('/updateStoreUser', 'CustomerController@updateStoreUser');
 
     Route::get('/tech/edit/{id}', 'CustomerController@editTech');
+    Route::get('/store/edit/{id}', 'CustomerController@editStore');
 
     Route::post('/addTechnician', 'CustomerController@addTechnician');
     Route::post('/addAdmin', 'CustomerController@addAdmin');
@@ -56,8 +59,16 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/adminList', 'CustomerController@adminList')->name('adminList');
     Route::get('/adminList', 'CustomerController@adminList')->name('adminList');
     Route::get('/technicalAccountStatmentPage/{id}', 'CustomerController@technicalAccountStatmentPage');
+    Route::get('/technicalAccountStatmentPage/{technical_id}/{id}', 'CustomerController@technicalAccountStatmentPage');
+    Route::get('/technicalAccountStatmentHistory/{id}', 'CustomerController@technicalAccountStatmentHistoryPage');
+    Route::get('/getTechnicalAccountStatmentHistory', 'CustomerController@getTechnicalAccountStatmentHistory')->name('getTechnicalAccountStatmentHistory');
+
     Route::get('/technicalAccountStatment', 'CustomerController@technicalAccountStatment')->name("technicalAccountStatment");
     Route::post('/tech_posting', 'CustomerController@tech_posting');
+    Route::get('/technicalAccountStatmentExcel/{technical_id}/{id}', 'CustomerController@technicalAccountStatmentExcel');
+    Route::get('/technicalAccountStatmentExcel/{technical_id}', 'CustomerController@technicalAccountStatmentExcel');
+    Route::get('/Order/{technical_id}', 'OrderController@index');
+
 
 
     Route::resources([

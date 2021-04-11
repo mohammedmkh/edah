@@ -25,7 +25,7 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($technical_id=null)
     {
         //
         $data = Order::with(['userOrder', 'categoryOrder'])->orderBy('id', 'DESC')->paginate(10);
@@ -34,7 +34,7 @@ class OrderController extends Controller
         $technical = User::where('role', 3)->get();
         $status=OrderStatus::all();
         // dd( $data );
-        return view('admin.order.orders', ['orders' => $data, 'status' => $status,'technical' => $technical,'customer'=>$customer]);
+        return view('admin.order.orders', ['orders' => $data, 'status' => $status,'technical' => $technical,'customer'=>$customer,'technical_id'=>$technical_id]);
     }
 
 
@@ -55,8 +55,6 @@ class OrderController extends Controller
             }
             if ($request->has('technical_id') and $data['technical_id'] != null) {
                 $query->where('technical_id', $request->technical_id);
-
-
 
             }
             if ($request->has('user_id') and $data['user_id'] != null) {

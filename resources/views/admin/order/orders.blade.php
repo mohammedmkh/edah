@@ -17,7 +17,7 @@
                                 <div id="search" class="pl-lg-4">
 
 
-                                    <div  class="row">
+                                    <div class="row">
                                         <div class="col-4">
                                             <div class="form-group ">
                                                 <label class="form-control-label" for="input-hour_work">رقم الطلب
@@ -39,9 +39,9 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="input-status">حالة الطلب</label>
-                                                <Select  name="status" id="status"
-                                                         class="form-control select2 form-control-alternative" required>
-                                                    <option  value="">حالة الطلب</option>
+                                                <Select name="status" id="status"
+                                                        class="form-control select2 form-control-alternative" required>
+                                                    <option value="">حالة الطلب</option>
                                                     @foreach($status as $value)
                                                         <option value="{{$value->id}}">{{$value->status_name}}</option>
 
@@ -52,9 +52,9 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="input-status">التقنيين</label>
-                                                <Select  name="technical_id" id="technical_id"
-                                                         class="form-control select2 form-control-alternative" required>
-                                                    <option  value="">التقنيين</option>
+                                                <Select name="technical_id" id="technical_id"
+                                                        class="form-control select2 form-control-alternative" required>
+                                                    <option value="">التقنيين</option>
                                                     @foreach($technical as $value)
                                                         <option value="{{$value->id}}">{{$value->name}}</option>
 
@@ -65,9 +65,9 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="input-status">الزبائن</label>
-                                                <Select  name="user_id" id="user_id"
-                                                         class="form-control select2 form-control-alternative" required>
-                                                    <option  value="">الزبائن</option>
+                                                <Select name="user_id" id="user_id"
+                                                        class="form-control select2 form-control-alternative" required>
+                                                    <option value="">الزبائن</option>
                                                     @foreach($customer as $value)
                                                         <option value="{{$value->id}}">{{$value->name}}</option>
 
@@ -79,13 +79,15 @@
                                     <div class="row">
                                         <div class="col-2">
                                             <div class="form-group ">
-                                                <button id="public_search" type="button" class="btn btn-success mt-4">بحث
+                                                <button id="public_search" type="button" class="btn btn-success mt-4">
+                                                    بحث
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="col-2">
                                             <div class="form-group ">
-                                                <button onclick="resetFilter()"  type="button" class="btn btn-danger mt-4">إعادة تعيين
+                                                <button onclick="resetFilter()" type="button"
+                                                        class="btn btn-danger mt-4">إعادة تعيين
                                                 </button>
                                             </div>
                                         </div>
@@ -139,6 +141,8 @@
 
         $("#technical_id").select2()
         $("#user_id").select2()
+        $("#technical_id").val('{{$technical_id}}').trigger('change')
+
         $(function () {
             $('input[name="daterange"]').daterangepicker({
                 startDate: '03/05/2005',
@@ -153,7 +157,7 @@
                 },
 
                 showDropdowns: true,
-                showCustomRangeLabel:true,
+                showCustomRangeLabel: true,
                 opens: 'left',
                 locale: {
                     cancelLabel: 'Clear',
@@ -180,12 +184,11 @@
                 ajax: {
                     url: "{{route('ordersList')}}",
                     data: function (d) {
-                        d.order_no=$('input[name="order_no"]').val()
-                        d.daterange=$('input[name="daterange"]').val()
-                        d.technical_id=$('[name="technical_id"]').val()
-                        d.user_id=$('[name="user_id"]').val()
-                        d.status=$('[name="status"]').val()
-
+                        d.order_no = $('input[name="order_no"]').val()
+                        d.daterange = $('input[name="daterange"]').val()
+                        d.technical_id = $('[name="technical_id"]').val();
+                            d.user_id = $('[name="user_id"]').val()
+                        d.status = $('[name="status"]').val()
                     }
                 },
                 columns: [
@@ -235,10 +238,10 @@
             oTable.ajax.reload();
         }
 
-        $( document ).ready(function() {
-/*
-            $('input[name="daterange"]').val(null)
-*/
+        $(document).ready(function () {
+            /*
+                        $('input[name="daterange"]').val(null)
+            */
         });
     </script>
 
