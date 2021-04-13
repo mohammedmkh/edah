@@ -277,16 +277,13 @@ class UsersApiController extends Controller
 
     }
 
-    public function initOrder(Request $request)
+    public function selectTechAndCheckout(Request $request)
     {
         $data = $request->all();
 
         $validator = Validator::make($request->all(), [
             'technical_id' => 'required',
-            'category_id' => 'required',
-            'status' => 'required',
-            'is_immediately' => 'required',
-            'price' => 'required',
+            'order_id' => 'required',
         ]);
 
 
@@ -294,13 +291,43 @@ class UsersApiController extends Controller
             $message = getFirstMessageError($validator);
             return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
-        $data['user_id'] = Auth::guard('api')->id();
+        $user_id = Auth::guard('api')->id();
 
 
-        $create = Order::create($data);
+        $order = Order::where('id' , $request->order_id)->where('user_id' ,  $user_id)->first();
+        if( $order){
+            $order->technical_id= $request->technical_id ;
+            $order->save();
 
-        $message = __('api.success');
-        return jsonResponse(true, $message, $create, 200);
+            /// send FCM To Technican
+
+            $action['order_id'] = $order->id;
+
+            $tokens = Devicetoken::where('user_id', $request->technical_id )->first();
+            $title = ' تم اختيارك من قبل العميل ';
+            $body = 'تم اختيارك من قبل العميل لتتم معالجة الطلب لديه ';
+            $data_fcm['action_type'] = 'acceptyoutech';
+            $data_fcm['action_id'] = $order->id;
+            $data_fcm['action'] = (object)$action;
+            $data_fcm['user_id'] = $request->technical_id ;
+            $data_fcm['date'] = Carbon::now()->timestamp;
+            $data_fcm['title'] = $title;
+            $data_fcm['body'] = $body;
+
+            sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
+
+
+            // initiate Hyperpay Link back
+            $message = __('api.success');
+            return jsonResponse(true, $message,  $order, 200);
+
+        }else{
+
+            $message = __('api.error');
+            return jsonResponse(false, $message, null , 200);
+        }
+
+
 
 
     }
@@ -364,12 +391,7 @@ class UsersApiController extends Controller
 
             $json['user'] = $user;
 
-            $header = $request->header('Accept-Language');
-            $user_obejct = User::where('id', $user->id)->first();
-            if ($user_obejct) {
-                $user_obejct->lang = $header;
-                $user_obejct->save();
-            }
+
 
 
             $message = __('api.success');
@@ -441,12 +463,7 @@ class UsersApiController extends Controller
 
             $json['user'] = $user;
 
-            $header = $request->header('Accept-Language');
-            $user_obejct = User::where('id', $user->id)->first();
-            if ($user_obejct) {
-                $user_obejct->lang = $header;
-                $user_obejct->save();
-            }
+
 
 
             $message = __('api.success');
@@ -476,7 +493,7 @@ class UsersApiController extends Controller
 
         $validator = Validator::make($request->all(), [
             'phone' => 'numeric|unique:users,phone,' . $user->id . ',id',
-            'email' => 'unique:users,email,' . $user->id . ',id',
+            'email' => 'email|unique:users,email,' . $user->id . ',id',
         ]);
 
 
@@ -494,6 +511,10 @@ class UsersApiController extends Controller
         }
         if ($request->name) {
             $user->name = $request->name;
+        }
+
+        if ($request->image) {
+            $user->image = $request->image;
         }
         if (isset($request->password) && $request->password != '') {
             $user->password = bcrypt($request->password);
@@ -701,7 +722,7 @@ class UsersApiController extends Controller
     public function getOrdersNotEnd(Request $request)
     {
         $auth = Auth::guard('api')->user();
-        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id'])->where('status', '==', 1)->Where('technical_id', $auth->id)->paginate(10);
+        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id'])->where('status', '<>', 3)->Where('technical_id', $auth->id)->paginate(10);
 
         return jsonResponse(true, __('api.success'), $data->items(), 200, $data->currentPage(), $data->lastPage());
 
@@ -811,8 +832,6 @@ class UsersApiController extends Controller
     {
 
 
-        // return $this->loginSupplier($request  ) ;
-
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric',
             'name' => 'required',
@@ -845,6 +864,9 @@ class UsersApiController extends Controller
                 $user->password = bcrypt($request->password);
                 $user->is_complete_register = 1; // is complete 1
                 $user->identity = $request->identity;
+                $user->lat= $request->lat ;
+                $user->lang = $request->lang  ;
+                $user->code_registeration = $request->code_registeration  ;
                 $user->save();
 
                 $d = getDataFromRequest('user_tech_store', $request);
@@ -962,33 +984,18 @@ class UsersApiController extends Controller
     public function searchNearestTechnicalLocation(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'lat' => 'required',
-            'lang' => 'required',
+            'order_id' => 'required',
         ]);
-        if ($validator->fails()) {
-            $message = getFirstMessageError($validator);
-            return jsonResponse(false, $message, null, 111, null, null, $validator);
+
+        $notifs = Notifications::withTrashed()->where('action_type' , 'initiateorder')
+            ->where('action_id' , $request->order_id)->get();
+
+        $data = [] ;
+        foreach ($notifs as $not){
+            $data[] =  $not->action;
+
         }
-        $LATITUDE = $request->lat;
-        $LONGITUDE = $request->lang;
-        $DISTANCE_KILOMETERS = 40;
-        $data = DB::select("SELECT * FROM (
-    SELECT *,
-        (
-            (
-                (
-                    acos(
-                        sin(( {$LATITUDE} * pi() / 180))
-                        *
-                        sin(( `lat` * pi() / 180)) + cos(( {$LATITUDE} * pi() /180 ))
-                        *
-                        cos(( `lat` * pi() / 180)) * cos((( {$LONGITUDE} - `lang`) * pi()/180)))
-                ) * 180/pi()
-            ) * 60 * 1.1515 * 1.609344
-        )
-    as distance FROM `user_address`
-) user_address
-WHERE distance <= {$DISTANCE_KILOMETERS}");
+
 
         $message = __('api.success');
         return jsonResponse(true, $message, $data, 200);
@@ -1049,7 +1056,7 @@ WHERE distance <= {$DISTANCE_KILOMETERS}");
         $lat = $setLocation->lat;
         $lang = $setLocation->lang;
 
-        $distance = 15;
+        $distance = 2000;
         $order_minimum_value = DB::table("general_setting")->select('order_minimum_value')->get();
 
         $avilableTechnical = DB::select("
@@ -1058,6 +1065,7 @@ users.role ,
 users.lat ,
 users.lang ,
 users.distance,
+users.name,
 AVG(user_evaluations.evaluation_no) as evaluation,
  technicians_stores.driver_radius FROM (
     SELECT *,
@@ -1082,7 +1090,9 @@ WHERE distance <= {$distance} and role =3
 GROUP BY users.id
 order BY distance asc
 ");
-    
+
+
+        //return $avilableTechnical;
 
         $data = array();
 
@@ -1097,12 +1107,13 @@ order BY distance asc
 
         $action['order_id'] = $order->id;
         $action['name'] = $order->userOrder->name;
+
         $action['image'] = $order->userOrder->imagePath;
         $action['phone'] = $order->userOrder->phone;
-        $action['lat'] = $order->userOrder->lat;
-        $action['lang'] = $order->userOrder->lang;
+        $action['lat'] = $lat;
+        $action['lang'] = $lang;
         $action['note'] = $order->note;
-
+        $action['category'] = $order->categoryOrder->name ?? '';
 
         foreach ($avilableTechnical as $tech) {
 
@@ -1112,6 +1123,8 @@ order BY distance asc
                 $d['price'] = $order_minimum_value[0]->order_minimum_value;
                 $d['name'] = $tech->name;
                 $d['distance'] = $tech->distance;
+                $action['distance'] = $tech->distance;
+                $action['tech_id'] = $tech->id;
                 $data[] = $d;
 
                 // send notification to Technician To Show This Order
@@ -1145,11 +1158,9 @@ order BY distance asc
 
         }
 
-        //dd($data);
-
 
         $message = __('api.success');
-        return jsonResponse(true, $message, $data, 200);
+        return jsonResponse(true, $message, $order , 200);
 
 
     }
@@ -1491,6 +1502,11 @@ order BY distance asc
                 sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
             }
 
+
+            // delete Notification From technican
+
+            $notif = Notifications::where('user_id' ,$user->id )->where('action_type' , 'initiateorder')
+                ->where('action_id' , $request->order_id)->delete();
 
         }
 

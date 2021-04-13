@@ -90,7 +90,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('setTechnicalAnswers', 'UsersApiController@setUserAnswers');
     Route::post('setSupplierPriceOffer', 'UsersApiController@setSupplierPriceOffer');
-    Route::post('initOrder', 'UsersApiController@initOrder');
+    Route::post('selectTechAndCheckout', 'UsersApiController@selectTechAndCheckout');
 
 
     Route::post('acceptOrderOrDeny', 'UsersApiController@acceptOrderOrDeny');

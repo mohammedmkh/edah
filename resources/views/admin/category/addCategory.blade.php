@@ -171,7 +171,7 @@
                 }
             });
 
-            console.log('the error is' + error);
+
             if(error == 1){
                 var id =  $('.tab-pane').find(':required:invalid').closest('.tab-pane').attr('id');
 

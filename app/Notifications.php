@@ -3,12 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Notifications extends Model
 {
+
+    use SoftDeletes ;
     public $table = 'notifications';
 
-    public $timestamps =false ;
+   // public $timestamps =false ;
 
 
 
@@ -37,7 +40,10 @@ class Notifications extends Model
         return (integer) $value;
     }
 
-
+    public function getActionAttribute($value)
+    {
+        return json_decode($value) ;
+    }
 
 
 

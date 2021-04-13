@@ -53,7 +53,7 @@ class User extends Authenticatable
 
     public function getImagePathAttribute()
     {
-        return url('images/upload') . '/'.$this->image;
+        return url('/') . '/'.$this->image;
     }
 
     public function findForPassport($username)

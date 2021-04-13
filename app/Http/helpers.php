@@ -56,6 +56,8 @@ function getDataFromRequest($type = 'user_tech' , $request = []){
 
 
 
+
+
         return $d ;
     }
     if($type == 'user_tech_store'){
