@@ -55,10 +55,10 @@ class CouponController extends Controller
                 return $row->discount . $row->type == "percentage" ? ' %' : '';
             });
             $table->editColumn('max_use', function ($row) {
-                return $row->max_use . ' times';
+                return $row->max_use ;
             });
             $table->editColumn('use_count', function ($row) {
-                return $row->use_count .' times';
+                return $row->use_count ;
             });
             $table->editColumn('duration', function ($row) {
                 return $row->start_date . ' to ' . $row->end_date;
@@ -67,7 +67,7 @@ class CouponController extends Controller
             $table->editColumn('status', function ($row) {
                 return ' <span class="badge badge-dot mr-4">
                                                         <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
-                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
+                                                        <span class="status">' . $row->status == 0 ? __('Active') :  __('DeActive') . '</span>
                                                     </span>';
             });
             $table->addColumn('actions', function ($row) {

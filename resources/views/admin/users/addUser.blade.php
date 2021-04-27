@@ -18,12 +18,12 @@
                                         <h3 class="mb-0">{{ __('Add User') }}</h3>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <a href="{{ url('panel/Customer') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
+                                        <a href="{{ url(adminPath().'Customer') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form method="post" action="{{url('panel/Customer')}}" autocomplete="off"  enctype="multipart/form-data">
+                                <form method="post" action="{{url(adminPath().'Customer')}}" autocomplete="off"  enctype="multipart/form-data">
                                     @csrf
 
                                     <h6 class="heading-small text-muted mb-4">{{ __('User information') }}</h6>
@@ -56,8 +56,11 @@
                                                     <strong>{{ $errors->first('phone') }}</strong>
                                                 </span>
                                             @endif
+
                                         </div>
-                    {{--                    <div class="form-group{{ $errors->has('dateOfBirth') ? ' has-danger' : '' }}">
+
+                                             {{--
+                                      <div class="form-group{{ $errors->has('dateOfBirth') ? ' has-danger' : '' }}">
                                                 <label class="form-control-label" for="input-dateOfBirth">{{ __('Date of Birth') }}</label>
                                                 <input type="date" name="dateOfBirth" id="input-dateOfBirth" class="form-control form-control-alternative{{ $errors->has('dateOfBirth') ? ' is-invalid' : '' }}" placeholder="{{ __('Date Of Birth') }}" value="{{ old('dateOfBirth') }}">
 
@@ -72,7 +75,7 @@
                                                 <label class="form-control-label" for="input-image">{{ __('Image') }}</label>
                                                 <div class="custom-file">
                                                     <input type="file" class="custom-file-input" name="image" id="image">
-                                                    <label class="custom-file-label" for="image">Select file</label>
+                                                    <label class="custom-file-label" for="image">{{ __('Select file') }} </label>
                                                 </div>
                                                 @if ($errors->has('image'))
                                                     <span class="invalid-feedback" role="alert">

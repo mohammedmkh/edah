@@ -104,13 +104,13 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email', 'like' , '%'.$request->email .'%');
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+                $query->where('name',  'like' , '%'.$request->name.'%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone',  'like' , '%'.$request->phone.'%');
             }
 
             $table = Datatables::of($query);
@@ -284,13 +284,13 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email', 'like', '%'.$request->email .'%');
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+                $query->where('name', 'like',  '%'.$request->name.'%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone', 'like',  '%'.$request->phone.'%');
             }
 
             $table = Datatables::of($query);
@@ -344,13 +344,13 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email',  'like',  '%'.$request->email.'%');
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+                $query->where('name',  'like',  '%'.$request->name.'%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone', 'like',  '%'. $request->phone.'%');
             }
             $table = Datatables::of($query);
 
@@ -407,13 +407,13 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email',  'like',  '%'.$request->email.'%');
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+                $query->where('name',  'like',  '%'.$request->name.'%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone', 'like',  '%'. $request->phone .'%');
             }
             $table = Datatables::of($query);
 
@@ -461,19 +461,19 @@ class CustomerController extends Controller
     {
         //
 
+       // dd('Mact if Master');
         $request->validate([
             'name' => 'bail|required',
             'email' => 'bail|required|unique:users',
             'phone' => 'bail|required',
-            // 'dateOfBirth' => 'bail|required',
             'password' => 'bail|required|min:6',
             'password_confirmation' => 'bail|required|same:password|min:6'
         ]);
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
-        $data['role'] = 0;
-        $data['referral_code'] = mt_rand(1000000, 9999999);
-        $data['otp'] = mt_rand(100000, 999999);
+        $data['role'] = 1;
+      //  $data['referral_code'] = mt_rand(1000000, 9999999);
+      //  $data['otp'] = mt_rand(100000, 999999);
         if (isset($request->image) && $request->hasFile('image')) {
             $image = $request->file('image');
             $name = time() . '.' . $image->getClientOriginalExtension();
@@ -504,7 +504,7 @@ class CustomerController extends Controller
             OwnerSetting::create($setting);
         }
 
-        return redirect('Customer');
+        return redirect(adminPath().'Customer');
 
     }
 

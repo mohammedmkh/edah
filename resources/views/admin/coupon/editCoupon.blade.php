@@ -141,9 +141,9 @@
                                                 <div class="form-group{{ $errors->has('status') ? ' has-danger' : '' }}">
                                                         <label class="form-control-label" for="input-status">{{ __('Status') }}</label>
                                                         <Select name="status" id="input-status" class="form-control form-control-alternative{{ $errors->has('status') ? ' is-invalid' : '' }}"  required>
-                                                            <option value="">Select Status</option>
-                                                            <option value="0" {{ $data->status=="0" ? 'Selected' : ''}}>Active</option>
-                                                            <option value="1" {{ $data->status=="1" ? 'Selected' : ''}}>Deactive</option>
+                                                            <option value="">{{ __('Select Status') }}</option>
+                                                            <option value="0" {{ $data->status=="0" ? 'Selected' : ''}}>{{ __('Active') }}</option>
+                                                            <option value="1" {{ $data->status=="1" ? 'Selected' : ''}}>{{ __('Deactive') }}</option>
                                                         </select>
                     
                                                         @if ($errors->has('status'))

@@ -178,7 +178,8 @@ return [
         // Damas\Paytabs\PaytabsServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         LaravelFCM\FCMServiceProvider::class,
-
+        Yajra\DataTables\DataTablesServiceProvider::class,
+        Yoeunes\Toastr\ToastrServiceProvider::class
 
     ],
 
@@ -237,6 +238,7 @@ return [
         'FCM'      => LaravelFCM\Facades\FCM::class,
         'FCMGroup' => LaravelFCM\Facades\FCMGroup::class, // Optional
         'FastExcel' => Rap2hpoutre\FastExcel\Facades\FastExcel::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
 
     ],
 

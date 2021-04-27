@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 
 
 
+
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middleware' => ['apiLang']], function () {
 
 
@@ -19,6 +20,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::get('getCitiesByCountry/{id}', 'DataApiController@getCitiesByCountry');
 
+
+
+    Route::get('v1/callbackPaymentStatus','Api\V1\UsersApiController@callbackPaymentStatus'  );
+    Route::get('v1/callbackPaymentStatusApiMobile','Api\V1\OrdersApiController@callbackPaymentStatusApiMobile'  );
 
     //signPhoneSupplier
     Route::post('signPhoneTechnician', 'UsersApiController@signPhoneTechnician');
@@ -54,7 +59,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::post('registerStore', 'UsersApiController@registerStore');
 
-    Route::post('getTechnicanAvilable', 'UsersApiController@getTechnicanAvilable');
+
 
     Route::post('getSupplierAvilable', 'UsersApiController@getSupplierAvilable');
 
@@ -97,7 +102,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
 
     Route::get('getOrdersNotEnd', 'UsersApiController@getOrdersNotEnd');
+    Route::get('getOrdersEnd', 'UsersApiController@getOrdersEnd');
     Route::get('getOrders', 'UsersApiController@getOrders');
+
 
     Route::get('getOrders/{id}', 'UsersApiController@getOrders');
 
@@ -115,6 +122,13 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
 
     Route::post('getRequestToStore' , 'UsersApiController@getRequestToStore');
+    Route::post('getTechnicanAvilable', 'UsersApiController@getTechnicanAvilable');
+
+    Route::get('getOrderById/{id}', 'UsersApiController@getOrderById');
+
+    Route::post('acceptOfferFromStore', 'UsersApiController@acceptOfferFromStore');
+
+    Route::post('requiredToPayOrder', 'UsersApiController@requiredToPayOrder');
 
 
 });

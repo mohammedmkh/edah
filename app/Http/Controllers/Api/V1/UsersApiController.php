@@ -35,6 +35,11 @@ use Illuminate\Database\Eloquent\Builder;
 class UsersApiController extends Controller
 {
 
+    private $entity_id = '8ac7a4c878260fad01783aee04cc3399';
+    private $entity_id_mada = '8ac7a4c878260fad01783aebe6543393';
+    private $pay_token ='OGFjN2E0Yzg3ODI2MGZhZDAxNzgzYWU5ZDZkOTMzN2F8M0ZyTnBoOXBOVA==' ;
+
+    private $currency  = 'SAR';
 
     public function signPhoneClient(Request $request)
     {
@@ -297,29 +302,70 @@ class UsersApiController extends Controller
         $order = Order::where('id' , $request->order_id)->where('user_id' ,  $user_id)->first();
         if( $order){
             $order->technical_id= $request->technical_id ;
+            $tech_user = User::find($request->technical_id);
+            // we must add the price of the payment service from settings
+            $fees = DB::table('company_setting')->where('id' ,1)->first()->fees ?? 15;
+            $order->price =   $fees;
+            $order->lat_tech =  $tech_user ->lat ;
+            $order->lang_tech =  $tech_user ->lang ;
+            $order->distance =  $request->distance ;
             $order->save();
 
-            /// send FCM To Technican
-
-            $action['order_id'] = $order->id;
-
-            $tokens = Devicetoken::where('user_id', $request->technical_id )->first();
-            $title = ' تم اختيارك من قبل العميل ';
-            $body = 'تم اختيارك من قبل العميل لتتم معالجة الطلب لديه ';
-            $data_fcm['action_type'] = 'acceptyoutech';
-            $data_fcm['action_id'] = $order->id;
-            $data_fcm['action'] = (object)$action;
-            $data_fcm['user_id'] = $request->technical_id ;
-            $data_fcm['date'] = Carbon::now()->timestamp;
-            $data_fcm['title'] = $title;
-            $data_fcm['body'] = $body;
-
-            sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
 
 
-            // initiate Hyperpay Link back
-            $message = __('api.success');
-            return jsonResponse(true, $message,  $order, 200);
+            /// return the checkout id to pay fees
+              // Hyperpay Processing
+
+            $amount = number_format((float)$fees, 2, '.', '');
+            if($order->payment_type == 2){
+                $the_key =  $this->entity_id_mada ;
+            }else{
+                $the_key =  $this->entity_id ;
+            }
+
+            $url = "https://test.oppwa.com/v1/checkouts";
+            $data = "entityId=". $the_key .
+                "&amount=".$amount.
+                "&currency=".$this->currency .
+                "&paymentType=DB";
+
+
+            $data .=  "&merchantTransactionId=".$order->id.
+                "&customer.email=".$order->userOrder->phone.'@gmail.com'.
+                "&notificationUrl=https://edah.sa/test/api/v1/callbackPaymentStatus";
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization:Bearer '.$this->pay_token));
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $responseData = curl_exec($ch);
+            if(curl_errno($ch)) {
+                return curl_error($ch);
+            }
+            curl_close($ch);
+
+            $data = json_decode($responseData);
+
+
+            if($data->result->code == '000.200.100'  ){
+
+                $result['status']= true ;
+                $result['id'] = $data->id;
+                $id = $result['id'];
+                $d['checkout_id'] = $id ;
+                $order->checkout_id_fees = $id ;
+                $order->save();
+
+                return jsonResponse( true  , __('api.success'),$d, 200  );
+
+            }
+
+
+
 
         }else{
 
@@ -709,7 +755,7 @@ class UsersApiController extends Controller
     {
 
         $auth = Auth::guard('api')->user();
-        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id'])->Where('technical_id', $auth->id)->paginate(10);
+        $data = Order::with(['additionals','userOrder:id,name,phone', 'categoryOrder:id'])->Where('technical_id', $auth->id)->paginate(10);
         if ($request->id) {
 
             $data = Order::where('status', $request->id)->Where('technical_id', $auth->id)->with(['userOrder:id,name,phone', 'categoryOrder:id'])->paginate(10);
@@ -719,10 +765,42 @@ class UsersApiController extends Controller
 
     }
 
+
+    public function getOrderById($id){
+        $auth = Auth::guard('api')->user();
+        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id'])->Where('id', $id)->first();
+
+        return jsonResponse(true, __('api.success'), $data, 200);
+
+
+    }
+
+
+    public function getOrdersEnd(Request $request)
+    {
+        $auth = Auth::guard('api')->user();
+        // return $auth->id;
+        $data = Order::with(['additionals','userOrder:id,name,phone', 'categoryOrder:id'])
+            ->Where('technical_id', $auth->id)
+            ->Where('status' , 5 )
+            ->paginate(10);
+
+        return jsonResponse(true, __('api.success'), $data->items(), 200, $data->currentPage(), $data->lastPage());
+
+
+    }
+
     public function getOrdersNotEnd(Request $request)
     {
         $auth = Auth::guard('api')->user();
-        $data = Order::with(['userOrder:id,name,phone', 'categoryOrder:id'])->where('status', '<>', 3)->Where('technical_id', $auth->id)->paginate(10);
+       // return $auth->id;
+        $data = Order::with(['additionals','userOrder:id,name,phone', 'categoryOrder:id'])
+            ->Where('technical_id', $auth->id)
+            ->where(function ($q){
+                $q->whereNull('status'  );
+                $q->orWhere('status' ,'<>' , 3 );
+            })
+            ->paginate(10);
 
         return jsonResponse(true, __('api.success'), $data->items(), 200, $data->currentPage(), $data->lastPage());
 
@@ -1101,7 +1179,9 @@ order BY distance asc
 
         $data_order['user_id'] = Auth::guard('api')->id();
         $data_order['category_id'] = $request->category_id;
-        $data_order['note'] = $request->category_id;
+        $data_order['note'] = $request->note;
+        $data_order['lat'] = $request->lat;
+        $data_order['lang'] = $request->lang;
         $order = Order::create($data_order);
 
 
@@ -1131,7 +1211,7 @@ order BY distance asc
 
                 $user_id = $tech->id;
                 $tokens = Devicetoken::where('user_id', $user_id)->first();
-                $title = 'عملية بحث عن فني ';
+                $title = ' بحث عن فني ';
                 $body = 'هناك طلب من عميل يبحث عن فني ';
                 $data_fcm['action_type'] = 'initiateorder';
                 $data_fcm['action_id'] = $order->id;
@@ -1348,7 +1428,7 @@ order BY distance asc
 
     public function setSupplierPriceOffer(Request $request)
     {
-
+        $user_id = Auth::guard('api')->id();
         $data = $request->all();
         $validator = Validator::make($request->all(), [
             'status' => 'required',
@@ -1363,15 +1443,46 @@ order BY distance asc
         }
 
 
-        $setSupplierPriceOffer = SupplierPriceOffer::where('id', $request->offer_id)->first();
+        $setSupplierPriceOffer = SupplierPriceOffer::where('id', $request->offer_id)->where('store_id',$user_id)->first();
         if ($setSupplierPriceOffer) {
-            $setSupplierPriceOffer->status = $request->status;
+            if($request->status == 0){
+                $setSupplierPriceOffer->status = 4; // reject from store
+            }else{
+                $setSupplierPriceOffer->status = 1 ;
+            }
             $setSupplierPriceOffer->price = $request->price;
             $setSupplierPriceOffer->detail = $request->detail;
             $setSupplierPriceOffer->document = $request->document;
 
 
             $setSupplierPriceOffer->save();
+
+
+            //send notification to technician
+
+            $user_id = $setSupplierPriceOffer->user_id;
+            $tokens = Devicetoken::where('user_id', $user_id)->first();
+
+            $setSupplierPriceOffer['phone']= $setSupplierPriceOffer->store->phone ?? '' ;
+            $setSupplierPriceOffer['image']= $setSupplierPriceOffer->store->imagePath ?? '' ;
+            $title = ' الرد على طلبك ';
+            $body = ' تم الرد على طلبك من قبل المتجر';
+            $data['action_type'] = 'responsefromstore';
+            $data['action_id'] = $setSupplierPriceOffer->id;
+            $data['user_id'] = $user_id;
+            $data['action'] = $setSupplierPriceOffer;
+            $data['date'] = Carbon::now()->timestamp;
+            $data['title'] = $title;
+            $data['body'] = $body;
+
+
+            sendFCM($title, $body, $data, $tokens, 1, 1);
+
+        }
+
+        else{
+            $message = 'لا يوجد لديك هذا الطلب' ;
+            return jsonResponse(false, $message, null, 111, null, null, $validator);
         }
 
         $message = __('api.success');
@@ -1401,18 +1512,28 @@ order BY distance asc
         $data['user_id'] = Auth::guard('api')->id();
         $setSupplierPriceOffer = SupplierPriceOffer::create($data);
 
+
+        $action['order_id']=$setSupplierPriceOffer->id ;
+        $action['description']=$setSupplierPriceOffer->description ;
+        $action['name']=$setSupplierPriceOffer->technician->name ;
+        $action['image']=$setSupplierPriceOffer->technician->imagePath ;
+        $action['phone']=$setSupplierPriceOffer->technician->phone ;
         //send notifications to  Store User;
+
+        //$action[''] =
 
         $user_id = $request->store_id;
         $tokens = Devicetoken::where('user_id', $user_id)->first();
-        $title = 'لديك طلب من تقني ';
-        $body = 'هناك طلب عرض سعر تم ارساله من تقني';
+        $title = ' طلب من فني ';
+        $body = 'هناك طلب عرض سعر تم ارساله من فني';
         $data['action_type'] = 'addorderstore';
         $data['action_id'] = $setSupplierPriceOffer->id;
         $data['user_id'] = $user_id;
+        $data['action'] = (Object) $action;
         $data['date'] = Carbon::now()->timestamp;
         $data['title'] = $title;
         $data['body'] = $body;
+
 
         sendFCM($title, $body, $data, $tokens, 1, 1);
 
@@ -1425,7 +1546,7 @@ order BY distance asc
     public function getNotifications(Request $request)
     {
         $user = Auth::guard('api')->user();
-        $notications = Notifications::where('user_id', $user->id)->paginate(10);
+        $notications = Notifications::where('user_id', $user->id)->orderBy('id' , 'desc')->paginate(10);
         $items['data'] = $notications->items();
         $items['count_unread'] = Notifications::where('user_id', $user->id)->where('is_read', 0)->count();
 
@@ -1491,7 +1612,7 @@ order BY distance asc
                 $tokens = Devicetoken::where('user_id', $user_id)->first();
                 $title = 'اضافة فني في نتائج البحث';
                 $body = 'تم اضافة فني لديك في شاشة البحث عن فنيين ';
-                $data_fcm['action_type'] = 'acceptordenyorder';
+                $data_fcm['action_type'] = 'searchacceptfromtech';
                 $data_fcm['action_id'] = $is_exist_ordertech->id;
                 $data_fcm['action'] = (object)$action;
                 $data_fcm['user_id'] = $user_id;
@@ -1514,6 +1635,353 @@ order BY distance asc
         $message = __('api.success');
         return jsonResponse(true, $message, null, 200);
     }
+
+
+    public function logout(Request $request){
+
+        $user = Auth::guard('api')->user() ;
+        if($user) {
+            $divecs_revoke = Devicetoken::where('user_id', $user->id)->delete();
+            $revoke = $user->token()->revoke();
+        }
+
+        return jsonResponse( true  , __('api.success') , null,200 );
+
+    }
+
+
+    public function acceptOfferFromStore(Request $request)
+    {
+        $user = Auth::guard('api')->user();
+
+
+        $setSupplierPriceOffer = SupplierPriceOffer::where('id', $request->offer_id)->where('user_id' ,  $user->id )->first();
+        if ($setSupplierPriceOffer) {
+
+            if($request->status ==  0 ){
+                $setSupplierPriceOffer->delete();
+            }else{
+                $setSupplierPriceOffer->status = 2 ; // accept from Technican and add price to additional price
+            }
+
+
+                $setSupplierPriceOffer->save();
+
+                $user_id = $setSupplierPriceOffer->store_id;
+                $tokens = Devicetoken::where('user_id', $user_id)->first();
+                $title = ' تم قبول عرض سعرك ';
+                $body = 'تم قبول عرض سعرك من قبل الفني ';
+                $data_fcm['action_type'] = 'acceptordenyorder';
+                $data_fcm['action_id'] =  $setSupplierPriceOffer->id;
+                $data_fcm['action'] = (object) $setSupplierPriceOffer ;
+                $data_fcm['user_id'] = $user_id;
+                $data_fcm['date'] = Carbon::now()->timestamp;
+                $data_fcm['title'] = $title;
+                $data_fcm['body'] = $body;
+
+                sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
+
+
+
+        }
+
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, null, 200);
+    }
+
+
+    public function requiredToPayOrder(Request $request){
+
+        $user = Auth::guard('api')->user();
+
+        $order = Order::where('id' , $request->order_id)->where('technical_id' , $user->id)->first();
+        if( $order ->status == 2){
+            $message = __('api.error_you_have_send_request_before');
+            return jsonResponse(false, $message, null, 200);
+        }
+        if($request->total_price > 0){
+            $order ->total_price = $request->total_price ;
+            $order ->status = 2 ;
+            $order ->save();
+
+
+            /// send notification to client to pay the Order
+            $user_id = $order ->user_id;
+            $tokens = Devicetoken::where('user_id', $user_id)->first();
+            $title = ' مطالبة بالدفع ';
+            $body = 'ارجو اكمال طلبك عن طريق دفع المبلغ الذي عليك ';
+            $data_fcm['action_type'] = 'payyourorder';
+            $data_fcm['action_id'] =  $order ->id;
+            $data_fcm['action'] = $order;
+            $data_fcm['user_id'] = $user_id;
+            $data_fcm['date'] = Carbon::now()->timestamp;
+            $data_fcm['title'] = $title;
+            $data_fcm['body'] = $body;
+
+            sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
+        }
+
+
+        $message = __('api.success');
+        return jsonResponse(true, $message, null, 200);
+    }
+
+
+    public function callbackPaymentStatus(Request $request)
+    {
+
+
+
+        if($request->id == ''){
+            return ;
+        }
+
+        $order = Order::where('checkout_id', $request->id)->first();
+        if ($order) {
+
+
+            $string = $request->all();
+            $string = json_encode( $string );
+            //return $string;
+
+            if($order->payment_type == 2){
+                $the_key =  $this->entity_id_mada ;
+                $token = $this->pay_token ;
+                $url = "https://test.oppwa.com/v1/checkouts/" . $order->checkout_id . "/payment";
+                $url .= "?entityId=" . $the_key;
+            }elseif($order->payment_method_id == 3){
+                $the_key = '8ac7a4c776d6413a0176d6fe8bac0381';
+                $token = 'OGFjN2E0Yzc2ZWM1MzNiYTAxNmVjNmZhNzdiMDBiODd8UkNrakQ5SzREVw==';
+                $url = "https://test.oppwa.com/v1/checkouts/" . $order->checkout_id . "/payment";
+                $url .= "?entityId=" . $the_key;
+            }else{
+                $the_key =  $this->entity_id ;
+                $token = $this->pay_token ;
+                $the_key =  $this->entity_id_mada ;
+                $token = $this->pay_token ;
+                $url = "https://test.oppwa.com/v1/checkouts/" . $order->checkout_id . "/payment";
+                $url .= "?entityId=" . $the_key;
+            }
+
+
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization:Bearer ' .  $token));
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $responseData = curl_exec($ch);
+            if (curl_errno($ch)) {
+                return curl_error($ch);
+            }
+            curl_close($ch);
+
+
+            DB::table('callback_response')->insert(['backres' => $string  ,'date_res' => Carbon::now()->toDateTimeString() , 'res' => $responseData , 'from_prov' => 'server' , 'order_id' =>   $order->id]);
+
+            $data_return = json_decode($responseData);
+
+
+            if (isset( $data_return->result->code)) {
+                $string =   $data_return->result->code ;
+            }else{
+                $string =  $data_return->result->description ?? 'Error On Transaction';
+            }
+
+            preg_match('/^(000\.000\.|000\.100\.1|000\.[36])/', $string , $matches1);
+            preg_match('/^(000\.400\.0[^3]|000\.400\.100)/', $string , $matches2);
+
+            if(count($matches1) > 0 || count($matches2) > 0){
+
+                $order->access_token_fees = $data_return->id;
+                $order->status = 1;
+                $order->save();
+
+            }
+
+
+            //send notification
+            if($order->access_token_fees != '' &&  $order->send_fcm_fees == 0) {
+
+
+                ///
+
+                /// send FCM To Technican it must be after  pay is finish
+
+                $action['order_id'] = $order->id;
+                $tokens = Devicetoken::where('user_id', $request->technical_id )->first();
+                $title = ' تم اختيارك من قبل العميل ';
+                $body = 'تم اختيارك من قبل العميل لتتم معالجة الطلب لديه ';
+                $data_fcm['action_type'] = 'acceptyoutech';
+                $data_fcm['action_id'] = $order->id;
+                $data_fcm['action'] = (object)$action;
+                $data_fcm['user_id'] = $request->technical_id ;
+                $data_fcm['date'] = Carbon::now()->timestamp;
+                $data_fcm['title'] = $title;
+                $data_fcm['body'] = $body;
+
+                sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
+                $order->send_fcm_fees = 1 ;
+                $order->save();
+                $message = __('api.success');
+                return jsonResponse(true, $message,  $order, 200);
+
+
+
+
+                return jsonResponse(true, __('api.add_order'), $order, 200);
+
+            }
+
+
+
+
+        }
+
+
+    }
+
+    public function callbackPaymentStatusApiMobile(Request $request)
+    {
+
+        $responseData = [];
+
+        if($request->id == ''){
+            return ;
+        }
+
+
+
+        $order = Order::where('checkout_id', $request->id)->first();
+        //dd($order)  ;
+        if ($order) {
+
+            if($order->access_token != '' )
+                return jsonResponse(true, __('api.add_order'), $order, 200);
+
+
+
+            $string = $request->all();
+            $string = json_encode( $string );
+
+
+            if($order->payment_method_id == 2){
+                $the_key =  $this->entity_id_mada ;
+                $token = $this->pay_token ;
+                $url = "https://test.oppwa.com/v1/checkouts/" . $order->checkout_id . "/payment";
+                $url .= "?entityId=" . $the_key;
+            }elseif($order->payment_method_id == 3){
+                $the_key = '8ac7a4c776d6413a0176d6fe8bac0381';
+                $token = 'OGFjN2E0Yzc2ZWM1MzNiYTAxNmVjNmZhNzdiMDBiODd8UkNrakQ5SzREVw==';
+                $url = "https://test.oppwa.com/v1/checkouts/" . $request->id . "/payment";
+                $url .= "?entityId=" . $the_key;
+
+            }else{
+                $the_key =  $this->entity_id ;
+                $token = $this->pay_token ;
+
+                $url = "https://test.oppwa.com/v1/checkouts/" . $order->checkout_id . "/payment";
+                $url .= "?entityId=" . $the_key;
+            }
+
+
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization:Bearer ' .  $token));
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $responseData = curl_exec($ch);
+            if (curl_errno($ch)) {
+                return curl_error($ch);
+            }
+            curl_close($ch);
+
+
+            // dd($responseData);
+
+            $data_return = json_decode($responseData);
+            DB::table('callback_response')->insert(['backres' => $string  ,'date_res' => Carbon::now()->toDateTimeString() , 'res' => $responseData , 'from_prov' => 'mobile' , 'order_id' =>   $order->id ]);
+
+
+
+            if (isset( $data_return->result->code)) {
+                $string =   $data_return->result->code ;
+            }else{
+                $string =  $data_return->result->description ?? 'Error On Transaction';
+            }
+
+            preg_match('/^(000\.000\.|000\.100\.1|000\.[36])/', $string , $matches1);
+            preg_match('/^(000\.400\.0[^3]|000\.400\.100)/', $string , $matches2);
+
+
+
+            if(count($matches1) > 0 || count($matches2) > 0){
+
+                $order = Order::where('checkout_id', $request->id)->first();
+                if ($order) {
+
+                    $order->access_token_fees =  $data_return->id;
+                    $order->status = 1;
+                    $order->save();
+
+                }
+            }
+
+
+
+
+            if($order->access_token_fees != '' &&  $order->send_fcm_fees == 0) {
+
+
+                ///
+
+                /// send FCM To Technican it must be after  pay is finish
+
+                $action['order_id'] = $order->id;
+                $tokens = Devicetoken::where('user_id', $request->technical_id )->first();
+                $title = ' تم اختيارك من قبل العميل ';
+                $body = 'تم اختيارك من قبل العميل لتتم معالجة الطلب لديه ';
+                $data_fcm['action_type'] = 'acceptyoutech';
+                $data_fcm['action_id'] = $order->id;
+                $data_fcm['action'] = (object)$action;
+                $data_fcm['user_id'] = $request->technical_id ;
+                $data_fcm['date'] = Carbon::now()->timestamp;
+                $data_fcm['title'] = $title;
+                $data_fcm['body'] = $body;
+
+                sendFCM($title, $body, $data_fcm, $tokens, 1, 1);
+                $order->send_fcm_fees = 1 ;
+                $order->save();
+                $message = __('api.success');
+                return jsonResponse(true, $message,  $order, 200);
+
+
+
+
+                return jsonResponse(true, __('api.add_order'), $order, 200);
+
+            }
+
+        }
+
+
+
+
+        return jsonResponse(false, __('api.error'), $responseData, 100);
+
+    }
+
+
+
+
+
+
 
 
 }

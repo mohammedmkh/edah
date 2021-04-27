@@ -295,6 +295,22 @@
                                                                 @endif
                                                             </div>
                                                         </div>
+
+                                                        <div class="form-group row {{ $errors->has('fees') ? 'has-danger' : '' }}">
+                                                            <div class="col-3">
+                                                                <label class="form-control-label" for="input-description">{{ __('Fees') }}</label>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <input name="fees" id="input-fees"
+                                                                       class="form-control form-control-alternative{{ $errors->has('fees') ? ' is-invalid' : '' }}"
+                                                                       placeholder="{{ __('fees') }}" value="{{$companyData->fees}}" />
+                                                                @if ($errors->has('fees'))
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $errors->first('fees') }}</strong>
+                                                                </span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                         <div class="text-right">
                                                             <button type="submit" class="btn btn-primary mt-4">{{ __('Save') }}</button>
                                                         </div>

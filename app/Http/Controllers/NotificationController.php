@@ -37,15 +37,22 @@ class NotificationController extends Controller
     public function store(Request $request)
     {
 
+      //  dd('mm Good');
+
         $request->validate([
             'role' => 'required',
             'title' => 'required',
             'body' => 'required',
 
         ]);
+
         $data = $request->all();
 
 
+
+
+
+        toastr()->success('Are you the 6 fingered man?');
         return redirect()->back();
     }
 

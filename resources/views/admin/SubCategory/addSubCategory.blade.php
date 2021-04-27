@@ -113,7 +113,7 @@
                                         <div class="form-group{{ $errors->has('status') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="input-status">{{ __('Status') }}</label>
                                             <Select name="status" id="input-status" class="form-control form-control-alternative{{ $errors->has('status') ? ' is-invalid' : '' }}"  required>
-                                                <option value="">Select Status</option>
+                                                <option value="">{{__('Select Status')}}</option>
                                                 <option value="0" {{ old('status')=="0" ? 'Selected' : ''}}>Avaliable</option>
                                                 <option value="1" {{ old('status')=="1" ? 'Selected' : ''}}>Not Avaliable</option>
                                             </select>

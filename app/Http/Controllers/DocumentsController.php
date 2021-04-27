@@ -62,7 +62,7 @@ class DocumentsController extends Controller
         }
         $Documents->save();
        
-        return redirect('documents');
+        return redirect(adminPath().'documents');
        
     }
 
@@ -110,7 +110,7 @@ class DocumentsController extends Controller
         }
         $Documents->update($data);
         $Documents->save();
-        return redirect('documents');
+        return redirect(adminPath().'documents');
 
     }
 

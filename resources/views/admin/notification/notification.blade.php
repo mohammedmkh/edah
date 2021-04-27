@@ -30,7 +30,7 @@
                                 </ul>
                             </div><br />
                         @endif
-                        <form method="post" action="{{url(adminPath().'/notifications')}}" autocomplete="off"
+                        <form method="post" action="{{url(adminPath().'notifications')}}" autocomplete="off"
                               enctype="multipart/form-data">
                             @csrf
 
