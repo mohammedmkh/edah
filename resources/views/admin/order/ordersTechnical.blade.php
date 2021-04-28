@@ -14,7 +14,7 @@
                         <div class="row align-items-center">
 
                             <div class="col-8">
-                                <h3 class="mb-0">{{ __('إسم المستخدم') }}</h3>
+                                <h3 class="mb-0">{{ __('Customer') }}</h3>
                                 <br>
 
 
@@ -33,7 +33,13 @@
                             <div class="col-2 order-left">
 
                                 <h5 class="mb-0">{{__('Name')}}</h5>
-                                <p>{{$data->email}}</p>
+                                <p>{{$data->name}}</p>
+
+                            </div>
+                            <div class="col-2 order-left">
+
+                                <h5 class="mb-0">{{__('Phone')}}</h5>
+                                <p>{{$data->phone}}</p>
 
                             </div>
 
@@ -62,6 +68,7 @@
             </div>
 
         </div>
+        <br>
         <div class="row">
             <div class="col">
 
