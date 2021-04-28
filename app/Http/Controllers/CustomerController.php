@@ -110,6 +110,7 @@ class CustomerController extends Controller
 
                 $query->where('name', 'like', '%' . $request->name . '%');
 
+
             }
             if ($request->has('phone') and $request->phone) {
                 $query->where('phone',  'like' , '%'.$request->phone.'%');
@@ -289,6 +290,7 @@ class CustomerController extends Controller
             }
             if ($request->has('name') and $request->name) {
 
+
                 $query->where('name', 'like', '%' . $request->name . '%');
 
             }
@@ -352,7 +354,6 @@ class CustomerController extends Controller
 
 
                 $query->where('name', 'like', '%' . $request->name . '%');
-
             }
             if ($request->has('phone') and $request->phone) {
                 $query->where('phone', 'like',  '%'. $request->phone.'%');
@@ -416,7 +417,9 @@ class CustomerController extends Controller
             }
             if ($request->has('name') and $request->name) {
 
+
                 $query->where('name', 'like', '%' . $request->name . '%');
+
 
             }
             if ($request->has('phone') and $request->phone) {
@@ -494,8 +497,9 @@ class CustomerController extends Controller
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
 
-        $data['role'] = 1;
 
+
+        $data['role'] = 1;
       //  $data['referral_code'] = mt_rand(1000000, 9999999);
       //  $data['otp'] = mt_rand(100000, 999999);
         if (isset($request->image) && $request->hasFile('image')) {

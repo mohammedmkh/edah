@@ -33,10 +33,11 @@ class OrderController extends Controller
         $customer = User::where('role', 0)->get();
         $technical = User::where('role', 3)->get();
         $status = OrderStatus::all();
-        // dd( $data );
+        $userData=User::withCount('userOrder')->find($customer_id);
+
         if ($customer_id != null) {
 
-            return view('admin.order.ordersTechnical', ['orders' => $data, 'status' => $status, 'technical' => $technical, 'customer' => $customer, 'customer_id' => $customer_id]);
+            return view('admin.order.ordersTechnical', ['data'=>$userData,'orders' => $data, 'status' => $status, 'technical' => $technical, 'customer' => $customer, 'customer_id' => $customer_id]);
 
         }
         return view('admin.order.orders', ['orders' => $data, 'status' => $status, 'technical' => $technical, 'customer' => $customer, 'customer_id' => $customer_id]);
@@ -59,6 +60,11 @@ class OrderController extends Controller
             }
             if ($request->has('technical_id') and $data['technical_id'] != null) {
                 $query->where('technical_id', $request->technical_id);
+
+            }
+
+            if ($request->has('user_id') and $data['user_id'] != null) {
+                $query->where('user_id', $request->user_id);
 
             }
 
