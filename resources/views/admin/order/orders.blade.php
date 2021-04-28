@@ -51,10 +51,10 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="input-status">التقنيين</label>
+                                                <label class="form-control-label" for="input-status">الفنيين</label>
                                                 <Select name="technical_id" id="technical_id"
                                                         class="form-control select2 form-control-alternative" required>
-                                                    <option value="">التقنيين</option>
+                                                    <option value="">الفنيين</option>
                                                     @foreach($technical as $value)
                                                         <option value="{{$value->id}}">{{$value->name}}</option>
 

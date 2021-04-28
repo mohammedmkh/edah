@@ -71,7 +71,7 @@ class SubCategoryController extends Controller
             $table->editColumn('status', function ($row) {
                 return ' <span class="badge badge-dot mr-4">
                                                         <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
-                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
+                                                        <span class="status">' . $row->status == 0 ? __("Active") : __("Deactive") . '</span>
                                                     </span>';
             });
             $table->addColumn('actions', function ($row) {

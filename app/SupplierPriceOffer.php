@@ -14,22 +14,35 @@ class SupplierPriceOffer extends Model
     protected $table = 'supplier_price_offers';
     public $timestamps=false;
 
+    protected $hidden = ['store'];
+
 
     protected $appends = ['status_name' ,'document_path'] ;
 
     public function getStatusNameAttribute(){
         if($this->status == 0){
-            return 'new order' ;
+            return 'new offer' ;
         }
         if($this->status == 1){
-            return 'Accept order' ;
+            return 'Respond to offer' ;
         }
-        return 'Reject order' ;
+
+        if($this->status == 2){
+            return 'Accept offer' ;
+        }
+
+        return 'Reject offer' ;
 
     }
+
     public function technician()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(User::class, 'store_id');
     }
 
     public function getDocumentPathAttribute(){

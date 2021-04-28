@@ -26,6 +26,7 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+        @toastr_css
         @if(session()->get('locale') == 'english')
 
             <link href="{{url('admin/css/nucleo.css')}}" rel="stylesheet">
@@ -121,6 +122,20 @@
         <style>
             .invalid-feedback ,valid-feedback {
                 display: block!important;
+            }
+
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+                /* box-sizing: border-box; */
+                /* display: inline-block; */
+                /* min-width: 1.5em; */
+                border: none!important;;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button:active ,.dataTables_wrapper .dataTables_paginate .paginate_button:visited {
+                /* box-sizing: border-box; */
+                /* display: inline-block; */
+                /* min-width: 1.5em; */
+                border: none!important;;
             }
         </style>
 
@@ -279,5 +294,9 @@ function resetFilter(){
 
 
         @yield('java_script')
+
+
+        @toastr_js
+        @toastr_render
     </body>
 </html>

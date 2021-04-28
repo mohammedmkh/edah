@@ -162,7 +162,11 @@ function sendFCM($title, $body, $data, $tokens, $badge)
     $notif->save();
 
     if(isset($tokens) && $tokens != null){
+        if( !$tokens->device_token){
+            return ;
+        }
         $tokens =  $tokens->device_token ;
+
     }else{
         return ;
     }

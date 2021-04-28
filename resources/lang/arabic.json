@@ -283,7 +283,7 @@
     "Additional Settings":"اعدادات اضافية" ,
     "Technician" : "فني" ,
     "Add Technician": "اضافة فني" ,
-    "Technician Users":"مقدمي الخدمة " ,
+    "Technician Users":" الفنيين " ,
     "Store Users":"  أصحاب المحلات" ,
     "Add Store":"اضافة مستخدم" ,
     "Add Store Owner":"اضافة مستخدم صاحب محل" ,
@@ -295,6 +295,16 @@
     "Type Services":"نوع الخدمات المقدمة" ,
     "priority":"أولوية الظهور" ,
     "app benifit percentage" :"نسبة ربح التطبيق" ,
-    "New Customers":"زبائن جدد"
+    "New Customers":"عملاء جدد",
+    "Active":"فعال",
+    "DeActive":"غير فعال",
+    "Select Status":"اختر الحالة",
+    "Required":"مطلوب" ,
+    "Not Required":"غير مطلوب " ,
+    "Technical" : "فني" ,
+    "Store Owner":"صاحب محل" ,
+    "Avaliable":"فعال" ,
+   "Not Avaliable":"غير فعال"
+
 
 }

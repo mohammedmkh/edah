@@ -2,7 +2,7 @@
 
 @section('content')
     @include('admin.layout.topHeader', [
-        'title' => __(' Coupon') ,
+        'title' => __('Coupons') ,
         'class' => 'col-lg-7'
     ])
     <div class="container-fluid mt--7">
@@ -13,7 +13,7 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col-8">
-                                <h3 class="mb-0">{{ __('Grocery Coupon') }}</h3><br>
+                                <h3 class="mb-0">{{ __('Coupon') }}</h3><br>
 
                             </div>
                             <div class="col-4 text-right">
@@ -28,10 +28,10 @@
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-status"> الحالة</label>
                                         <Select  name="status" id="status"
-                                                 class="form-control select2 form-control-alternative" required>
+                                                 class="form-control  form-control-alternative" required>
                                             <option  value="">الحالة</option>
-                                            <option  value="0">Active</option>
-                                            <option  value="1">DeActive</option>
+                                            <option  value="0">{{ __('Active') }}</option>
+                                            <option  value="1">{{ __('DeActive') }}</option>
 
                                         </select>
                                     </div>

@@ -10,7 +10,8 @@ class CompanySetting extends Model
     //
     // use SoftDeletes;
     protected $fillable = [
-        'name', 'address', 'location', 'phone', 'email', 'logo', 'favicon', 'description', 'website','profit_ratio'
+        'name', 'address', 'location', 'phone', 'email', 'logo', 'favicon', 'description',
+        'fees','website','profit_ratio'
     ];
 
     protected $table = 'company_setting';

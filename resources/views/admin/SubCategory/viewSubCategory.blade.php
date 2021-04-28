@@ -30,8 +30,8 @@
                                         <Select  name="status" id="status"
                                                  class="form-control select2 form-control-alternative" required>
                                             <option  value="">الحالة</option>
-                                            <option  value="0">Active</option>
-                                            <option  value="1">DeActive</option>
+                                            <option  value="0">{{__('Active')}}</option>
+                                            <option  value="1">{{__('DeActive')}}</option>
 
                                         </select>
                                     </div>

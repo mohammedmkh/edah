@@ -9,13 +9,13 @@ class Order extends Model
 
     protected $fillable = [
       'user_id','technical_id','category_id', 'status','is_immediately'
-        ,'time','price','deleted_at', 'created_at', 'updated_at' , 'distance','lat','lang','profit_ratio','is_posting'];
+        ,'time','price','note' ,'deleted_at', 'created_at', 'updated_at' , 'distance','lat','lang','profit_ratio','is_posting'];
 
-    protected $hidden = ['created_at' , 'updated_at' , 'deleted_at'];
+    protected $hidden = ['created_at' , 'updated_at' , 'deleted_at' ,'statusname'];
 
     protected $table = 'orders';
 
-    protected  $appends= [ 'is_evaluated_user'  ];
+    protected  $appends= [ 'is_evaluated_user' , 'additional_price' , 'statusname_text' ];
 
     public function getIsEvaluatedUserAttribute(){
         $is_ev = UserEvaluation::where('order_id' , $this->id)->where('type' ,2)->first();
@@ -24,6 +24,19 @@ class Order extends Model
         }
         return 0 ;
     }
+
+    public function getAdditionalPriceAttribute(){
+        $sum_additional = SupplierPriceOffer::where('order_id' , $this->id)->where('status' ,2)->sum('price');
+
+        return $sum_additional  ;
+    }
+
+
+    public function getStatusnameTextAttribute(){
+
+        return $this->statusname->status_name  ?? 'Not Ready'  ;
+    }
+
 
     public function statusname(){
         return $this->belongsTo(OrderStatus::class, 'status', 'id');
@@ -45,7 +58,11 @@ class Order extends Model
         return $this->belongsTo(User::class, 'technical_id', 'id');
     }
 
+    public function additionals()
+    {
 
+        return $this->hasMany(SupplierPriceOffer::class, 'order_id', 'id')->where('status' , 2 );
+    }
 
 
 }

@@ -104,13 +104,17 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email', 'like' , '%'.$request->email .'%');
             }
             if ($request->has('name') and $request->name) {
+<<<<<<< HEAD
                 $query->where('name', 'like', '%' . $request->name . '%');
+=======
+                $query->where('name',  'like' , '%'.$request->name.'%');
+>>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone',  'like' , '%'.$request->phone.'%');
             }
 
             $table = Datatables::of($query);
@@ -283,13 +287,17 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email', 'like', '%'.$request->email .'%');
             }
             if ($request->has('name') and $request->name) {
+<<<<<<< HEAD
                 $query->where('name', 'like', '%' . $request->name . '%');
+=======
+                $query->where('name', 'like',  '%'.$request->name.'%');
+>>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone', 'like',  '%'.$request->phone.'%');
             }
 
             $table = Datatables::of($query);
@@ -342,14 +350,18 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email',  'like',  '%'.$request->email.'%');
             }
             if ($request->has('name') and $request->name) {
+<<<<<<< HEAD
 
                 $query->where('name', 'like', '%' . $request->name . '%');
+=======
+                $query->where('name',  'like',  '%'.$request->name.'%');
+>>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone', 'like',  '%'. $request->phone.'%');
             }
             $table = Datatables::of($query);
 
@@ -406,13 +418,17 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', $request->email);
+                $query->where('email',  'like',  '%'.$request->email.'%');
             }
             if ($request->has('name') and $request->name) {
+<<<<<<< HEAD
                 $query->where('name', 'like', '%' . $request->name . '%');
+=======
+                $query->where('name',  'like',  '%'.$request->name.'%');
+>>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', $request->phone);
+                $query->where('phone', 'like',  '%'. $request->phone .'%');
             }
             $table = Datatables::of($query);
 
@@ -475,17 +491,21 @@ class CustomerController extends Controller
     {
         //
 
+       // dd('Mact if Master');
         $request->validate([
             'name' => 'bail|required',
             'email' => 'bail|required|unique:users',
             'phone' => 'bail|required',
-            // 'dateOfBirth' => 'bail|required',
             'password' => 'bail|required|min:6',
             'password_confirmation' => 'bail|required|same:password|min:6'
         ]);
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
+<<<<<<< HEAD
         $data['role'] = 0;
+=======
+        $data['role'] = 1;
+>>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
       //  $data['referral_code'] = mt_rand(1000000, 9999999);
       //  $data['otp'] = mt_rand(100000, 999999);
         if (isset($request->image) && $request->hasFile('image')) {
@@ -518,7 +538,7 @@ class CustomerController extends Controller
             OwnerSetting::create($setting);
         }
 
-        return redirect('Customer');
+        return redirect(adminPath().'Customer');
 
     }
 

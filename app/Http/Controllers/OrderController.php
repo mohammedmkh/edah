@@ -17,7 +17,7 @@ use App\Notification;
 use App\NotificationTemplate;
 use Illuminate\Http\Request;
 use DataTables;
-
+use Carbon;
 class OrderController extends Controller
 {
     /**
@@ -50,8 +50,8 @@ class OrderController extends Controller
             $data = $request->all();
             $query = Order::with(['userOrder', 'categoryOrder'])->orderBy('id', 'DESC');
 
-            if ($request->has('order_id') and $request->order_id > 0) {
-                $query->where('id', $request->order_id);
+            if ($request->has('order_no') and $request->order_no > 0) {
+                $query->where('id', $request->order_no);
             }
             if ($request->has('daterange') and $data['daterange'] != null) {
                 $query->whereBetween('time', explode(' - ', $data['daterange']));
@@ -88,8 +88,10 @@ class OrderController extends Controller
             });
 
             $table->editColumn('time', function ($row) {
-                return $row->time ? $row->time : "";
+                return $row->time ? Carbon\Carbon::parse($row->time)->toDateString()  : "";
             });
+
+
 
             $table->editColumn('payment_type', function ($row) {
                 return $row->payment_type ? $row->payment_type : "";
