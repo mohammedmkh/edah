@@ -18,6 +18,7 @@ use App\NotificationTemplate;
 use Illuminate\Http\Request;
 use DataTables;
 use App\Role;
+
 class NotificationController extends Controller
 {
     /**
@@ -29,15 +30,22 @@ class NotificationController extends Controller
     {
         //
 
-        $role=Role::where('name','!=','Admin')->get();
-        return view('admin.notification.notification', ['role'=>$role]);
+        $role = Role::where('name', '!=', 'Admin')->get();
+        return view('admin.notification.notification', ['role' => $role]);
     }
 
+    public function getUsersByRole(Request $request)
+    {
+        $users=User::where('role',$request->role)->select('id','name')->get();
+
+        return response($users);
+
+    }
 
     public function store(Request $request)
     {
 
-      //  dd('mm Good');
+        //  dd('mm Good');
 
         $request->validate([
             'role' => 'required',
@@ -47,9 +55,6 @@ class NotificationController extends Controller
         ]);
 
         $data = $request->all();
-
-
-
 
 
         toastr()->success('Are you the 6 fingered man?');

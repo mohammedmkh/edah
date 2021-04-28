@@ -50,11 +50,11 @@ class OrderController extends Controller
         if ($request->ajax()) {
             $data = $request->all();
             $query = Order::with(['userOrder', 'categoryOrder'])->orderBy('id', 'DESC');
-
             if ($request->has('order_no') and $request->order_no > 0) {
                 $query->where('id', $request->order_no);
             }
             if ($request->has('daterange') and $data['daterange'] != null) {
+
                 $query->whereBetween('time', explode(' - ', $data['daterange']));
 
             }
@@ -64,6 +64,7 @@ class OrderController extends Controller
             }
 
             if ($request->has('user_id') and $data['user_id'] != null) {
+
                 $query->where('user_id', $request->user_id);
 
             }
