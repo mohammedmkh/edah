@@ -28,7 +28,7 @@
                                         <li>{{ $error }}</li>
                                     @endforeach
                                 </ul>
-                            </div><br />
+                            </div><br/>
                         @endif
                         <form method="post" action="{{url(adminPath().'notifications')}}" autocomplete="off"
                               enctype="multipart/form-data">
@@ -37,16 +37,32 @@
                             <h6 class="heading-small text-muted mb-4">{{ __('User information') }}</h6>
                             <div class="pl-lg-4">
                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                    <label class="form-control-label" for="input-name">{{ __('Role') }}</label>
+                                    <label class="form-control-label" for="input-name">{{ __('User Type') }}</label>
                                     <Select name="role" id="role"
                                             class="form-control select2 form-control-alternative" required>
-                                        <option value="">{{__('Role')}}</option>
+                                        <option value="">{{__('User Type')}}</option>
                                         @foreach($role as $value)
                                             <option value="{{$value->id}}">{{$value->name}}</option>
                                         @endforeach
 
+                                    </select>
+                                    @if ($errors->has('role'))
+                                        <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('role') }}</strong>
+                                                </span>
+                                    @endif
+                                </div>
+                                <div class="form-group{{ $errors->has('user_id[]') ? ' has-danger' : '' }}">
+                                    <label class="form-control-label" for="input-name">{{ __('Users') }}</label>
+                                    <button type="button" id="selectall"
+                                            class="btn btn-success ">{{ __('Select All') }}</button>
+
+                                    <Select multiple name="user_id[]" id="user_id"
+                                            class="form-control select2 form-control-alternative" required>
+                                        <option value="">{{__('Users')}}</option>
 
                                     </select>
+
                                     @if ($errors->has('role'))
                                         <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('role') }}</strong>
@@ -68,9 +84,10 @@
 
                                 <div class="form-group{{ $errors->has('body') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-phone">{{ __('Body') }}</label>
-                                    <textarea  name="body" id="input-phone"
-                                           class="form-control form-control-alternative{{ $errors->has('body') ? ' is-invalid' : '' }}"
-                                              placeholder="{{ __('Body') }}" value="{{ old('body') }}" required></textarea>
+                                    <textarea name="body" id="input-phone"
+                                              class="form-control form-control-alternative{{ $errors->has('body') ? ' is-invalid' : '' }}"
+                                              placeholder="{{ __('Body') }}" value="{{ old('body') }}"
+                                              required></textarea>
 
                                     @if ($errors->has('body'))
                                         <span class="invalid-feedback" role="alert">
@@ -102,4 +119,69 @@
 
     </div>
 
+@endsection
+
+
+@section('java_script')
+
+    <script type="text/javascript">
+        var x = 1;
+
+        $(document.body).on("click", "#selectall", function () {
+
+
+            if (x === 1) {
+                $("#user_id > option").prop("selected", "selected");
+                $("#user_id").trigger("change");
+                x = 0;
+            } else {
+
+                $('#user_id').val("-1").trigger("change");
+
+                x = 1;
+
+            }
+
+
+        });
+        $(document).ready(function () {
+            $('#user_id').select2({
+                closeOnSelect: false
+            });
+            $('#role').change(function () {
+                var role = $(this).val()
+                !!$('#user_id').find('option').not(':first').not('#selectall').remove();
+
+
+                if (role > 0) {
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: '{{url('').'/panel/getUsersByRole'}}',
+                        data: {_token: '{{csrf_token()}}', role: role,},
+
+
+                        success: function (response) {
+                            $.each(response, function (i, field) {
+                                var newOption = new Option(field.name, field.id, false, false);
+                                $('#user_id').append(newOption).trigger('change');
+                            });
+
+                        },
+                        error: function (error) {
+
+                        }
+                    });
+
+                }
+                return false;
+
+            });
+
+
+        });
+
+
+    </script>
 @endsection

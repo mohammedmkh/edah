@@ -70,6 +70,8 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/Order/{customer_id}', 'OrderController@index');
 
     Route::post('/setUserStatus', 'CustomerController@setUserStatus');
+    Route::POST('/getUsersByRole', 'NotificationController@getUsersByRole');
+
 
 
     Route::resources([

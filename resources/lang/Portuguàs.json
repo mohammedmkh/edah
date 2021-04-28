@@ -1,4 +1,6 @@
 {
+    "Order No" : "عدد الطلبات",
+
     "Dashboard" : "Painel Control",
     "Orders" : "Pedidos",
     "Shop" : "Restaurantes",
@@ -63,7 +65,7 @@
     "Latitude" : "Latitude",
     "Longitude" : "Longitude",
     "Phone" : "Telefone",
-    "Website" : "Website",    
+    "Website" : "Website",
     "Approx Delivery Time (Minutes)" : "Tempo Aproximado de Entrega",
     "Certificate/License Code" : "Licença",
     "Shop Charge (Packing/Extra)" : "Pagamento Restaurante Extra",
@@ -238,7 +240,7 @@
     "Close" : "قريب",
     "Send" : "إرسال",
     "Made with" : "مصنوع من",
-    "by" : "بواسطة" 
-    
+    "by" : "بواسطة"
+
 
 }

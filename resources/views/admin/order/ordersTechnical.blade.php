@@ -14,7 +14,7 @@
                         <div class="row align-items-center">
 
                             <div class="col-8">
-                                <h3 class="mb-0">{{ __('إسم المستخدم') }}</h3>
+                                <h3 class="mb-0">{{ __('Customer') }}</h3>
                                 <br>
 
 
@@ -30,14 +30,20 @@
 
                         </div>
                         <div class="row">
-                            <div class="col-2 order-left">
+                            <div class="col-3 order-left">
 
                                 <h5 class="mb-0">{{__('Name')}}</h5>
-                                <p>{{$data->email}}</p>
+                                <p>{{$data->name}}</p>
+
+                            </div>
+                            <div class="col-2 order-left">
+
+                                <h5 class="mb-0">{{__('Phone')}}</h5>
+                                <p>{{$data->phone}}</p>
 
                             </div>
 
-                            <div class="col-2 order-left">
+                            <div class="col-3 order-left">
 
                                 <h5 class="mb-0">{{__('Email')}}</h5>
                                 <p>{{$data->email}}</p>
@@ -62,6 +68,7 @@
             </div>
 
         </div>
+        <br>
         <div class="row">
             <div class="col">
 
@@ -131,38 +138,6 @@
                             </div>
 
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6 order-left">
-
-                                <h3>Customer</h3>
-
-                            </div>
-
-
-
-
-                        </div>
-                        <div class="row">
-                            <div class="col-2 order-left">
-
-                                <h5 class="mb-0">{{__('Name')}}</h5>
-                                <p>{{$data->email}}</p>
-
-                            </div>
-
-                            <div class="col-2 order-left">
-
-                                <h5 class="mb-0">{{__('Email')}}</h5>
-                                <p>{{$data->email}}</p>
-
-                            </div>
-
-
-                        </div>
-
-
                     </div>
 
                     <div style="padding:10px;" class="table-responsive">

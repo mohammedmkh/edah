@@ -1,4 +1,6 @@
 {
+    "Order No" : "عدد الطلبات",
+
     "Dashboard" : "لوحة القيادة",
     "Orders" : "طلب",
     "Shop" : "متجر",
@@ -63,7 +65,7 @@
     "Latitude" : "خط العرض",
     "Longitude" : "خط الطول",
     "Phone" : "هاتف",
-    "Website" : "موقع الكتروني",    
+    "Website" : "موقع الكتروني",
     "Approx Delivery Time (Minutes)" : "وقت التسليم تقريبا (دقائق)",
     "Certificate/License Code" : "رمز الشهادة / الترخيص",
     "Shop Charge (Packing/Extra)" : "تهمة متجر (التعبئة / اضافية)",
@@ -238,7 +240,7 @@
     "Close" : "قريب",
     "Send" : "إرسال",
     "Made with" : "مصنوع من",
-    "by" : "بواسطة" 
-    
+    "by" : "بواسطة"
+
 
 }
