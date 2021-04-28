@@ -9,7 +9,7 @@
     ])
     <div class="container-fluid mt--7">
 
-<<<<<<< HEAD
+
         <div class="row">
             <div class="col-xl-12 order-xl-1">
                 <div class="card form-card bg-secondary shadow">
@@ -26,24 +26,9 @@
                     <div class="card-body">
                         <form method="post" action="{{url('panel/Customer')}}" autocomplete="off"  enctype="multipart/form-data">
                             @csrf
-=======
-            <div class="row">
-                    <div class="col-xl-12 order-xl-1">
-                        <div class="card form-card bg-secondary shadow">
-                            <div class="card-header bg-white border-0">
-                                <div class="row align-items-center">
-                                    <div class="col-8">
-                                        <h3 class="mb-0">{{ __('Add User') }}</h3>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <a href="{{ url(adminPath().'Customer') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <form method="post" action="{{url(adminPath().'Customer')}}" autocomplete="off"  enctype="multipart/form-data">
-                                    @csrf
->>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
+
+
+
 
                             <h6 class="heading-small text-muted mb-4">{{ __('User information') }}</h6>
                             <div class="pl-lg-4">
@@ -91,7 +76,7 @@
                                             @endif
 
                                         </div>
-<<<<<<< HEAD
+
                                     </div>
                                     <div class="col-2">
                                         <img class=" avatar-lg round-5 view-image" style="width: 100%;height: 90px;" src="{{url('images/upload/user.png')}}">
@@ -106,7 +91,7 @@
                                       <div class="form-group{{ $errors->has('dateOfBirth') ? ' has-danger' : '' }}">
                                                 <label class="form-control-label" for="input-dateOfBirth">{{ __('Date of Birth') }}</label>
                                                 <input type="date" name="dateOfBirth" id="input-dateOfBirth" class="form-control form-control-alternative{{ $errors->has('dateOfBirth') ? ' is-invalid' : '' }}" placeholder="{{ __('Date Of Birth') }}" value="{{ old('dateOfBirth') }}">
->>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
+
 
                                                             @if ($errors->has('dateOfBirth'))
                                                                 <span class="invalid-feedback" role="alert">
@@ -115,21 +100,9 @@
                                                             @endif
                                                     </div>--}}
 
-<<<<<<< HEAD
-=======
-                                        <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
-                                                <label class="form-control-label" for="input-image">{{ __('Image') }}</label>
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" name="image" id="image">
-                                                    <label class="custom-file-label" for="image">{{ __('Select file') }} </label>
-                                                </div>
-                                                @if ($errors->has('image'))
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $errors->first('image') }}</strong>
-                                                    </span>
-                                                @endif
-                                        </div>
->>>>>>> 5295fd1cc3b617216d5a6b745f3b1d88bd306526
+
+
+
 
                                 <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-password">{{ __('Password') }}</label>
