@@ -8,9 +8,67 @@
     <div class="container-fluid mt--7">
         <div class="row">
             <div class="col">
+
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
+
+                            <div class="col-8">
+                                <h3 class="mb-0">{{ __('إسم المستخدم') }}</h3>
+                                <br>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-2 order-left">
+
+                                <h5 class="mb-0">{{__('Name')}}</h5>
+                                <p>{{$data->email}}</p>
+
+                            </div>
+
+                            <div class="col-2 order-left">
+
+                                <h5 class="mb-0">{{__('Email')}}</h5>
+                                <p>{{$data->email}}</p>
+
+                            </div>
+
+
+                            <div class="col-2 order-left">
+
+                                <h5 class="mb-0">{{__('order No')}}</h5>
+                                <p>{{$data->user_order_count}}</p>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col">
+
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+
                             <div class="col-8">
                                 <h3 class="mb-0">{{ __('Grocery Orders') }}</h3>
                                 <br>
@@ -74,6 +132,39 @@
 
                         </div>
                     </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 order-left">
+
+                                <h3>Customer</h3>
+
+                            </div>
+
+
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-2 order-left">
+
+                                <h5 class="mb-0">{{__('Name')}}</h5>
+                                <p>{{$data->email}}</p>
+
+                            </div>
+
+                            <div class="col-2 order-left">
+
+                                <h5 class="mb-0">{{__('Email')}}</h5>
+                                <p>{{$data->email}}</p>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
                     <div style="padding:10px;" class="table-responsive">
                         <table class="table data-table align-items-center table-flush yajra-datatable">
                             <thead class="thead-light">
