@@ -56,7 +56,6 @@ class NotificationController extends Controller
 
         $data = $request->all();
 
-
         toastr()->success('Are you the 6 fingered man?');
         return redirect()->back();
     }

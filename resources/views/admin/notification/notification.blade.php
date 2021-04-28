@@ -52,12 +52,12 @@
                                                 </span>
                                     @endif
                                 </div>
-                                <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                                <div class="form-group{{ $errors->has('user_id[]') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-name">{{ __('Users') }}</label>
                                     <button type="button" id="selectall"
                                             class="btn btn-success ">{{ __('Select All') }}</button>
 
-                                    <Select multiple name="user_id" id="user_id"
+                                    <Select multiple name="user_id[]" id="user_id"
                                             class="form-control select2 form-control-alternative" required>
                                         <option value="">{{__('Users')}}</option>
 
