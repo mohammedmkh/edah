@@ -134,7 +134,7 @@ class CategoryController extends Controller
         $this->addUpdateTranslation( $category_no_langs , $data );
 
        // dd($category_no_langs);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath().'Category');
 
@@ -207,7 +207,7 @@ class CategoryController extends Controller
         $category_no_langs = $category->update($data);
         $category_no_langs = Category::find($id);
         $this->addUpdateTranslation( $category_no_langs , $data );
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath().'Category');
 
@@ -229,12 +229,18 @@ class CategoryController extends Controller
                 CategoryLangs::where('category_id',$id)->delete();
                 $delete = Category::find($id);
                 $delete->delete();
+                toastr()->success(__('Successfully completed'));
+
                 return 'true';
             }
             else{
+                toastr()->error(__('The operation has failed'), __('Inconceivable!'));
+
                 return response('Data is Connected with other Data', 400);
             }
         } catch (\Exception $e) {
+            toastr()->error(__('The operation has failed'), __('Inconceivable!'));
+
             return response('Data is Connected with other Data', 400);
         }
     }

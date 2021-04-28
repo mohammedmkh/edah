@@ -156,6 +156,7 @@
                 e.preventDefault();
             });
 
+
             function setUserStatus(user_id, status) {
                 event.preventDefault()
                 $.ajax({
@@ -173,6 +174,7 @@
 
 
             }
+
 
 
 

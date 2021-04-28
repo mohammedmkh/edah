@@ -104,13 +104,13 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', 'like' , '%'.$request->email .'%');
+                $query->where('email', 'like', '%' . $request->email . '%');
             }
             if ($request->has('name') and $request->name) {
                 $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone',  'like' , '%'.$request->phone.'%');
+                $query->where('phone', 'like', '%' . $request->phone . '%');
             }
 
             $table = Datatables::of($query);
@@ -125,11 +125,10 @@ class CustomerController extends Controller
             $table->addColumn('created_at', function ($row) {
                 return $row->created_at != null ? $row->created_at->diffForHumans() : '';
             });
-            $table->editColumn('status', function ($row) {
-                return ' <span class="badge badge-dot mr-4">
-                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
-                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
-                                                    </span>';
+            $table->addColumn('status', function ($row) {
+                $activeType = [__('Active'), __('Deactive')];
+
+                return $activeType[$row->status];
             });
             $table->addColumn('actions', function ($row) {
                 return ' <div class="dropdown">
@@ -139,6 +138,8 @@ class CustomerController extends Controller
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'tech/edit/' . $row->id) . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
+                                                    <a class="dropdown-item" onclick="setUserStatus(' . $row->id . ',' . $row->status . ');" href="">' . ($row->status ? __('Active') : __('Deactive')) . '</a>
+
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'technicalAccountStatmentPage/' . $row->id) . '">' . __('Technical Account Statment') . '</a>
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'technicalAccountStatmentHistory/' . $row->id) . '">' . __('Technical Account Statement Historey') . '</a>
                                                 </div>
@@ -146,7 +147,7 @@ class CustomerController extends Controller
 ';
             });
 
-            $table->rawColumns(['actions', 'image', 'role']);
+            $table->rawColumns(['actions', 'image', 'role', 'status']);
             return $table->make(true);
         }
 
@@ -283,13 +284,13 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email', 'like', '%'.$request->email .'%');
+                $query->where('email', 'like', '%' . $request->email . '%');
             }
             if ($request->has('name') and $request->name) {
                 $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', 'like',  '%'.$request->phone.'%');
+                $query->where('phone', 'like', '%' . $request->phone . '%');
             }
 
             $table = Datatables::of($query);
@@ -305,11 +306,10 @@ class CustomerController extends Controller
             $table->addColumn('created_at', function ($row) {
                 return $row->created_at != null ? $row->created_at->diffForHumans() : '';
             });
-            $table->editColumn('status', function ($row) {
-                return ' <span class="badge badge-dot mr-4">
-                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
-                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
-                                                    </span>';
+            $table->addColumn('status', function ($row) {
+                $activeType = [__('Active'), __('Deactive')];
+
+                return $activeType[$row->status];
             });
             $table->addColumn('actions', function ($row) {
                 return ' <div class="dropdown">
@@ -319,13 +319,14 @@ class CustomerController extends Controller
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'store/edit/' . $row->id) . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
+                                                    <a class="dropdown-item" onclick="setUserStatus(' . $row->id . ',' . $row->status . ');" href="">' . ($row->status ? __('Active') : __('Deactive')) . '</a>
 
                                                 </div>
                                             </div>
 ';
             });
 
-            $table->rawColumns(['actions', 'image', 'role']);
+            $table->rawColumns(['actions', 'image', 'role', 'status']);
             return $table->make(true);
         }
 
@@ -342,14 +343,14 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email',  'like',  '%'.$request->email.'%');
+                $query->where('email', 'like', '%' . $request->email . '%');
             }
             if ($request->has('name') and $request->name) {
 
                 $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', 'like',  '%'. $request->phone.'%');
+                $query->where('phone', 'like', '%' . $request->phone . '%');
             }
             $table = Datatables::of($query);
 
@@ -368,7 +369,7 @@ class CustomerController extends Controller
 
 
             $table->addColumn('status', function ($row) {
-                $activeType=[__('Active'),__('Deactive')];
+                $activeType = [__('Active'), __('Deactive')];
 
                 return $activeType[$row->status];
             });
@@ -388,7 +389,7 @@ class CustomerController extends Controller
 ';
             });
 
-            $table->rawColumns(['actions', 'image', 'role','status']);
+            $table->rawColumns(['actions', 'image', 'role', 'status']);
             return $table->make(true);
         }
 
@@ -406,13 +407,13 @@ class CustomerController extends Controller
                 $query->where('status', $request->status);
             }
             if ($request->has('email') and $request->email) {
-                $query->where('email',  'like',  '%'.$request->email.'%');
+                $query->where('email', 'like', '%' . $request->email . '%');
             }
             if ($request->has('name') and $request->name) {
                 $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
-                $query->where('phone', 'like',  '%'. $request->phone .'%');
+                $query->where('phone', 'like', '%' . $request->phone . '%');
             }
             $table = Datatables::of($query);
 
@@ -430,11 +431,10 @@ class CustomerController extends Controller
             });
 
 
-            $table->editColumn('status', function ($row) {
-                return ' <span class="badge badge-dot mr-4">
-                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
-                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
-                                                    </span>';
+            $table->addColumn('status', function ($row) {
+                $activeType = [__('Active'), __('Deactive')];
+
+                return $activeType[$row->status];
             });
             $table->addColumn('actions', function ($row) {
                 return ' <div class="dropdown">
@@ -444,13 +444,14 @@ class CustomerController extends Controller
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'Customer/' . $row->id . '/edit') . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
+                                                    <a class="dropdown-item" onclick="setUserStatus(' . $row->id . ',' . $row->status . ');" href="">' . ($row->status ? __('Active') : __('Deactive')) . '</a>
 
                                                 </div>
                                             </div>
 ';
             });
 
-            $table->rawColumns(['actions', 'image', 'role']);
+            $table->rawColumns(['actions', 'image', 'role', 'status']);
             return $table->make(true);
         }
 
@@ -461,21 +462,21 @@ class CustomerController extends Controller
         $data = $request->all();
         $user = User::find($data['user_id']);
         if ($data['status'] == 0) {
-            $user->status=1;
+            $user->status = 1;
         } else {
-            $user->status=0;
+            $user->status = 0;
 
         }
         $user->save();
-
-        return response(['stsus'=>true]);
+        toastr()->success(__('Successfully completed'));
+        return response(['stsus' => true]);
     }
 
     public function store(Request $request)
     {
         //
 
-       // dd('Mact if Master');
+        // dd('Mact if Master');
         $request->validate([
             'name' => 'bail|required',
             'email' => 'bail|required|unique:users',
@@ -487,8 +488,8 @@ class CustomerController extends Controller
         $data['password'] = Hash::make($data['password']);
         $data['role'] = 0;
         $data['role'] = 1;
-      //  $data['referral_code'] = mt_rand(1000000, 9999999);
-      //  $data['otp'] = mt_rand(100000, 999999);
+        //  $data['referral_code'] = mt_rand(1000000, 9999999);
+        //  $data['otp'] = mt_rand(100000, 999999);
         if (isset($request->image) && $request->hasFile('image')) {
             $image = $request->file('image');
             $name = time() . '.' . $image->getClientOriginalExtension();
@@ -519,8 +520,8 @@ class CustomerController extends Controller
             OwnerSetting::create($setting);
         }
 
-        toastr()->success('Successfully completed');
-        return redirect(adminPath().'Customer');
+        toastr()->success(__('Successfully completed'));
+        return redirect(adminPath() . 'Customer');
 
     }
 
@@ -576,7 +577,7 @@ class CustomerController extends Controller
         }
 
         User::findOrFail($id)->update($data);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath() . 'Customer');
     }
@@ -778,7 +779,7 @@ class CustomerController extends Controller
             }
         }
 
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect('storeusers');
 
@@ -824,11 +825,11 @@ class CustomerController extends Controller
         $d['user_id'] = $id;
         $d['hour_work'] = $request->hour_work;
 
-        $user_tech_store = App\TechStoreUser::updateOrCreate(['user_id'=>$id],$d);
+        $user_tech_store = App\TechStoreUser::updateOrCreate(['user_id' => $id], $d);
 
         $user_tech_store_service = App\TechStoreServices::updateOrCreate(
-            ['user_id'=>$id],
-            ['user_id'=>$id,'category_id'=>$data['category_id']]
+            ['user_id' => $id],
+            ['user_id' => $id, 'category_id' => $data['category_id']]
         );
 
         // now save any documents in tech-store-documents
@@ -845,7 +846,7 @@ class CustomerController extends Controller
             }
         }
 
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath() . 'storeusers');
 
@@ -869,7 +870,7 @@ class CustomerController extends Controller
 
         $user = User::create($data);
 
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath() . 'adminusers');
 
@@ -950,7 +951,7 @@ class CustomerController extends Controller
             }
 
         });
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath() . 'techusers');
 
@@ -1027,7 +1028,7 @@ class CustomerController extends Controller
 
         // all good
 
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath() . 'techusers');
     }
@@ -1132,7 +1133,7 @@ class CustomerController extends Controller
         }
 
         User::findOrFail($id)->update($data);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath() . 'ownerProfile');
     }
@@ -1829,7 +1830,7 @@ class CustomerController extends Controller
     {
         App::setLocale($lang);
         session()->put('locale', $lang);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect()->back();
     }

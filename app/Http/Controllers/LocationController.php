@@ -62,7 +62,7 @@ class LocationController extends Controller
         if(isset($request->popular)){ $data['popular'] = 1; }
         else{ $data['popular'] = 0; }
         Location::create($data);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect('Location');
     }

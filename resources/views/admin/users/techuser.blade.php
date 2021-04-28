@@ -152,7 +152,6 @@
 
     <script type="text/javascript">
 
-        $(function () {
 
 
             var table = $('.yajra-datatable').DataTable({
@@ -194,10 +193,27 @@
             });
 
 
-        });
 
 
 
+
+        function setUserStatus(user_id, status) {
+            event.preventDefault()
+            $.ajax({
+                url: '{{url('')}}/panel/setUserStatus'  ,
+                data: {_token: $('meta[name="csrf-token"]').attr('content'),user_id:user_id,status:status},
+                type: "POST",
+                success: function (result) {
+
+                    table.ajax.reload( null, false ); // user paging is not reset on reload
+
+                },
+                error: function (err) {
+                }
+            });
+
+
+        }
 
         $( document ).ready(function() {
             /*
