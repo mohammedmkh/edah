@@ -95,6 +95,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-10">
+                                        <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
+                                            <label class="form-control-label " for="input-image">{{ __('Image') }}</label>
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input read-image" name="image" id="image">
+                                                <label class="custom-file-label" for="image">Select file</label>
+                                            </div>
+                                            @if ($errors->has('image'))
+                                                <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $errors->first('image') }}</strong>
+                                                        </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <img class=" avatar-lg round-5 view-image" style="width: 100%;height: 90px;" src="{{url('images/upload/'.$data->image)}}">
+                                    </div>
+                                </div>
                                 {{-- <div class="row">
                                     <div class="col-6">
                                         <div class="form-group{{ $errors->has('driver_radius') ? ' has-danger' : '' }}">
@@ -164,19 +183,7 @@
                                             </span>
                                         @endif
                                 </div> --}}
-                                <div class="form-group{{ $errors->has('identity') ? ' has-danger' : '' }}">
-                                    <label class="form-control-label" for="input-password">{{ __('identity') }}</label>
-                                    <input type="text" name="identity" id="input-password"
-                                           class="form-control form-control-alternative{{ $errors->has('identity') ? ' is-invalid' : '' }}"
-                                           placeholder="{{ __('identity' ) }}"
-                                           value="{{old('identity' , $data->identity) }}" required>
 
-                                    @if ($errors->has('identity'))
-                                        <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('identity') }}</strong>
-                                                </span>
-                                    @endif
-                                </div>
                                 <div class="form-group {{ $errors->has('hour_work') ? ' has-danger' : '' }}">
                                     <label class="form-control-label"
                                            for="input-hour_work">{{ __('Hour Work') }}</label>
@@ -191,7 +198,6 @@
                                                 </span>
                                     @endif
                                 </div>
-
                                 <div class="form-group {{ $errors->has('min_order_value') ? ' has-danger' : '' }}">
                                     <label class="form-control-label"
                                            for="input-hour_work">{{ __('min order value') }}</label>
@@ -214,7 +220,7 @@
                                     <div class="col-8">
                                         <label class="custom-toggle">
                                             <input type="checkbox" value="1" name="have_vehicle"
-                                                   id="have_vehicle" {{ $data->techstore->have_vehicle ? 'checked' : '' }}>
+                                                   id="have_vehicle" {{ $data->techstore ? ($data->techstore->have_vehicle ? 'checked' : '') : '' }}>
                                             <span class="custom-toggle-slider rounded-circle" data-label-off="No"
                                                   data-label-on="Yes"></span>
                                         </label>
@@ -231,16 +237,18 @@
                                 </div>
 
 
-                                <div class="form-group " id="secTypeVe">
+                                <div class="form-group">
                                     <label class="form-control-label">{{ __('Type Services') }} :</label>
 
 
                                     <select name="categories[]" multiple="multiple" id="input-categories"
-                                            class="form-control select2 select2-multiple form-control-alternative{{ $errors->has('category_id') ? ' is-invalid' : '' }}"
-                                            required>
+                                            class="form-control select2 select2-multiple form-control-alternative{{ $errors->has('category_id') ? ' is-invalid' : '' }}" >
                                         @foreach($categories as $cat)
-                                            <option
-                                                value="{{$cat->id}}" {{ in_array($cat->id , $data->techstore->cats) ? 'selected' : '' }}>{{ $cat->translation()->name }}  </option>
+                                            {{$selected=''}}
+                                            @if(isset($data->techstoreService ) && $data->techstoreService->category_id == $cat->id)
+                                                {{$selected='selected'}}
+                                            @endif
+                                            <option {{$selected}}  value="{{$cat->id}}">{{ $cat->translation()->name }}  </option>
                                         @endforeach
                                     </select>
                                 </div>

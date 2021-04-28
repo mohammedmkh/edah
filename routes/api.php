@@ -78,7 +78,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
 
     Route::get('myInfo', 'UsersApiController@myInfo');
     Route::post('edituser', 'UsersApiController@editUser');
-    Route::post('logout', 'UsersApiController@logout');
+
+    Route::get('logout', 'UsersApiController@logout');
+
     Route::post('confirmnewphone', 'UsersApiController@confirmnewphone');
 
     Route::post('addordernew', 'OrdersApiController@addOrder');

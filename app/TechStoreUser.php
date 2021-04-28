@@ -9,7 +9,7 @@ class TechStoreUser extends Model
     //
 
     protected $fillable = [
-        'order_min', 'phone' ,'type' , 'min_order_value' , 'driver_radius','tech_store_email' ,'work_time_from','work_time_to','priority' , 'vat_no' ,'have_vehicle' ,'type_vehicle','bank_account',"owner_account","bank_name"
+      'hour_work', 'user_id', 'app_benifit_percentage', 'order_min', 'phone' ,'type' , 'min_order_value' , 'driver_radius','tech_store_email' ,'work_time_from','work_time_to','priority' , 'vat_no' ,'have_vehicle' ,'type_vehicle','bank_account',"owner_account","bank_name"
     ];
 
     protected $table = 'technicians_stores';

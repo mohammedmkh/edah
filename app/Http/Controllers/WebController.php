@@ -44,6 +44,7 @@ class WebController extends Controller
             'password' => $request->password,
             'role' => 1,
         );
+
         if (Auth::attempt($userdata)) {
             $lang= 'arabic';
             App::setLocale($lang);

@@ -69,6 +69,11 @@ class User extends Authenticatable
         return $this->hasOne(TechStoreUser::class, 'user_id', 'id');
     }
 
+    public function techstoreService()
+    {
+        return $this->hasOne(TechStoreServices::class, 'user_id', 'id');
+    }
+
 
     public function TechnicianEvaluation()
     {

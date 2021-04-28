@@ -107,7 +107,7 @@ class CustomerController extends Controller
                 $query->where('email', $request->email);
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+                $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
                 $query->where('phone', $request->phone);
@@ -277,7 +277,6 @@ class CustomerController extends Controller
 
         if ($request->ajax()) {
             $data = $request->all();
-
             $query = User::query()->where('role', 4)->orderBy('id', 'DESC');
 
             if ($request->has('status') and $request->status) {
@@ -287,7 +286,7 @@ class CustomerController extends Controller
                 $query->where('email', $request->email);
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+                $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
                 $query->where('phone', $request->phone);
@@ -318,7 +317,7 @@ class CustomerController extends Controller
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                    <a class="dropdown-item" href="' . url(adminPath() . 'store/edit/' . $row->id ) . '">' . __('Edit') . '</a>
+                                                    <a class="dropdown-item" href="' . url(adminPath() . 'store/edit/' . $row->id) . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
 
                                                 </div>
@@ -337,7 +336,6 @@ class CustomerController extends Controller
 
         if ($request->ajax()) {
             $data = $request->all();
-
             $query = User::query()->where('role', 1)->orderBy('id', 'DESC');
 
             if ($request->has('status') and $request->status) {
@@ -347,7 +345,8 @@ class CustomerController extends Controller
                 $query->where('email', $request->email);
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+
+                $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
                 $query->where('phone', $request->phone);
@@ -368,11 +367,10 @@ class CustomerController extends Controller
             });
 
 
-            $table->editColumn('status', function ($row) {
-                return ' <span class="badge badge-dot mr-4">
-                                                        <i class="' . $row->status == 0 ? "bg-success" : "bg-danger" . '"></i>
-                                                        <span class="status">' . $row->status == 0 ? "Active" : "Deactive" . '</span>
-                                                    </span>';
+            $table->addColumn('status', function ($row) {
+                $activeType=[__('Active'),__('Deactive')];
+
+                return $activeType[$row->status];
             });
             $table->addColumn('actions', function ($row) {
                 return ' <div class="dropdown">
@@ -383,13 +381,14 @@ class CustomerController extends Controller
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'Customer/' . $row->id . '/edit') . '">' . __('Edit') . '</a>
                                                     <a class="dropdown-item" onclick="deleteData(`Customer`,' . $row->id . ');" href="#">' . __('Delete') . '</a>
                                                     <a class="dropdown-item" href="' . url(adminPath() . 'Order/' . $row->id) . '">' . __('Orders') . '</a>
+                                                    <a class="dropdown-item" onclick="setUserStatus(' . $row->id . ',' . $row->status . ');" href="">' . ($row->status ? __('Active') : __('Deactive')) . '</a>
 
                                                 </div>
                                             </div>
 ';
             });
 
-            $table->rawColumns(['actions', 'image', 'role']);
+            $table->rawColumns(['actions', 'image', 'role','status']);
             return $table->make(true);
         }
 
@@ -410,7 +409,7 @@ class CustomerController extends Controller
                 $query->where('email', $request->email);
             }
             if ($request->has('name') and $request->name) {
-                $query->where('name', $request->name);
+                $query->where('name', 'like', '%' . $request->name . '%');
             }
             if ($request->has('phone') and $request->phone) {
                 $query->where('phone', $request->phone);
@@ -457,6 +456,21 @@ class CustomerController extends Controller
 
     }
 
+    public function setUserStatus(Request $request)
+    {
+        $data = $request->all();
+        $user = User::find($data['user_id']);
+        if ($data['status'] == 0) {
+            $user->status=1;
+        } else {
+            $user->status=0;
+
+        }
+        $user->save();
+
+        return response(['stsus'=>true]);
+    }
+
     public function store(Request $request)
     {
         //
@@ -472,8 +486,8 @@ class CustomerController extends Controller
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
         $data['role'] = 0;
-        $data['referral_code'] = mt_rand(1000000, 9999999);
-        $data['otp'] = mt_rand(100000, 999999);
+      //  $data['referral_code'] = mt_rand(1000000, 9999999);
+      //  $data['otp'] = mt_rand(100000, 999999);
         if (isset($request->image) && $request->hasFile('image')) {
             $image = $request->file('image');
             $name = time() . '.' . $image->getClientOriginalExtension();
@@ -546,7 +560,7 @@ class CustomerController extends Controller
         $request->validate([
             'name' => 'bail|required',
             'email' => 'bail|required|unique:users,email,' . $id . ',id',
-            'phone' => 'bail|required',
+            'phone' => 'bail|required|unique:users,phone,' . $id . ',id',
             // 'dateOfBirth' => 'bail|required',
         ]);
         $data = $request->all();
@@ -708,7 +722,22 @@ class CustomerController extends Controller
         $data['role'] = 4;
         //    dd($data);
 
-        $data['image'] = 'user.png';
+        if (isset($request->image) && $request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/upload');
+            $image->move($destinationPath, $name);
+            $data['image'] = $name;
+        } else {
+            // $image = Avatar::create($request->email)->toBase64();
+            // $image = str_replace('data:image/png;base64,', '', $image);
+            // $image = str_replace(' ', '+', $image);
+            // $imageName = str_random(10).'.'.'png';
+            // $destinationPath = public_path('/images/upload');
+            // \File::put($destinationPath. '/' . $imageName, base64_decode($image));
+            // $data['image']=$imageName;
+            $data['image'] = 'user.png';
+        }
 
         // $data['otp'] = mt_rand(100000,999999);
 
@@ -749,10 +778,11 @@ class CustomerController extends Controller
         return redirect('storeusers');
 
     }
+
     public function updateStoreUser(Request $request)
     {
         $data = $request->all();
-        $id=$data['id'];
+        $id = $data['id'];
         $request->validate([
             'name' => 'bail|required',
             'email' => 'bail|required|unique:users,email,' . $id . ',id',
@@ -760,14 +790,21 @@ class CustomerController extends Controller
             'identity' => 'bail|required',
             'min_order_value' => 'bail|required'
         ]);
+
         $data['role'] = 4;
         //    dd($data);
 
-        $data['image'] = 'user.png';
+        if (isset($request->image) && $request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/upload');
+            $image->move($destinationPath, $name);
+            $data['image'] = $name;
+        }
 
         // $data['otp'] = mt_rand(100000,999999);
 
-        $user= User::findOrFail($id)->update($data);
+        $user = User::findOrFail($id)->update($data);
 
         $d['phone'] = $request->phone;
         $d['tech_store_email'] = $request->email;
@@ -779,12 +816,15 @@ class CustomerController extends Controller
         $d['app_benifit_percentage'] = $request->app_benifit_percentage;
 
         $d['have_vehicle'] = 0;
+        $d['user_id'] = $id;
+        $d['hour_work'] = $request->hour_work;
 
+        $user_tech_store = App\TechStoreUser::updateOrCreate(['user_id'=>$id],$d);
 
-        $user_tech_store = App\TechStoreUser::create($d);
-        $user_tech_store->user_id = $id;
-        $user_tech_store->save();
-
+        $user_tech_store_service = App\TechStoreServices::updateOrCreate(
+            ['user_id'=>$id],
+            ['user_id'=>$id,'category_id'=>$data['category_id']]
+        );
 
         // now save any documents in tech-store-documents
         $documents = App\Documents::where('type', 2)->get();
@@ -801,7 +841,7 @@ class CustomerController extends Controller
         }
 
 
-        return redirect(adminPath().'storeusers');
+        return redirect(adminPath() . 'storeusers');
 
     }
 
@@ -847,7 +887,22 @@ class CustomerController extends Controller
 
 
             $data['role'] = 3;
-            $data['image'] = 'user.png';
+            if (isset($request->image) && $request->hasFile('image')) {
+                $image = $request->file('image');
+                $name = time() . '.' . $image->getClientOriginalExtension();
+                $destinationPath = public_path('/images/upload');
+                $image->move($destinationPath, $name);
+                $data['image'] = $name;
+            } else {
+                // $image = Avatar::create($request->email)->toBase64();
+                // $image = str_replace('data:image/png;base64,', '', $image);
+                // $image = str_replace(' ', '+', $image);
+                // $imageName = str_random(10).'.'.'png';
+                // $destinationPath = public_path('/images/upload');
+                // \File::put($destinationPath. '/' . $imageName, base64_decode($image));
+                // $data['image']=$imageName;
+                $data['image'] = 'user.png';
+            }
 
             $user = User::create($data);
 
@@ -897,7 +952,7 @@ class CustomerController extends Controller
     {
 
         $data = $request->all();
-        $id=$request->id;
+        $id = $request->id;
         $request->validate([
             'name' => 'bail|required',
             'email' => 'bail|required|unique:users,email,' . $id . ',id',
@@ -909,6 +964,13 @@ class CustomerController extends Controller
         $data = $request->all();
 
 
+        if (isset($request->image) && $request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/upload');
+            $image->move($destinationPath, $name);
+            $data['image'] = $name;
+        }
         DB::transaction(function () use ($request, $data, $id) {
             //  dd('mmm');
             User::findOrFail($id)->update($data);
@@ -971,13 +1033,14 @@ class CustomerController extends Controller
 
         return view('admin.users.editTech', ['data' => $data, 'documents' => $documents, 'categories' => $categories]);
     }
+
     public function editStore($id)
     {
         $data = User::findOrFail($id);
 
         $documents = App\Documents::where('type', 2)->get(); // technician
         $categories = App\Category::where('parent', 0)->get();
-        return view('admin.users.editStore', compact('data','documents', 'categories'));
+        return view('admin.users.editStore', compact('data', 'documents', 'categories'));
     }
 
     public function assignRadius(Request $request)

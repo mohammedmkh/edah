@@ -49,32 +49,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="input-status">التقنيين</label>
-                                                <Select name="technical_id" id="technical_id"
-                                                        class="form-control select2 form-control-alternative" required>
-                                                    <option value="">التقنيين</option>
-                                                    @foreach($technical as $value)
-                                                        <option value="{{$value->id}}">{{$value->name}}</option>
 
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="input-status">الزبائن</label>
-                                                <Select name="user_id" id="user_id"
-                                                        class="form-control select2 form-control-alternative" required>
-                                                    <option value="">الزبائن</option>
-                                                    @foreach($customer as $value)
-                                                        <option value="{{$value->id}}">{{$value->name}}</option>
-
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
@@ -106,7 +81,6 @@
 
                                 <th scope="col">{{ __('Order ID') }}</th>
 
-                                <th scope="col">{{ __('Customer') }}</th>
                                 <th scope="col">{{ __('payment') }}</th>
                                 <th scope="col">{{ __('date') }}</th>
 
@@ -185,14 +159,12 @@
                     data: function (d) {
                         d.order_no = $('input[name="order_no"]').val()
                         d.daterange = $('input[name="daterange"]').val()
-                        d.technical_id = $('[name="technical_id"]').val();
-                        d.user_id = $('[name="user_id"]').val()
+                        d.user_id = '{{$customer_id}}'
                         d.status = $('[name="status"]').val()
                     }
                 },
                 columns: [
                     {data: 'id', name: 'id'},
-                    {data: 'userOrder.name', name: 'userOrder.name'},
                     {data: 'price', name: 'price'},
                     {data: 'time', name: 'time'},
                     {data: 'payment_type', name: 'payment_type'},

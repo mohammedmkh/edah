@@ -25,16 +25,21 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($technical_id=null)
+    public function index($customer_id = null)
     {
         //
         $data = Order::with(['userOrder', 'categoryOrder'])->orderBy('id', 'DESC')->paginate(10);
         $currency_code = Setting::where('id', 1)->first()->currency;
         $customer = User::where('role', 0)->get();
         $technical = User::where('role', 3)->get();
-        $status=OrderStatus::all();
+        $status = OrderStatus::all();
         // dd( $data );
-        return view('admin.order.orders', ['orders' => $data, 'status' => $status,'technical' => $technical,'customer'=>$customer,'technical_id'=>$technical_id]);
+        if ($customer_id != null) {
+
+            return view('admin.order.ordersTechnical', ['orders' => $data, 'status' => $status, 'technical' => $technical, 'customer' => $customer, 'customer_id' => $customer_id]);
+
+        }
+        return view('admin.order.orders', ['orders' => $data, 'status' => $status, 'technical' => $technical, 'customer' => $customer, 'customer_id' => $customer_id]);
     }
 
 
@@ -43,7 +48,6 @@ class OrderController extends Controller
 
         if ($request->ajax()) {
             $data = $request->all();
-
             $query = Order::with(['userOrder', 'categoryOrder'])->orderBy('id', 'DESC');
 
             if ($request->has('order_id') and $request->order_id > 0) {
@@ -57,11 +61,9 @@ class OrderController extends Controller
                 $query->where('technical_id', $request->technical_id);
 
             }
-            if ($request->has('user_id') and $data['user_id'] != null) {
-                $query->where('user_id', $request->user_id);
 
-           }
             if ($request->has('status') and $data['status'] != null) {
+
                 $query->where('status', $request->status);
 
             }

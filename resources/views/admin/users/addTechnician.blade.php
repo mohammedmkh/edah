@@ -63,6 +63,25 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <div class="form-group{{ $errors->has('image') ? ' has-danger' : '' }}">
+                                                    <label class="form-control-label " for="input-image">{{ __('Image') }}</label>
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input read-image" name="image" id="image">
+                                                        <label class="custom-file-label" for="image">Select file</label>
+                                                    </div>
+                                                    @if ($errors->has('image'))
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $errors->first('image') }}</strong>
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <img class=" avatar-lg round-5 view-image" style="width: 100%;height: 90px;" src="{{url('images/upload/user.png')}}">
+                                            </div>
+                                        </div>
                                         {{-- <div class="row">
                                             <div class="col-6">
                                                 <div class="form-group{{ $errors->has('driver_radius') ? ' has-danger' : '' }}">

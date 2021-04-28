@@ -67,8 +67,9 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::post('/tech_posting', 'CustomerController@tech_posting');
     Route::get('/technicalAccountStatmentExcel/{technical_id}/{id}', 'CustomerController@technicalAccountStatmentExcel');
     Route::get('/technicalAccountStatmentExcel/{technical_id}', 'CustomerController@technicalAccountStatmentExcel');
-    Route::get('/Order/{technical_id}', 'OrderController@index');
+    Route::get('/Order/{customer_id}', 'OrderController@index');
 
+    Route::post('/setUserStatus', 'CustomerController@setUserStatus');
 
 
     Route::resources([
