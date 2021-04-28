@@ -48,7 +48,7 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         //
-       
+
         $request->validate([
             'name' => 'bail|required|unique:location',
             'status' => 'bail|required',
@@ -62,6 +62,8 @@ class LocationController extends Controller
         if(isset($request->popular)){ $data['popular'] = 1; }
         else{ $data['popular'] = 0; }
         Location::create($data);
+        toastr()->success('Successfully completed');
+
         return redirect('Location');
     }
 
@@ -74,7 +76,7 @@ class LocationController extends Controller
     public function show($id)
     {
         //
-       
+
     }
 
     /**
@@ -112,7 +114,7 @@ class LocationController extends Controller
 
         if(isset($request->popular)){ $data['popular'] = 1; }
         else{ $data['popular'] = 0; }
-           
+
         Location::findOrFail($id)->update($data);
         return redirect('Location');
     }
@@ -125,8 +127,8 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
-        // 
-        try {          
+        //
+        try {
             $Groceryshop = GroceryShop::where('location',$id)->get();
             if($Groceryshop){
                 foreach ($Groceryshop as $value) {
@@ -134,50 +136,50 @@ class LocationController extends Controller
                     if($GroceryItem){
                         foreach ($GroceryItem as $i) {
                             $i->delete();
-                        } 
-                    }  
-                    $GrocerySubCategory = GrocerySubCategory::where('shop_id',$value->id)->get();                   
+                        }
+                    }
+                    $GrocerySubCategory = GrocerySubCategory::where('shop_id',$value->id)->get();
                     if($GrocerySubCategory){
-                        foreach ($GrocerySubCategory as $g) {                           
+                        foreach ($GrocerySubCategory as $g) {
                             $g->delete();
-                        } 
+                        }
                     }
 
-                   
-                  
+
+
                     $Coupon = Coupon::where([['shop_id',$value->id],['use_for','Grocery']])->get();
                     if($Coupon){
                         foreach ($Coupon as $c) {
                             $c->delete();
-                        } 
-                    }                                       
+                        }
+                    }
 
                     $Order = GroceryOrder::where('shop_id',$value->id)->get();
                     if($Order){
-                        foreach ($Order as $item) {                    
+                        foreach ($Order as $item) {
                             $Notification = Notification::where([['order_id',$item->id],['notification_type','Grocery']])->get();
                             if($Notification){
                                 foreach ($Notification as $n) {
                                     $n->delete();
-                                } 
+                                }
                             }
                             $Review = GroceryReview::where('order_id',$item->id)->get();
                             if($Review){
                                 foreach ($Review as $r) {
                                     $r->delete();
-                                } 
+                                }
                             }
                             $OrderChild = GroceryOrderChild::where('order_id',$item->id)->get();
                             if($OrderChild){
                                 foreach ($OrderChild as $oc) {
                                     $oc->delete();
-                                } 
-                            }                                              
+                                }
+                            }
                             $item->delete();
-                        } 
-                    } 
+                        }
+                    }
                     $value->delete();
-                } 
+                }
             }
 
             $delete = Location::findOrFail($id);

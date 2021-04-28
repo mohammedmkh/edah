@@ -134,6 +134,8 @@ class CategoryController extends Controller
         $this->addUpdateTranslation( $category_no_langs , $data );
 
        // dd($category_no_langs);
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath().'Category');
 
     }
@@ -205,6 +207,8 @@ class CategoryController extends Controller
         $category_no_langs = $category->update($data);
         $category_no_langs = Category::find($id);
         $this->addUpdateTranslation( $category_no_langs , $data );
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath().'Category');
 
 

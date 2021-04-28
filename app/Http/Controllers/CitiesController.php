@@ -19,7 +19,7 @@ class CitiesController extends Controller
         //
         $data = Cities::orderBy('id', 'DESC')->paginate(20);
         return view('admin.cities.viewItem',['cities'=>$data]);
-        
+
     }
 
     /**
@@ -58,9 +58,10 @@ class CitiesController extends Controller
        $city->country_code = $country->code ;
        $city->save();
        // dd( $country ,    $city);
-       
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath().'cities');
-       
+
     }
 
     /**
@@ -86,7 +87,7 @@ class CitiesController extends Controller
         $countries = Countries::all();
         $data = Cities::findOrFail($id);
         return view('admin.cities.editItem',['data'=>$data ,'countries'=>  $countries] );
-        
+
     }
 
     /**
@@ -110,6 +111,8 @@ class CitiesController extends Controller
         $country = Countries::where('id' , $request->country_id)->first();
         $city->country_code = $country->code ;
         $city->save();
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath().'cities');
 
     }
@@ -127,14 +130,14 @@ class CitiesController extends Controller
             $delete = Cities::find($id);
             $delete->delete();
             return 'true';
-           
+
         } catch (\Exception $e) {
             return response('Data is Connected with other Data', 400);
         }
     }
-    
+
     public function bannerImage(){
-        $data = Banner::orderBy('id', 'DESC')->get(); 
+        $data = Banner::orderBy('id', 'DESC')->get();
         return response()->json(['data' =>$data ,'success'=>true], 200);
     }
 }

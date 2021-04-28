@@ -37,11 +37,13 @@ class PermissionController extends Controller
     {
         //
         $request->validate([
-            'name' => 'bail|required',        
-            'status' => 'bail|required',          
+            'name' => 'bail|required',
+            'status' => 'bail|required',
         ]);
         $data = $request->all();
         $data = Permission::create($data);
+        toastr()->success('Successfully completed');
+
         return redirect('Role');
     }
 

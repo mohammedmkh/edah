@@ -128,6 +128,8 @@ class CouponController extends Controller
 
 
         Coupon::create($data);
+        toastr()->success('Successfully completed');
+
         return redirect('GroceryCoupon');
     }
 
@@ -188,6 +190,8 @@ class CouponController extends Controller
             $data['image'] = $name;
         }
         Coupon::find($id)->update($data);
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath() . 'Coupon');
     }
 

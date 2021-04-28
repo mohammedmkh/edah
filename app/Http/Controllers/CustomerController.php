@@ -519,6 +519,7 @@ class CustomerController extends Controller
             OwnerSetting::create($setting);
         }
 
+        toastr()->success('Successfully completed');
         return redirect(adminPath().'Customer');
 
     }
@@ -575,6 +576,8 @@ class CustomerController extends Controller
         }
 
         User::findOrFail($id)->update($data);
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath() . 'Customer');
     }
 
@@ -775,6 +778,7 @@ class CustomerController extends Controller
             }
         }
 
+        toastr()->success('Successfully completed');
 
         return redirect('storeusers');
 
@@ -841,6 +845,7 @@ class CustomerController extends Controller
             }
         }
 
+        toastr()->success('Successfully completed');
 
         return redirect(adminPath() . 'storeusers');
 
@@ -864,6 +869,7 @@ class CustomerController extends Controller
 
         $user = User::create($data);
 
+        toastr()->success('Successfully completed');
 
         return redirect(adminPath() . 'adminusers');
 
@@ -944,6 +950,7 @@ class CustomerController extends Controller
             }
 
         });
+        toastr()->success('Successfully completed');
 
         return redirect(adminPath() . 'techusers');
 
@@ -1020,6 +1027,7 @@ class CustomerController extends Controller
 
         // all good
 
+        toastr()->success('Successfully completed');
 
         return redirect(adminPath() . 'techusers');
     }
@@ -1124,6 +1132,8 @@ class CustomerController extends Controller
         }
 
         User::findOrFail($id)->update($data);
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath() . 'ownerProfile');
     }
 
@@ -1819,6 +1829,8 @@ class CustomerController extends Controller
     {
         App::setLocale($lang);
         session()->put('locale', $lang);
+        toastr()->success('Successfully completed');
+
         return redirect()->back();
     }
 
@@ -1913,6 +1925,7 @@ class CustomerController extends Controller
                 'heading' => 'Seccess',
                 'type' => 'default'
             );
+            toastr()->success($msg);
 
             return redirect()->back()->with('success', $msg);
 

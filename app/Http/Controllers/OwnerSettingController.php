@@ -29,7 +29,7 @@ class OwnerSettingController extends Controller
       //  $currency = Currency::get();
         $language = Language::get();
       //  $point =PointSetting::find(1);
-        
+
         // return view('mainAdmin.setting.settings', ['companyData' => $companySetting, 'language' => $language, 'paymentData' => $paymentSetting, 'setting' => $setting, 'currency' => $currency]);
         return view('admin.setting.setting',['data'=>$data,'companyData' => $companySetting, 'language' => $language, 'paymentData' => $paymentSetting, 'setting' => $setting]);
     }
@@ -88,17 +88,19 @@ class OwnerSettingController extends Controller
     {
         //dd('mm');
         $data = $request->all();
-        
+
         if(isset($request->web_notification)){   $data['web_notification'] = 1; }
         else{ $data['web_notification'] = 0; }
 
         if(isset($request->play_sound)){   $data['play_sound'] = 1; }
         else{ $data['play_sound'] = 0; }
-        
+
         if(isset($request->coupon)){   $data['coupon'] = 1; }
         else{ $data['coupon'] = 0; }
 
         OwnerSetting::findOrFail($id)->update($data);
+        toastr()->success('Successfully completed');
+
         return redirect(adminPath().'OwnerSetting');
     }
 

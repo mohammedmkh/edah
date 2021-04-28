@@ -57,9 +57,8 @@
                                     <button type="button" id="selectall"
                                             class="btn btn-success ">{{ __('Select All') }}</button>
 
-                                    <Select multiple name="user_id[]" id="user_id"
+                                    <Select data-placeholder="{{ __('Users') }}" multiple name="user_id[]" id="user_id"
                                             class="form-control select2 form-control-alternative" required>
-                                        <option value="">{{__('Users')}}</option>
 
                                     </select>
 
