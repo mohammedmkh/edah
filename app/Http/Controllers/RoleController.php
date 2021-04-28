@@ -42,8 +42,8 @@ class RoleController extends Controller
         //
 
         $request->validate([
-            'name' => 'bail|required',        
-            'status' => 'bail|required',          
+            'name' => 'bail|required',
+            'status' => 'bail|required',
         ]);
         $data = $request->all();
         $data = Role::create($data);
@@ -92,7 +92,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+
         try {
             $delete = Role::findOrFail($id);
             $delete->delete();
