@@ -166,9 +166,12 @@
                     success: function (result) {
 
                         table.ajax.reload( null, false ); // user paging is not reset on reload
+                        toastr.success('{{__('Successfully completed')}}');
 
                     },
                     error: function (err) {
+                        toastr.fail('{{__('The operation has failed')}}');
+
                     }
                 });
 

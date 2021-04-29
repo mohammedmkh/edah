@@ -982,24 +982,29 @@ class CustomerController extends Controller
         }
         DB::transaction(function () use ($request, $data, $id) {
             //  dd('mmm');
-            User::findOrFail($id)->update($data);
+          $user=  User::findOrFail($id);
+          $user->update($data);
 
 
             $d = getDataFromRequest('user_tech', $request);
+            $d['services'] = json_encode($request->categories);
+           // $user_tech_store = App\TechStoreUser::updateOrCreate($d, ['user_id' => $id]);
 
 
-            $tech_store_user = App\TechStoreUser::where('user_id', $id)->first();
-            if (!$tech_store_user) {
-                $user_tech_store = App\TechStoreUser::create($d);
-                $user_tech_store->user_id = $id;
-                $user_tech_store->services = json_encode($request->categories);
-                $user_tech_store->save();
-            } else {
-                $user_tech_store = App\TechStoreUser::where('user_id', $id)->update($d);
-                $user_tech_store = App\TechStoreUser::where('user_id', $id)->first();
-                $user_tech_store->services = json_encode($request->categories);
-                $user_tech_store->save();
-            }
+                        $tech_store_user = App\TechStoreUser::where('user_id', $id)->first();
+                        if (!$tech_store_user) {
+                            $user_tech_store = App\TechStoreUser::create($d);
+                            $user_tech_store->user_id = $id;
+                            $user_tech_store->services = json_encode($request->categories);
+                            $user_tech_store->save();
+                        } else {
+                            $user_tech_store = App\TechStoreUser::where('user_id', $id)->update($d);
+                            $user_tech_store = App\TechStoreUser::where('user_id', $id)->first();
+                            $user_tech_store->services = json_encode($request->categories);
+
+                            $user_tech_store->save();
+
+                        }
 
             $documents = App\Documents::where('type', 1)->get();
             foreach ($documents as $doc) {
