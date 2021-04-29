@@ -225,10 +225,12 @@ class CategoryController extends Controller
         //
         try {
             $item = Order::where('category_id',$id)->get();
-            if(count($item)==0){
+            $deleteCategory = Category::find($id);
+
+            if(count($item)==0 or $deleteCategory->parent!=0){
+
                 CategoryLangs::where('category_id',$id)->delete();
-                $delete = Category::find($id);
-                $delete->delete();
+                $deleteCategory->delete();
                 toastr()->success(__('Successfully completed'));
 
                 return 'true';
