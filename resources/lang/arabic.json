@@ -306,7 +306,10 @@
     "Technical" : "فني" ,
     "Store Owner":"صاحب محل" ,
     "Avaliable":"فعال" ,
-   "Not Avaliable":"غير فعال"
+   "Not Avaliable":"غير فعال" ,
+    "Visa & Master":"فيزا او ماستر كارد" ,
+    "Mada":"مدى" ,
+    "Cash":"كاش"
 
 
 }

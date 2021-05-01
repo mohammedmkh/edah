@@ -84,7 +84,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
     Route::get('myInfo', 'UsersApiController@myInfo');
     Route::post('edituser', 'UsersApiController@editUser');
 
-    Route::get('logout', 'UsersApiController@logout');
+    Route::post('logout', 'UsersApiController@logout');
 
     Route::post('confirmnewphone', 'UsersApiController@confirmnewphone');
 
@@ -131,6 +131,19 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1', 'middle
     Route::post('acceptOfferFromStore', 'UsersApiController@acceptOfferFromStore');
 
     Route::post('requiredToPayOrder', 'UsersApiController@requiredToPayOrder');
+
+
+
+    Route::post('getResultsTech', 'DataApiController@getResultsTech');
+
+    Route::post('removeTheOrder', 'DataApiController@removeTheOrder');
+
+
+    Route::get('getSettings', 'DataApiController@getSettings');
+
+    Route::get('getPaymentMethod', 'DataApiController@getPaymentMethod');
+
+    Route::post('schedulingDate', 'DataApiController@schedulingDate');
 
 
 });

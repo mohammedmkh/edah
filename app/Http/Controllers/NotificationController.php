@@ -45,7 +45,6 @@ class NotificationController extends Controller
     public function store(Request $request)
     {
 
-        //  dd('mm Good');
 
         $request->validate([
             'role' => 'required',
@@ -55,7 +54,7 @@ class NotificationController extends Controller
         ]);
 
         $data = $request->all();
-dd($data);
+        //dd($data);
 
         toastr()->success('Successfully completed');
         return redirect()->back();

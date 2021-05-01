@@ -1207,10 +1207,13 @@ order BY distance asc
         $action['note'] = $order->note;
         $action['category'] = $order->categoryOrder->name ?? '';
 
+
+      //  return $avilableTechnical ;
+
         foreach ($avilableTechnical as $tech) {
 
             $max_distance_tech = $tech->driver_radius;
-            if ($max_distance_tech >= $tech->distance) { //my max distance  // search result;
+           // if ($max_distance_tech >= $tech->distance) { //my max distance  // search result;
 
                 $d['price'] = $order_minimum_value[0]->order_minimum_value;
                 $d['name'] = $tech->name;
@@ -1218,6 +1221,8 @@ order BY distance asc
                 $action['distance'] = $tech->distance;
                 $action['tech_id'] = $tech->id;
                 $data[] = $d;
+
+              //  dd('hello ');
 
                 // send notification to Technician To Show This Order
 
@@ -1244,7 +1249,7 @@ order BY distance asc
                 $ordertech->user_id = $owner_id;
                 $ordertech->save();
 
-            }
+          //  }
 
 
 
@@ -1649,17 +1654,7 @@ order BY distance asc
     }
 
 
-    public function logout(Request $request){
 
-        $user = Auth::guard('api')->user() ;
-        if($user) {
-            $divecs_revoke = Devicetoken::where('user_id', $user->id)->delete();
-            $revoke = $user->token()->revoke();
-        }
-
-        return jsonResponse( true  , __('api.success') , null,200 );
-
-    }
 
 
     public function acceptOfferFromStore(Request $request)
