@@ -99,7 +99,7 @@ class OwnerSettingController extends Controller
         else{ $data['coupon'] = 0; }
 
         OwnerSetting::findOrFail($id)->update($data);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath().'OwnerSetting');
     }

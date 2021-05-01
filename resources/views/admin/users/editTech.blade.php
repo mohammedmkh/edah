@@ -240,12 +240,15 @@
                                 <div class="form-group">
                                     <label class="form-control-label">{{ __('Type Services') }} :</label>
 
-
+{{--
+{{dd($data->services)}}
+--}}
                                     <select name="categories[]" multiple="multiple" id="input-categories"
                                             class="form-control select2 select2-multiple form-control-alternative{{ $errors->has('category_id') ? ' is-invalid' : '' }}" >
                                         @foreach($categories as $cat)
                                             {{$selected=''}}
-                                            @if(isset($data->techstoreService ) && $data->techstoreService->category_id == $cat->id)
+
+                                        @if(isset($data->techstore ) && count($data->techstore->cats) > 0 && in_array($cat->id,$data->techstore->cats) )
                                                 {{$selected='selected'}}
                                             @endif
                                             <option {{$selected}}  value="{{$cat->id}}">{{ $cat->translation()->name }}  </option>

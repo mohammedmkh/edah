@@ -115,57 +115,73 @@
 
     <script type="text/javascript">
 
-        $(function () {
 
 
-            var table = $('.yajra-datatable').DataTable({
-                processing: true,
-                serverSide: true,
-                scrollX: false,
-                type: "GET",
-                searching: false,
+        var table = $('.yajra-datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            scrollX: false,
+            type: "GET",
+            searching: false,
 
-                "initComplete": function (settings, json) {
-                    $(".dataTables_length").css('float', 'right')
-                    $(".dataTables_filter").css('float', 'left')
-                },
-                ajax: {
-                    url: "{{route('storeList')}}",
-                    data: function (d) {
-                        d.status=$('[name="status"]').val()
-                        d.name=$('[name="name"]').val()
-                        d.email=$('[name="email"]').val()
-                        d.phone=$('[name="phone"]').val()
-
-
-                    }
-                },
-                columns: [
-                    {data: 'id', name: 'id',searchable:true},
-                    {data: 'image', name: 'image',searchable:false},
-                    {data: 'name', name: 'name',searchable:false},
-                    {data: 'email', name: 'email',searchable:false},
-                    {data: 'phone', name: 'phone',searchable:false},
-                    {data: 'status', name: 'status',searchable:false},
-                    {data: 'created_at', name: 'created_at',searchable:false},
-                    {data: 'actions', name: 'actions',searchable:false},
-                ]
-            });
-            $('#public_search').on('click', function (e) {
-                table.draw();
-                e.preventDefault();
-            });
+            "initComplete": function (settings, json) {
+                $(".dataTables_length").css('float', 'right')
+                $(".dataTables_filter").css('float', 'left')
+            },
+            ajax: {
+                url: "{{route('storeList')}}",
+                data: function (d) {
+                    d.status=$('[name="status"]').val()
+                    d.name=$('[name="name"]').val()
+                    d.email=$('[name="email"]').val()
+                    d.phone=$('[name="phone"]').val()
 
 
+                }
+            },
+            columns: [
+                {data: 'id', name: 'id',searchable:true},
+                {data: 'image', name: 'image',searchable:false},
+                {data: 'name', name: 'name',searchable:false},
+                {data: 'email', name: 'email',searchable:false},
+                {data: 'phone', name: 'phone',searchable:false},
+                {data: 'status', name: 'status',searchable:false},
+                {data: 'created_at', name: 'created_at',searchable:false},
+                {data: 'actions', name: 'actions',searchable:false},
+            ]
+        });
+        $('#public_search').on('click', function (e) {
+            table.draw();
+            e.preventDefault();
         });
 
 
 
+        function setUserStatus(user_id, status) {
+            event.preventDefault()
+            $.ajax({
+                url: '{{url('')}}/panel/setUserStatus'  ,
+                data: {_token: $('meta[name="csrf-token"]').attr('content'),user_id:user_id,status:status},
+                type: "POST",
+                success: function (result) {
+
+                    table.ajax.reload( null, false ); // user paging is not reset on reload
+                    toastr.success('{{__('Successfully completed')}}');
+
+                },
+                error: function (err) {
+                    toastr.fail('{{__('The operation has failed')}}');
+
+                }
+            });
+
+
+        }
+
 
         $( document ).ready(function() {
-            /*
-                        $('input[name="daterange"]').val(null)
-            */
+
+
         });
     </script>
 @endsection

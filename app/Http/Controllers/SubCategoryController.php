@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CategoryLangs;
 use App\GrocerySubCategory;
 use App\Category;
+use App\Order;
 use Auth;
 use App\GroceryItem;
 use App\GroceryShop;
@@ -212,21 +213,28 @@ class SubCategoryController extends Controller
     {
         //
         try {
-            // todo check if any orders here
-            $item = Category::where('id',$id)->get();
-           // if(count($item)==0){
-                $delete = Category::find($id);
-                $delete->delete();
+            $item = Order::where('category_id',$id)->get();
+            $deleteCategory = Category::find($id);
+
+            if(count($item)==0 ){
+
+                CategoryLangs::where('category_id',$id)->delete();
+                $deleteCategory->delete();
+                toastr()->success(__('Successfully completed'));
+
                 return 'true';
-           // }
-         //   else{
+            }
+            else{
+                toastr()->error(__('The operation has failed'), __('Inconceivable!'));
+
                 return response('Data is Connected with other Data', 400);
-          // }
+            }
         } catch (\Exception $e) {
+            toastr()->error(__('The operation has failed'), __('Inconceivable!'));
+
             return response('Data is Connected with other Data', 400);
         }
     }
-
 
     public function addUpdateTranslation($category , $data){
 

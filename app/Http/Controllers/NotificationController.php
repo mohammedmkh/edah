@@ -56,7 +56,7 @@ class NotificationController extends Controller
         $data = $request->all();
         //dd($data);
 
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
         return redirect()->back();
     }
 

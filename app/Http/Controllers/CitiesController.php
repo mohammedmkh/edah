@@ -58,7 +58,7 @@ class CitiesController extends Controller
        $city->country_code = $country->code ;
        $city->save();
        // dd( $country ,    $city);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath().'cities');
 
@@ -111,7 +111,7 @@ class CitiesController extends Controller
         $country = Countries::where('id' , $request->country_id)->first();
         $city->country_code = $country->code ;
         $city->save();
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath().'cities');
 

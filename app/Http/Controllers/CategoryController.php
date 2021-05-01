@@ -134,7 +134,7 @@ class CategoryController extends Controller
         $this->addUpdateTranslation( $category_no_langs , $data );
 
        // dd($category_no_langs);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath().'Category');
 
@@ -207,7 +207,7 @@ class CategoryController extends Controller
         $category_no_langs = $category->update($data);
         $category_no_langs = Category::find($id);
         $this->addUpdateTranslation( $category_no_langs , $data );
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect(adminPath().'Category');
 
@@ -225,16 +225,24 @@ class CategoryController extends Controller
         //
         try {
             $item = Order::where('category_id',$id)->get();
-            if(count($item)==0){
+            $deleteCategory = Category::find($id);
+
+            if(count($item)==0 or $deleteCategory->parent!=0){
+
                 CategoryLangs::where('category_id',$id)->delete();
-                $delete = Category::find($id);
-                $delete->delete();
+                $deleteCategory->delete();
+                toastr()->success(__('Successfully completed'));
+
                 return 'true';
             }
             else{
+                toastr()->error(__('The operation has failed'), __('Inconceivable!'));
+
                 return response('Data is Connected with other Data', 400);
             }
         } catch (\Exception $e) {
+            toastr()->error(__('The operation has failed'), __('Inconceivable!'));
+
             return response('Data is Connected with other Data', 400);
         }
     }

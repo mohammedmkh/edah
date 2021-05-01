@@ -42,7 +42,7 @@ class PermissionController extends Controller
         ]);
         $data = $request->all();
         $data = Permission::create($data);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect('Role');
     }

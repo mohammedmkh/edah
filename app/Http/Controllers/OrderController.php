@@ -234,7 +234,7 @@ class OrderController extends Controller
             'heading' => 'Seccess',
             'type' => 'default'
         );
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect()->back()->with('success', $msg);
     }
@@ -293,7 +293,7 @@ class OrderController extends Controller
             'heading' => 'Seccess',
             'type' => 'default'
         );
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect()->back()->with('success', $msg);
     }

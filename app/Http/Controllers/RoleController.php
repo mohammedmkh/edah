@@ -47,7 +47,7 @@ class RoleController extends Controller
         ]);
         $data = $request->all();
         $data = Role::create($data);
-        toastr()->success('Successfully completed');
+        toastr()->success(__('Successfully completed'));
 
         return redirect('Role');
     }

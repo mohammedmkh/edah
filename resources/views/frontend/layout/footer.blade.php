@@ -29,11 +29,11 @@
 
               </ul>
 
-  
+
 
             </div>
 
-           
+
 
             <div class="col-md-4 mb-5 pl-5">
 
@@ -62,17 +62,17 @@
 
                         <li class="d-block">
 
-                        <img src="{{url('frontend/images/Apple-Store.png')}}"> 
+                        <img src="{{url('frontend/images/Apple-Store.png')}}">
 
                         </li>
 
                         <li class="d-block">
 
-                            <img src="{{url('frontend/images/android-Playstore.png')}}"> 
+                            <img src="{{url('frontend/images/android-Playstore.png')}}">
 
                         </li>
 
-                      
+
 
                     </ul>
 
