@@ -139,7 +139,7 @@
             }
         </style>
 
-        <script src="{{url('admin/js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{url('admin')}}"></script>
         <script src="{{url('admin/js/sweetalert.all.js')}}"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         @stack('js')
@@ -173,7 +173,8 @@
 
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-
+        <script src="{{url('admin/jquery.validate.js')}}" type="text/javascript"></script>
+        <script src="{{url('admin/bootstrapValidator.js')}}" type="text/javascript"></script>
         <script>
 
             $('#editButton').click(function(){

@@ -29,9 +29,9 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
 
-        $languages = Language::where('status' ,1)->get();
-        view()->composer('*',function($view)
-           use($languages) {
+        $languages = Language::where('status', 1)->get();
+        view()->composer('*', function ($view)
+        use ($languages) {
 
             $view->with('languages', $languages);
 

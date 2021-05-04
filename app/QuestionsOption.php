@@ -5,17 +5,18 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App;
 
-class Question extends Model
+class QuestionsOption extends Model
 {
     //
-    protected $fillable = ['id', 'created_at', 'updated_at', 'deleted_at'
+    protected $fillable = ['question_id', 'created_at', 'updated_at', 'deleted_at'
     ];
 
 
-    protected $table = 'questions';
+    protected $table = 'questions_options';
 
 
     protected $appends = ['name'];
+    public $timestamps = false;
 
 
     public function getDescriptionAttribute()
@@ -44,7 +45,7 @@ class Question extends Model
         $language = $language->id ?? 1;
 
 
-        return $this->hasOne(QuestionLang::class, 'question_id', 'id')->where('lang_id', '=', $language);
+        return $this->hasOne(QuestionOptionLang::class, 'questions_options_id', 'id')->where('lang_id', '=', $language);
 
     }
 
@@ -58,7 +59,7 @@ class Question extends Model
         // dd(  $language );
 
 
-        return $this->hasMany(CategoryLangs::class)->where('lang_id', '=', $language)->first();
+        return $this->hasMany(QuestionOptionLang::class)->where('lang_id', '=', $language)->first();
     }
 
 
@@ -67,7 +68,7 @@ class Question extends Model
     public function questionLang()
     {
 
-        return $this->hasMany(CategoryLangs::class, 'question_id', 'id');
+        return $this->hasMany(QuestionOptionLang::class, 'questions_options_id', 'id');
     }
 
 

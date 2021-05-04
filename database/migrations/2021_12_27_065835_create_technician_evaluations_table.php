@@ -17,6 +17,7 @@ class CreateTechnicianEvaluationsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
 
+
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 

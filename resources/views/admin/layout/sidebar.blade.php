@@ -110,6 +110,11 @@
                                         <i class="ni ni-calendar-grid-58 text-primary"></i> {{ __('Orders') }}
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{url(adminPath().'Question')}}">
+                                        <i class="ni ni-calendar-grid-58 text-primary"></i> {{ __('Questions') }}
+                                    </a>
+                                </li>
                             <!---
                     <li class="nav-item">
                         <a class="nav-link" href="{{url('Location')}}">

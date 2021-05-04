@@ -54,6 +54,7 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
     Route::get('/ordersList', 'OrderController@ordersList')->name('ordersList');
     Route::get('/couponsList', 'CouponController@couponsList')->name('couponsList');
     Route::get('/categoryList', 'CategoryController@categoryList')->name('categoryList');
+    Route::get('/questionList', 'QuestionController@questionList')->name('questionList');
     Route::get('/subCategoryList', 'SubCategoryController@subCategoryList')->name('subCategoryList');
     Route::get('/customerList', 'CustomerController@customerList')->name('customerList');
     Route::get('/adminList', 'CustomerController@adminList')->name('adminList');
@@ -76,6 +77,7 @@ Route::group(['prefix' => adminPath() , 'middleware' => ['auth']], function () {
 
     Route::resources([
         'Category' => 'CategoryController',
+        'Question' => 'QuestionController',
         'SubCategory' => 'SubCategoryController',
         'Customer' => 'CustomerController',
         'Order' => 'OrderController',
